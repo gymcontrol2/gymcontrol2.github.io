@@ -6,6 +6,7 @@
   <title>Relatórios - GYM CONTROL</title>
 
   <style>
+    /* Seu CSS intacto */
     body {
       font-family: 'Poppins', sans-serif;
       background: #f0f4ff;
@@ -15,14 +16,12 @@
       margin: 0 auto;
       position: relative;
     }
-
     h1 {
       text-align: center;
       margin-bottom: 1rem;
       color: #2563eb;
       font-weight: 800;
     }
-
     #graficoContainer {
       max-width: 600px;
       margin: 0 auto 2rem auto;
@@ -31,7 +30,6 @@
       border-radius: 15px;
       box-shadow: 0 6px 20px rgba(37, 99, 235, 0.2);
     }
-
     .filtros {
       display: flex;
       justify-content: space-between;
@@ -39,7 +37,6 @@
       gap: 1rem;
       flex-wrap: wrap;
     }
-
     select, input[type="text"] {
       padding: 0.5rem 0.7rem;
       border-radius: 8px;
@@ -47,7 +44,6 @@
       font-size: 1rem;
       width: 150px;
     }
-
     table {
       width: 100%;
       border-collapse: collapse;
@@ -56,23 +52,19 @@
       overflow: hidden;
       box-shadow: 0 3px 15px rgba(0,0,0,0.1);
     }
-
     th, td {
       padding: 1rem;
       text-align: left;
       border-bottom: 1px solid #e2e8f0;
     }
-
     th {
       background-color: #2563eb;
       color: white;
       font-weight: 700;
     }
-
     tr:hover {
       background-color: #e0e7ff;
     }
-
     .btn {
       padding: 0.4rem 0.8rem;
       border: none;
@@ -81,33 +73,27 @@
       cursor: pointer;
       font-size: 0.9rem;
     }
-
     .btn-evadir {
       background-color: #ef4444;
       color: white;
       transition: background-color 0.3s;
     }
-
     .btn-evadir:disabled {
       background-color: #9ca3af;
       cursor: not-allowed;
     }
-
     .btn-evadir:hover:not(:disabled) {
       background-color: #dc2626;
     }
-
     .btn-editar {
       background-color: #10b981;
       color: white;
       margin-left: 0.5rem;
       transition: background-color 0.3s;
     }
-
     .btn-editar:hover {
       background-color: #059669;
     }
-
     .voltar {
       display: inline-block;
       margin-top: 2rem;
@@ -116,12 +102,9 @@
       font-weight: 700;
       transition: color 0.3s;
     }
-
     .voltar:hover {
       color: #1e40af;
     }
-
-    /* Botão fixo no canto superior esquerdo */
     .voltar-topo {
       position: fixed;
       top: 1rem;
@@ -136,7 +119,6 @@
       transition: background-color 0.3s;
       z-index: 1100;
     }
-
     .voltar-topo:hover {
       background-color: #1e40af;
     }
@@ -277,22 +259,11 @@
 
     function marcarEvasao(id) {
       let alunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
-      let dadosAcademia = JSON.parse(localStorage.getItem('dadosAcademia')) || {
-        totalAlunos: 0,
-        alunosAtivos: 0,
-        alunosEvadidos: 0
-      };
 
       const index = alunos.findIndex(a => a.id === id);
       if(index !== -1 && alunos[index].ativo) {
         alunos[index].ativo = false;
-
-        dadosAcademia.alunosAtivos = alunos.filter(a => a.ativo).length;
-        dadosAcademia.alunosEvadidos = alunos.filter(a => !a.ativo).length;
-
         localStorage.setItem('listaAlunos', JSON.stringify(alunos));
-        localStorage.setItem('dadosAcademia', JSON.stringify(dadosAcademia));
-
         carregarAlunos();
       }
     }
@@ -305,7 +276,6 @@
       const alunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
       let csv = 'Nome,Email,Telefone,Status\n';
       alunos.forEach(a => {
-        // Use template literals corretos para evitar problemas
         csv += `"${a.nome}","${a.email}","${a.telefone}","${a.ativo ? 'Ativo' : 'Evadido'}"\n`;
       });
 
@@ -321,12 +291,12 @@
     document.getElementById('filtroStatus').addEventListener('change', carregarAlunos);
     document.getElementById('busca').addEventListener('input', carregarAlunos);
 
-    // Geração automática de 70 alunos caso o localStorage esteja vazio
+    // Função para gerar 70 alunos fixos só uma vez
     function gerarAlunosAleatorios() {
       const nomes = ["Ana", "Bruno", "Carlos", "Daniela", "Eduardo", "Fernanda", "Gustavo", "Helena", "Igor", "Juliana"];
       const sobrenomes = ["Silva", "Oliveira", "Souza", "Pereira", "Lima", "Costa"];
       const lista = [];
-      const total = 70; // fixo para 70 alunos
+      const total = 70;
       const ativos = Math.floor(total * 0.7);
 
       for (let i = 0; i < total; i++) {
@@ -343,18 +313,15 @@
       }
 
       localStorage.setItem("listaAlunos", JSON.stringify(lista));
-      localStorage.setItem("dadosAcademia", JSON.stringify({
-        totalAlunos: total,
-        alunosAtivos: ativos,
-        alunosEvadidos: total - ativos
-      }));
     }
 
+    // Só gera os alunos fixos se não existir nenhum aluno salvo
     if (!localStorage.getItem("listaAlunos") || JSON.parse(localStorage.getItem("listaAlunos")).length === 0) {
       gerarAlunosAleatorios();
     }
 
     carregarAlunos();
+
   </script>
 
 </body>
