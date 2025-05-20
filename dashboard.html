@@ -1,108 +1,72 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Dashboard - GYM CONTROL</title>
+  <meta charset="UTF-8">
+  <title>Dashboard</title>
   <style>
-    body {
-      font-family: "Segoe UI", sans-serif;
-      background-color: #f1f5f9;
-      margin: 0;
-      padding: 2rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    h1 {
-      color: #1e3a8a;
-      margin-bottom: 2rem;
-    }
-
-    .cards {
-      display: flex;
-      gap: 2rem;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-
+    body { font-family: Arial, sans-serif; padding: 30px; background-color: #f5f5f5; }
+    h1 { margin-bottom: 20px; }
+    .card-container { display: flex; gap: 20px; margin-bottom: 30px; }
     .card {
-      background-color: white;
-      border-radius: 1rem;
-      padding: 2rem;
-      width: 260px;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+      width: 200px;
       text-align: center;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
-
-    .card h2 {
-      font-size: 3rem;
-      margin: 0.5rem 0;
+    .logout {
+      padding: 10px 20px;
+      background: #dc3545;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
     }
-
-    .card p {
-      font-size: 1.2rem;
-      color: #6b7280;
-    }
-
-    .total {
-      border-left: 6px solid #6366f1;
-    }
-
-    .ativos {
-      border-left: 6px solid #10b981;
-    }
-
-    .evadidos {
-      border-left: 6px solid #ef4444;
-    }
-
-    .voltar {
-      margin-top: 2rem;
-      display: inline-block;
-      color: #3b82f6;
-      text-decoration: none;
-      font-weight: bold;
-    }
+    .logout:hover { background: #b02a37; }
   </style>
 </head>
 <body>
 
   <h1>Dashboard da Academia</h1>
-
-  <div class="cards">
-    <div class="card total">
-      <p>Total de Alunos</p>
-      <h2 id="totalAlunos">0</h2>
+  <div class="card-container">
+    <div class="card">
+      <h2>Total de Alunos</h2>
+      <p id="total-alunos">0</p>
     </div>
-    <div class="card ativos">
-      <p>Alunos Ativos</p>
-      <h2 id="alunosAtivos">0</h2>
+    <div class="card">
+      <h2>Ativos</h2>
+      <p id="ativos">0</p>
     </div>
-    <div class="card evadidos">
-      <p>Alunos Evadidos</p>
-      <h2 id="alunosEvadidos">0</h2>
+    <div class="card">
+      <h2>Em Risco</h2>
+      <p id="em-risco">0</p>
     </div>
   </div>
 
-  <a href="index.html" class="voltar">← Voltar para a Home</a>
+  <button class="logout" onclick="logout()">Sair</button>
 
   <script>
-    function atualizarDashboard() {
-      const dados = JSON.parse(localStorage.getItem('dadosAcademia')) || {
-        totalAlunos: 0,
-        alunosAtivos: 0,
-        alunosEvadidos: 0
-      };
-
-      document.getElementById('totalAlunos').textContent = dados.totalAlunos;
-      document.getElementById('alunosAtivos').textContent = dados.alunosAtivos;
-      document.getElementById('alunosEvadidos').textContent = dados.alunosEvadidos;
+    // Protege a página
+    if (localStorage.getItem('usuarioLogado') !== 'true') {
+      window.location.href = 'login.html';
     }
 
-    atualizarDashboard();
-  </script>
+    // Dados de alunos
+    const alunos = JSON.parse(localStorage.getItem('alunos')) || [];
 
+    const total = alunos.length;
+    const ativos = alunos.filter(a => a.status.toLowerCase() === 'ativo').length;
+    const emRisco = alunos.filter(a => a.status.toLowerCase() === 'em risco').length;
+
+    document.getElementById('total-alunos').innerText = total;
+    document.getElementById('ativos').innerText = ativos;
+    document.getElementById('em-risco').innerText = emRisco;
+
+    function logout() {
+      localStorage.removeItem('usuarioLogado');
+      window.location.href = 'login.html';
+    }
+  </script>
 </body>
 </html>
