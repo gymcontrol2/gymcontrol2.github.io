@@ -282,7 +282,7 @@
       const alunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
       let csv = 'Nome,Email,Telefone,Status\n';
       alunos.forEach(a => {
-        csv += "${a.nome}","${a.email}","${a.telefone}","${a.ativo ? 'Ativo' : 'Evadido'}"\n;
+        csv += `"${a.nome}","${a.email}","${a.telefone}","${a.ativo ? 'Ativo' : 'Evadido'}"\n`;
       });
 
       const blob = new Blob([csv], {type: 'text/csv'});
@@ -306,9 +306,9 @@
       const ativos = Math.floor(total * 0.7);
 
       for (let i = 0; i < total; i++) {
-        const nome = ${nomes[Math.floor(Math.random() * nomes.length)]} ${sobrenomes[Math.floor(Math.random() * sobrenomes.length)]};
+        const nome = `${nomes[Math.floor(Math.random() * nomes.length)]} ${sobrenomes[Math.floor(Math.random() * sobrenomes.length)]}`;
         const email = nome.toLowerCase().replace(" ", ".") + "@gmail.com";
-        const telefone = (11) 9${Math.floor(100000000 + Math.random() * 899999999).toString().substring(0, 8)};
+        const telefone = `(11) 9${Math.floor(100000000 + Math.random() * 899999999).toString().substring(0, 8)}`;
         lista.push({
           id: Date.now() + i,
           nome,
