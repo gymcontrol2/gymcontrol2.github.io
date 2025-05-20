@@ -9,9 +9,6 @@
   <link rel="stylesheet" href="style.css" />
   
   <style>
-    /* Estilos extras só para essa página */
-
-    /* Container principal centralizado */
     main.gestor-login {
       flex: 1;
       display: flex;
@@ -89,7 +86,6 @@
       box-shadow: 0 8px 25px rgba(59, 130, 246, 0.8);
     }
 
-    /* Botão voltar fixo no canto inferior esquerdo */
     .btn-voltar {
       position: fixed;
       bottom: 20px;
@@ -109,6 +105,14 @@
       background: linear-gradient(135deg, #d97706, #f59e0b);
       box-shadow: 0 8px 25px rgba(217, 119, 6, 0.8);
     }
+
+    /* Mensagem de erro */
+    #erro-login {
+      margin-top: 1em;
+      color: #f87171; /* vermelho suave */
+      font-weight: 600;
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -127,7 +131,7 @@
     <h1>Área do Gestor</h1>
     <p class="subtitulo">Faça login para acessar o painel de controle da academia</p>
     
-    <form class="login-form" action="#" method="POST">
+    <form class="login-form" id="loginForm" action="#">
       <label for="usuario">Usuário</label>
       <input type="text" id="usuario" name="usuario" placeholder="Digite seu usuário" required />
       
@@ -136,6 +140,7 @@
       
       <button type="submit">Entrar</button>
     </form>
+    <div id="erro-login">Usuário ou senha incorretos.</div>
   </main>
 
   <a href="index.html" class="btn-voltar">← Voltar para Home</a>
@@ -143,5 +148,30 @@
   <footer>
     <p>&copy; 2025 GYM CONTROL - Todos os direitos reservados.</p>
   </footer>
+
+  <script>
+    const form = document.getElementById('loginForm');
+    const erroLogin = document.getElementById('erro-login');
+
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      const usuario = form.usuario.value.trim();
+      const senha = form.senha.value.trim();
+
+      // Usuário e senha fixos para exemplo:
+      const usuarioCorreto = 'admin';
+      const senhaCorreta = '1234';
+
+      if(usuario === usuarioCorreto && senha === senhaCorreta) {
+        // Login válido, redireciona para o dashboard (exemplo: gestor-dashboard.html)
+        // Por enquanto, redireciona para uma página fictícia (pode criar depois)
+        window.location.href = 'dashboard.html';
+      } else {
+        // Mostrar erro
+        erroLogin.style.display = 'block';
+      }
+    });
+  </script>
 </body>
 </html>
