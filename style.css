@@ -59,6 +59,14 @@ nav a {
   text-decoration: none;
   font-weight: bold;
   transition: background 0.3s;
+  .btn.gestor {
+  background-color: #f59e0b;
+}
+
+.btn.gestor:hover {
+  background-color: #d97706;
+}
+
 }
 
 .botoes .btn:hover {
