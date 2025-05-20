@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Relatórios - GYM CONTROL Avançado</title>
+
+<style>
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: #f0f4ff;
+    color: #1e293b;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+    position: relative;
+  }
+
+  h1 {
+    text-align: center;
+    color: #2563eb;
+    font-weight: 800;
+    margin-bottom: 1rem;
+  }
+
+  #graficoContainer {
+    max-width: 600px;
+    margin: 0 auto 2rem;
+    background: white;
+    padding: 1.5rem;
+    border-radius: 15px;
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.2);
+  }
+
+  .filtros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+
+  select, input[type="text"] {
+    padding: 0.5rem 0.7rem;
+    border-radius: 8px;
+    border: 1px solid #94a3b8;
+    font-size: 1rem;
+    width: 150px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+  }
+
+  th, td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  th {
+    background-color: #2563eb;
+    color: white;
+    font-weight: 700;
+  }
+
+  tr:hover {
+    background-color: #e0e7ff;
+  }
+
+  .btn {
+    padding: 0.4rem 0.8rem;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease;
+  }
+
+  .btn-evadir {
+    background-color: #ef4444;
+    color: white;
+  }
+
+  .btn-evadir:disabled {
+    background-color: #9ca3af;
+    cursor: not-allowed;
+  }
+
+  .btn-evadir:hover:not(:disabled) {
+    background-color: #dc2626;
+  }
+
+  .btn-editar {
+    background-color: #10b981;
+    color: white;
+    margin-left: 0.5rem;
+  }
+
+  .btn-editar:hover {
+    background-color: #059669;
+  }
+
+  .voltar-topo {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    background-color: #2563eb;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.4);
+    transition: background-color 0.3s ease;
+    z-index: 1100;
+  }
+
+  .voltar-topo:hover {
+    background-color: #1e40af;
+  }
+
+  /* Modal avançado */
+  .modal-bg {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1200;
+  }
+
+  .modal-bg.active {
+    display: flex;
+  }
+
+  .modal {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    max-width: 450px;
+    width: 90%;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    position: relative;
+  }
+
+  .modal h2 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: #2563eb;
+  }
+
+  .modal label {
+    display: block;
+    margin-bottom: 0.3rem;
+    font-weight: 600;
+  }
+
+  .modal input {
+    width: 100%;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    border: 1px solid #94a3b8;
+    font-size: 1rem;
+  }
+
+  .modal .btn-group {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+  }
+
+  .btn-cancelar {
+    background-color: #9ca3af;
+    color: white;
+  }
+
+  .btn-cancelar:hover {
+    background-color: #7f8c8d;
+  }
+
+  .btn-salvar {
+    background-color: #10b981;
+    color: white;
+  }
+
+  .btn-salvar:hover {
+    background-color: #059669;
+  }
+
+  /* Mensagem temporária */
+  #msg {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    background: #2563eb;
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 700;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+    z-index: 1300;
+  }
+
+  #msg.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+</style>
+
+</head>
+<body>
+
+<a href="index.html" class="voltar-topo" aria-label="Voltar para Home">← Home</a>
+
+<h1>Relatórios da Academia</h1>
+
+<div id="graficoContainer">
+  <canvas id="graficoAlunos" aria-label="Gráfico de alunos ativos e evadidos" role="img"></canvas>
+</div>
+
+<div class="filtros">
+  <select id="filtroStatus" aria-label="Filtro de status do aluno">
+    <option value="todos">Todos</option>
+    <option value="ativos">Ativos</option>
+    <option value="evadidos">Evadidos</option>
+  </select>
+
+  <input type="text" id="busca" placeholder="Buscar por nome ou email..." aria-label="Campo de busca" />
+
+  <button id="btnExportar" class="btn btn-salvar" aria-label="Exportar lista de alunos em CSV">Exportar CSV</button>
+</div>
+
+<table aria-live="polite" aria-describedby="msg" role="grid" aria-label="Tabela de alunos">
+  <thead>
+    <tr role="row">
+      <th role="columnheader">Nome</th>
+      <th role="columnheader">Email</th>
+      <th role="columnheader">Telefone</th>
+      <th role="columnheader">Status</th>
+      <th role="columnheader">Ações</th>
+    </tr>
+  </thead>
+  <tbody id="tabelaAlunos" role="rowgroup"></tbody>
+</table>
+
+<!-- Modal de edição -->
+<div class="modal-bg" id="modalEdicao" role="dialog" aria-modal="true" aria-labelledby="tituloModal">
+  <div class="modal">
+    <h2 id="tituloModal">Editar Aluno</h2>
+    <form id="formEditarAluno" novalidate>
+      <input type="hidden" id="idEditar" />
+      <label for="nomeEditar">Nome</label>
+      <input type="text" id="nomeEditar" required minlength="3" aria-describedby="erroNome" />
+      <span id="erroNome" style="color:red;display:none;font-size:0.85rem;">Nome inválido (mín 3 caracteres).</span>
+
+      <label for="emailEditar">Email</label>
+      <input type="email" id="emailEditar" required aria-describedby="erroEmail" />
+      <span id="erroEmail" style="color:red;display:none;font-size:0.85rem;">Email inválido.</span>
+
+      <label for="telefoneEditar">Telefone</label>
+      <input type="tel" id="telefoneEditar" required pattern="^\(\d{2}\) \d{5}-\d{4}$" placeholder="(00) 00000-0000" aria-describedby="erroTelefone" />
+      <span id="erroTelefone" style="color:red;display:none;font-size:0.85rem;">Telefone inválido. Formato esperado: (00) 00000-0000</span>
+
+      <div class="btn-group">
+        <button type="button" class="btn btn-cancelar" id="btnCancelarEdicao">Cancelar</button>
+        <button type="submit" class="btn btn-salvar">Salvar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div id="msg" role="alert" aria-live="assertive"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  // Simula um delay async para operações (prepara pra futuro backend)
+  function delay(ms = 300) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  let grafico;
+
+  // Mostra mensagem temporária no canto inferior
+  function mostrarMensagem(texto, duracao = 3000) {
+    const msg = document.getElementById('msg');
+    msg.textContent = texto;
+    msg.classList.add('show');
+    setTimeout(() => {
+      msg.classList.remove('show');
+    }, duracao);
+  }
+
+  // Validação customizada dos campos do formulário
+  function validarFormulario() {
+    const nome = document.getElementById('nomeEditar');
+    const email = document.getElementById('emailEditar');
+    const telefone = document.getElementById('telefoneEditar');
+
+    let valido = true;
+
+    // Nome min 3 chars
+    if (nome.value.trim().length < 3) {
+      document.getElementById('erroNome').style.display = 'inline';
+      valido = false;
+    } else {
+      document.getElementById('erroNome').style.display = 'none';
+    }
+
+    // Email HTML5 já valida, mas reforçamos
+    const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim());
+    if (!emailValido) {
+      document.getElementById('erroEmail').style.display = 'inline';
+      valido = false;
+    } else {
+      document.getElementById('erroEmail').style.display = 'none';
+    }
+
+    // Telefone: formato (00) 00000-0000
+    const telefoneValido = /^\(\d{2}\) \d{5}-\d{4}$/.test(telefone.value.trim());
+    if (!telefoneValido) {
+      document.getElementById('erroTelefone').style.display = 'inline';
+      valido = false;
+    } else {
+      document.getElementById('erroTelefone').style.display = 'none';
+    }
+
+    return valido;
+  }
+
+  // Atualiza tabela mantendo linhas já renderizadas (DOM manipulation eficiente)
+  async function carregarAlunos() {
+    const alunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
+    const filtroStatus = document.getElementById('filtroStatus').value;
+    const termoBusca = document.getElementById('busca').value.toLowerCase();
+
+    const tbody = document.getElementById('tabelaAlunos');
+
+    // Filtra alunos conforme filtros e busca
+    const alunosFiltrados = alunos.filter(a => {
+      if (filtroStatus === 'ativos') return a.ativo;
+      if (filtroStatus === 'evadidos') return !a.ativo;
+      return true;
+    }).filter(a => a.nome.toLowerCase().includes(termoBusca) || a.email.toLowerCase().includes(termoBusca));
+
+    // Limpa o tbody e gera as linhas
+    tbody.innerHTML = '';
+
+    for (const aluno of
