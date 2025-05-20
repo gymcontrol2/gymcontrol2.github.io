@@ -13,6 +13,7 @@
       padding: 2rem;
       max-width: 900px;
       margin: 0 auto;
+      position: relative;
     }
 
     h1 {
@@ -119,10 +120,32 @@
     .voltar:hover {
       color: #1e40af;
     }
+
+    /* Botão fixo no canto superior esquerdo */
+    .voltar-topo {
+      position: fixed;
+      top: 1rem;
+      left: 1rem;
+      background-color: #2563eb;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-weight: 700;
+      text-decoration: none;
+      box-shadow: 0 4px 10px rgba(37, 99, 235, 0.4);
+      transition: background-color 0.3s;
+      z-index: 1100;
+    }
+
+    .voltar-topo:hover {
+      background-color: #1e40af;
+    }
   </style>
 
 </head>
 <body>
+
+  <a href="index.html" class="voltar-topo">← Home</a>
 
   <h1>Relatórios da Academia</h1>
 
@@ -282,6 +305,7 @@
       const alunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
       let csv = 'Nome,Email,Telefone,Status\n';
       alunos.forEach(a => {
+        // Use template literals corretos para evitar problemas
         csv += `"${a.nome}","${a.email}","${a.telefone}","${a.ativo ? 'Ativo' : 'Evadido'}"\n`;
       });
 
@@ -297,18 +321,18 @@
     document.getElementById('filtroStatus').addEventListener('change', carregarAlunos);
     document.getElementById('busca').addEventListener('input', carregarAlunos);
 
-    // Geração automática de alunos caso o localStorage esteja vazio
+    // Geração automática de 70 alunos caso o localStorage esteja vazio
     function gerarAlunosAleatorios() {
       const nomes = ["Ana", "Bruno", "Carlos", "Daniela", "Eduardo", "Fernanda", "Gustavo", "Helena", "Igor", "Juliana"];
       const sobrenomes = ["Silva", "Oliveira", "Souza", "Pereira", "Lima", "Costa"];
       const lista = [];
-      const total = Math.floor(Math.random() * 20) + 10;
+      const total = 70; // fixo para 70 alunos
       const ativos = Math.floor(total * 0.7);
 
       for (let i = 0; i < total; i++) {
-        const nome = `${nomes[Math.floor(Math.random() * nomes.length)]} ${sobrenomes[Math.floor(Math.random() * sobrenomes.length)]}`;
+        const nome = nomes[Math.floor(Math.random() * nomes.length)] + " " + sobrenomes[Math.floor(Math.random() * sobrenomes.length)];
         const email = nome.toLowerCase().replace(" ", ".") + "@gmail.com";
-        const telefone = `(11) 9${Math.floor(100000000 + Math.random() * 899999999).toString().substring(0, 8)}`;
+        const telefone = "(11) 9" + Math.floor(10000000 + Math.random() * 89999999).toString();
         lista.push({
           id: Date.now() + i,
           nome,
