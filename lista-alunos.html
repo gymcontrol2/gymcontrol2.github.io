@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lista de Alunos - GYM CONTROL</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9fafb;
+      padding: 2rem;
+    }
+
+    h1 {
+      text-align: center;
+      color: #1e3a8a;
+    }
+
+    .filtros {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 2rem 0;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    input[type="text"],
+    select {
+      padding: 0.5rem;
+      font-size: 1rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    th, td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #3b82f6;
+      color: white;
+    }
+
+    tr:hover {
+      background-color: #f1f5f9;
+    }
+
+    .btn {
+      padding: 0.4rem 0.8rem;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .btn-evadir {
+      background-color: #ef4444;
+      color: white;
+    }
+
+    .btn-evadir:disabled {
+      background-color: #9ca3af;
+      cursor: not-allowed;
+    }
+
+    .btn-editar {
+      background-color: #10b981;
+      color: white;
+      margin-left: 0.5rem;
+    }
+
+    .voltar {
+      margin-top: 2rem;
+      display: inline-block;
+      color: #3b82f6;
+      text-decoration: none;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Lista de Alunos</h1>
+
+  <div class="filtros">
+    <input type="text" id="busca" placeholder="Buscar por nome ou email..." oninput="carregarAlunos()" />
+    <select id="filtroStatus" onchange="carregarAlunos()">
+      <option value="todos">Todos</option>
+      <option value="ativos">Ativos</option>
+      <option value="evadidos">Evadidos</option>
+    </select>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Email</th>
+        <th>Telefone</th>
+        <th>Status</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody id="tabelaAlunos"></tbody>
+  </table>
+
+  <a href="index.html" class="voltar">← Voltar para a Home</a>
+
+  <script>
+    function carregarAlunos() {
+      const alunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
+      const filtroStatus = document.getElementById('filtroStatus').value;
+      const termoBusca = document.getElementById('busca').value.toLowerCase();
+
+      const tabela = document.getElementById('tabelaAlunos');
+      tabela.innerHTML = '';
+
+      alunos
+        .filter(aluno => {
+          if (filtroStatus === 'ativos') return aluno.ativo;
+          if (filtroStatus === 'evadidos') return !aluno.ativo;
+          return true;
+        })
+        .filter(aluno =>
+          aluno.nome.toLowerCase().includes(termoBusca) ||
+          aluno.email.toLowerCase().includes(termoBusca)
+        )
+        .forEach(aluno => {
+          const tr = document.createElement('tr');
+
+          tr.innerHTML = `
+            <td>${aluno.nome}</td>
+            <td>${aluno.email}</td>
+            <td>${aluno.telefone}</td>
+            <td>${aluno.ativo ? 'Ativo' : 'Evadido'}</td>
+            <td>
+              <button class="btn btn-evadir" onclick="marcarEvasao(${aluno.id})" ${!aluno.ativo ? 'disabled' : ''}>
+                Marcar Evasão
+              </button>
+              <button class="btn btn-editar" onclick="editarAluno(${aluno.id})">
+                Editar
+              </button>
+            </td>
+          `;
+
+          tabela.appendChild(tr);
+        });
+    }
+
+    function marcarEvasao(id) {
+      let alunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
+      let dados = JSON.parse(localStorage.getItem('dadosAcademia'));
+
+      const index = alunos.findIndex(a => a.id === id);
+      if (index
