@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Relatórios - GYM CONTROL</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f8fafc;
+      padding: 2rem;
+    }
+
+    h1 {
+      text-align: center;
+      color: #1e3a8a;
+    }
+
+    .resumo {
+      display: flex;
+      justify-content: space-around;
+      margin: 2rem 0;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #334155;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    th {
+      background: #1e3a8a;
+      color: white;
+    }
+
+    tr:hover {
+      background-color: #f1f5f9;
+    }
+
+    .btn {
+      padding: 0.4em 0.8em;
+      margin: 0 0.3em;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .editar {
+      background-color: #3b82f6;
+      color: white;
+    }
+
+    .remover {
+      background-color: #ef4444;
+      color: white;
+    }
+
+    .voltar {
+      margin-top: 2rem;
+      display: inline-block;
+      color: #2563eb;
+      font-weight: bold;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Relatórios de Alunos</h1>
+
+  <div class="resumo">
+    <div>Total: <span id="total"></span></div>
+    <div>Ativos: <span id="ativos"></span></div>
+    <div>Evadidos: <span id="evadidos"></span></div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Email</th>
+        <th>Telefone</th>
+        <th>Status</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody id="tabela-alunos">
+      <!-- Alunos serão inseridos aqui -->
+    </tbody>
+  </table>
+
+  <a class="voltar" href="index.html">← Voltar para Home</a>
+
+  <script>
+    function carregarDados() {
+      const lista = JSON.parse(localStorage.getItem('listaAlunos')) || [];
+      const tbody = document.getElementById('tabela-alunos');
+      tbody.innerHTML = '';
+
+      lista.forEach((aluno, index) => {
+        const tr = document.createElement('tr');
+
+        tr.innerHTML = `
+          <td>${aluno.nome}</td>
+          <td>${aluno.email}</td>
+          <td>${aluno.telefone}</td>
+          <td>${aluno.ativo ? 'Ativo' : 'Evadido'}</td>
+          <td>
+            <button class="btn editar" onclick="editarAluno(${index})">Editar</button>
+            <button class="btn remover" onclick="removerAluno(${index})">Remover</button>
+          </td>
+        `;
+
+        tbody.appendChild(tr);
+      });
+
+      atualizarResumo(lista);
+    }
+
+    function atualizarResumo(lista) {
+      const total = lista.length;
+      const ativos = lista.filter(a => a.ativo).length;
+      const evadidos = total - ativos;
+
+      document.getElementById('total').textContent = total;
+      document.getElementById('ativos').textContent = ativos;
+      document.getElementById('evadidos').textContent = evadidos;
+    }
+
+    function removerAluno(index) {
+      if (confirm('Deseja realmente remover este aluno?')) {
+        const lista = JSON.parse(localStorage.getItem('listaAlunos'));
+        lista.splice(index, 1);
+        localStorage.setItem('listaAlunos', JSON.stringify(lista));
+        carregarDados();
+      }
+    }
+
+    function editarAluno(index) {
+      const lista = JSON.parse(localStorage.getItem('listaAlunos'));
+      const aluno = lista[index];
+
+      const novoNome = prompt("Editar nome:", aluno.nome);
+      const novoEmail = prompt("Editar email:", aluno.email);
+      const novoTelefone = prompt("Editar telefone:", aluno.telefone);
+      const novoStatus = confirm("Aluno está ativo? OK para sim, Cancelar para não");
+
+      if (novoNome && novoEmail && novoTelefone) {
+        lista[index] = {
+          ...aluno,
+          nome: novoNome,
+          email: novoEmail,
+          telefone: novoTelefone,
+          ativo: novoStatus
+        };
+
+        localStorage.setItem('listaAlunos', JSON.stringify(lista));
+        carregarDados();
+      }
+    }
+
+    carregarDados();
+  </script>
+</body>
+</html>
