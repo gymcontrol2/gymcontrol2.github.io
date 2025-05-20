@@ -6,11 +6,24 @@
 
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(135deg, #1e3a8a, #2563eb);
+  background: url('academia.jpg') no-repeat center center fixed;
+  background-size: cover;
   color: white;
   height: 100vh;
   display: flex;
   flex-direction: column;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.6); /* Sobreposição escura para melhor legibilidade */
+  z-index: 0;
 }
 
 header {
@@ -34,6 +47,7 @@ nav a {
   align-items: center;
   text-align: center;
   padding: 2em;
+  z-index: 1;
 }
 
 .hero h1 {
@@ -49,11 +63,16 @@ nav a {
   margin-bottom: 2em;
 }
 
+.botoes {
+  display: flex;
+  justify-content: center;
+  gap: 1em;
+}
+
 .botoes .btn {
   display: inline-block;
-  margin: 0.5em;
   padding: 1em 2em;
-  background-color: #10b981;
+  background-color: #10b981; /* Cor verde */
   color: white;
   border-radius: 10px;
   text-decoration: none;
@@ -65,9 +84,18 @@ nav a {
   background-color: #059669;
 }
 
+.botoes a:last-child {
+  background-color: #f59e0b; /* Cor laranja para o botão "Área do Gestor" */
+}
+
+.botoes a:last-child:hover {
+  background-color: #d97706;
+}
+
 footer {
   background-color: rgba(0, 0, 0, 0.5);
   text-align: center;
   padding: 1em;
   font-size: 0.9em;
+  z-index: 1;
 }
