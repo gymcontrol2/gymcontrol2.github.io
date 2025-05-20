@@ -91,24 +91,25 @@
 
   <h1>Lista de Alunos</h1>
 
-  <div style="margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;">
-  <select id="filtroStatus">
-    <option value="todos">Todos</option>
-    <option value="ativos">Ativos</option>
-    <option value="evadidos">Evadidos</option>
-  </select>
+  <div class="filtros">
+    <select id="filtroStatus">
+      <option value="todos">Todos</option>
+      <option value="ativos">Ativos</option>
+      <option value="evadidos">Evadidos</option>
+    </select>
 
-  <button id="btnExportar" style="
-    background-color: #2563eb;
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: bold;
-  ">Exportar CSV</button>
-</div>
+    <input type="text" id="busca" placeholder="Buscar por nome ou email" />
 
+    <button id="btnExportar" style="
+      background-color: #2563eb;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    ">Exportar CSV</button>
+  </div>
 
   <table>
     <thead>
@@ -168,7 +169,62 @@
 
     function marcarEvasao(id) {
       let alunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
-      let dados = JSON.parse(localStorage.getItem('dadosAcademia'));
+      let dados = JSON.parse(localStorage.getItem('dadosAcademia')) || {
+        totalAlunos: 0,
+        alunosAtivos: 0,
+        alunosEvadidos: 0
+      };
 
       const index = alunos.findIndex(a => a.id === id);
-      if (index
+      if (index !== -1 && alunos[index].ativo) {
+        alunos[index].ativo = false;
+
+        // Atualiza dadosAcademia
+        dados.alunosAtivos = Math.max(0, dados.alunosAtivos - 1);
+        dados.alunosEvadidos += 1;
+
+        localStorage.setItem('listaAlunos', JSON.stringify(alunos));
+        localStorage.setItem('dadosAcademia', JSON.stringify(dados));
+        carregarAlunos();
+        alert(`Aluno ${alunos[index].nome} marcado como evadido.`);
+      }
+    }
+
+    function editarAluno(id) {
+      // Simplesmente redireciona para a página de cadastro com o ID para editar
+      // Aqui você pode implementar o sistema de edição (fora do escopo agora)
+      alert('Funcionalidade de edição ainda não implementada.');
+    }
+
+    // Exportar tabela para CSV
+    function exportarCSV() {
+      const alunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
+      let csvContent = "data:text/csv;charset=utf-8,";
+
+      csvContent += "Nome,Email,Telefone,Status\n";
+      alunos.forEach(aluno => {
+        const status = aluno.ativo ? "Ativo" : "Evadido";
+        const row = `"${aluno.nome}","${aluno.email}","${aluno.telefone}","${status}"`;
+        csvContent += row + "\n";
+      });
+
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", "alunos_gym_control.csv");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    // Eventos para filtros e busca
+    document.getElementById('filtroStatus').addEventListener('change', carregarAlunos);
+    document.getElementById('busca').addEventListener('input', carregarAlunos);
+    document.getElementById('btnExportar').addEventListener('click', exportarCSV);
+
+    // Carregar lista ao abrir a página
+    carregarAlunos();
+  </script>
+
+</body>
+</html>
