@@ -3,113 +3,105 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>GYM CONTROL - Cadastrar Aluno</title>
+  <title>GYM CONTROL - Cadastro de Alunos</title>
+
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&display=swap" rel="stylesheet" />
+
   <style>
     body {
       font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #1e3a8a, #2563eb);
-      color: #f3f4f6;
-      margin: 0; padding: 0;
+      background: linear-gradient(135deg, #1e40af, #2563eb);
+      color: white;
       min-height: 100vh;
+      margin: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      padding: 2rem;
+      padding: 2em;
     }
+
     header {
-      margin-bottom: 2rem;
+      margin-bottom: 2em;
       text-align: center;
-      text-shadow: 0 0 8px #3b82f6;
     }
+
     header h1 {
-      font-size: 2.8rem;
-      letter-spacing: 4px;
+      font-size: 2.6rem;
+      letter-spacing: 3px;
+      text-shadow: 0 0 10px #3b82f6;
     }
+
     main {
-      background: rgba(0,0,0,0.65);
-      padding: 2rem 3rem;
-      border-radius: 16px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.6);
+      background: rgba(0, 0, 0, 0.6);
+      padding: 2em 3em;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
       width: 100%;
-      max-width: 420px;
+      max-width: 400px;
     }
+
     form {
       display: flex;
       flex-direction: column;
-      gap: 1.4rem;
+      gap: 1.3em;
     }
+
     label {
       font-weight: 600;
       font-size: 1.1rem;
-      color: #cbd5e1;
+      color: #bfdbfe;
     }
+
     input[type="text"],
     input[type="email"],
     input[type="tel"] {
-      padding: 0.9rem 1.2rem;
+      padding: 0.9em 1.2em;
       border-radius: 10px;
       border: none;
       font-size: 1.1rem;
       outline: none;
       transition: box-shadow 0.3s ease;
-      background-color: #1e293b;
-      color: #f8fafc;
     }
+
     input[type="text"]:focus,
     input[type="email"]:focus,
     input[type="tel"]:focus {
-      box-shadow: 0 0 12px #3b82f6;
-      background-color: #334155;
-      color: white;
+      box-shadow: 0 0 10px #3b82f6;
+      background-color: #1e293b;
+      color: #f3f4f6;
     }
+
     button {
-      padding: 1rem 0;
+      padding: 1em 0;
       font-weight: 700;
-      font-size: 1.3rem;
-      border-radius: 14px;
+      font-size: 1.2rem;
+      border-radius: 12px;
       background: linear-gradient(135deg, #3b82f6, #22d3ee);
       border: none;
       color: white;
       cursor: pointer;
-      box-shadow: 0 6px 15px rgba(59, 130, 246, 0.7);
+      box-shadow: 0 6px 15px rgba(59, 130, 246, 0.5);
       transition: background 0.4s ease, box-shadow 0.4s ease;
-      margin-top: 1.5rem;
+      margin-top: 1.5em;
     }
+
     button:hover {
       background: linear-gradient(135deg, #22d3ee, #3b82f6);
-      box-shadow: 0 8px 25px rgba(59, 130, 246, 1);
+      box-shadow: 0 8px 25px rgba(59, 130, 246, 0.8);
     }
-    nav {
-      margin-top: 2rem;
-      text-align: center;
-    }
-    nav a {
+
+    .btn-voltar {
+      margin-top: 1.5em;
+      display: inline-block;
+      text-decoration: none;
       color: #fbbf24;
       font-weight: 700;
-      text-decoration: none;
-      margin: 0 1rem;
-      font-size: 1.1rem;
+      letter-spacing: 1.2px;
       transition: color 0.3s ease;
     }
-    nav a:hover {
+
+    .btn-voltar:hover {
       color: #f59e0b;
-      text-decoration: underline;
-    }
-    .msg-sucesso {
-      background-color: #22c55e;
-      color: white;
-      padding: 1rem;
-      border-radius: 12px;
-      margin-top: 1.5rem;
-      text-align: center;
-      font-weight: 700;
-      box-shadow: 0 5px 15px rgba(34, 197, 94, 0.7);
-      animation: fadeOut 4s forwards 2s;
-    }
-    @keyframes fadeOut {
-      to {opacity: 0; height: 0; padding: 0; margin: 0; overflow: hidden;}
     }
   </style>
 </head>
@@ -120,57 +112,55 @@
   </header>
 
   <main>
-    <form id="formCadastro" autocomplete="off">
+    <form id="formCadastro">
       <label for="nome">Nome Completo</label>
-      <input type="text" id="nome" name="nome" placeholder="Digite o nome completo" required />
+      <input type="text" id="nome" name="nome" placeholder="Digite o nome do aluno" required />
 
       <label for="email">E-mail</label>
-      <input type="email" id="email" name="email" placeholder="Digite o e-mail" required />
+      <input type="email" id="email" name="email" placeholder="Digite o e-mail do aluno" required />
 
       <label for="telefone">Telefone</label>
-      <input type="tel" id="telefone" name="telefone" placeholder="(XX) XXXXX-XXXX" required pattern="^\(?\d{2}\)?\s?\d{4,5}-?\d{4}$" />
+      <input type="tel" id="telefone" name="telefone" placeholder="(XX) XXXXX-XXXX" required />
 
       <button type="submit">Cadastrar</button>
     </form>
 
-    <div id="msgSucesso" class="msg-sucesso" style="display:none;"></div>
-
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="relatorios.html">Relatórios</a>
-      <a href="gestor.html">Gestor</a>
-    </nav>
+    <a href="relatorios.html" class="btn-voltar">← Ver Lista de Alunos</a>
   </main>
 
   <script>
-    // Inicializa localStorage se não existir
+    // Inicializa lista de alunos e dados academia se não existirem
     if (!localStorage.getItem('listaAlunos')) {
       localStorage.setItem('listaAlunos', JSON.stringify([]));
     }
+
     if (!localStorage.getItem('dadosAcademia')) {
-      const dadosIniciais = { totalAlunos: 0, alunosAtivos: 0, alunosEvadidos: 0 };
+      const dadosIniciais = {
+        totalAlunos: 0,
+        alunosAtivos: 0,
+        alunosEvadidos: 0
+      };
       localStorage.setItem('dadosAcademia', JSON.stringify(dadosIniciais));
     }
 
-    const form = document.getElementById('formCadastro');
-    const msgSucesso = document.getElementById('msgSucesso');
+    const formCadastro = document.getElementById('formCadastro');
 
-    form.addEventListener('submit', (e) => {
+    formCadastro.addEventListener('submit', function(e) {
       e.preventDefault();
 
-      const nome = form.nome.value.trim();
-      const email = form.email.value.trim();
-      const telefone = form.telefone.value.trim();
+      const nome = formCadastro.nome.value.trim();
+      const email = formCadastro.email.value.trim();
+      const telefone = formCadastro.telefone.value.trim();
 
-      if (!nome || !email || !telefone) {
-        alert('Por favor, preencha todos os campos corretamente.');
+      if (nome === '' || email === '' || telefone === '') {
+        alert('Por favor, preencha todos os campos.');
         return;
       }
 
-      // Pega lista atual
+      // Pega a lista atual de alunos
       const listaAlunos = JSON.parse(localStorage.getItem('listaAlunos'));
 
-      // Cria novo aluno
+      // Cria novo aluno (ativo por padrão)
       const novoAluno = {
         id: Date.now(),
         nome,
@@ -182,25 +172,16 @@
       listaAlunos.push(novoAluno);
       localStorage.setItem('listaAlunos', JSON.stringify(listaAlunos));
 
-      // Atualiza dadosAcademia
+      // Atualiza os dados da academia
       const dados = JSON.parse(localStorage.getItem('dadosAcademia'));
-      dados.totalAlunos++;
-      dados.alunosAtivos++;
+      dados.totalAlunos += 1;
+      dados.alunosAtivos += 1;
       localStorage.setItem('dadosAcademia', JSON.stringify(dados));
 
-      // Mensagem sucesso
-      msgSucesso.textContent = `Aluno ${nome} cadastrado com sucesso!`;
-      msgSucesso.style.display = 'block';
+      alert(`Aluno ${nome} cadastrado com sucesso!`);
 
-      // Limpa form
-      form.reset();
-
-      // Oculta mensagem após 4 segundos
-      setTimeout(() => {
-        msgSucesso.style.display = 'none';
-      }, 4000);
+      formCadastro.reset();
     });
   </script>
-
 </body>
 </html>
