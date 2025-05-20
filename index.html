@@ -1,39 +1,22 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>GYM CONTROL</title>
-  
-  <!-- Fonte Poppins moderna -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&display=swap" rel="stylesheet" />
-  
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-  <header>
-    <nav>
-      <ul class="menu-topo">
-        <li><a href="index.html" class="ativo">Home</a></li>
-        <li><a href="cadastro.html">Cadastrar Aluno</a></li>
-        <li><a href="relatorios.html">Relatórios</a></li>
-        <li><a href="gestor.html">Área do Gestor</a></li>
-      </ul>
-    </nav>
-  </header>
+<form id="loginForm">
+  <input type="text" id="usuario" placeholder="Usuário" required />
+  <input type="password" id="senha" placeholder="Senha" required />
+  <button type="submit">Entrar</button>
+  <p>Ainda não tem uma conta? <a href="criar-conta.html">Criar conta</a></p>
+</form>
 
-  <main class="hero">
-    <h1>GYM CONTROL</h1>
-    <p class="subtitulo">Gerencie alunos, evite evasões e melhore seus resultados.</p>
-    <div class="botoes">
-      <a href="cadastro.html" class="btn">➕ Cadastrar Aluno</a>
-      <a href="relatorios.html" class="btn">📊 Ver Relatórios</a>
-      <a href="gestor.html" class="btn">👤 Área do Gestor</a>
-    </div>
-  </main>
+<script>
+  const form = document.getElementById('loginForm');
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    const usuario = document.getElementById('usuario').value.trim();
+    const senha = document.getElementById('senha').value.trim();
 
-  <footer>
-    <p>&copy; 2025 GYM CONTROL - Todos os direitos reservados.</p>
-  </footer>
-</body>
-</html>
+    const contaSalva = JSON.parse(localStorage.getItem('contaGestor'));
+    if (contaSalva && usuario === contaSalva.usuario && senha === contaSalva.senha) {
+      window.location.href = 'home.html';
+    } else {
+      alert('Usuário ou senha inválidos');
+    }
+  });
+</script>
