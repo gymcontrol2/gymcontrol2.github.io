@@ -7,6 +7,107 @@
 
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: url('sua-imagem.jpg') no-repeat center center fixed;
+      background-size: cover;
+      position: relative;
+    }
+
+    body::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.6); /* sobreposição escura */
+      z-index: 0;
+    }
+
+    header, main, footer {
+      position: relative;
+      z-index: 1;
+    }
+
+    .menu-topo {
+      list-style: none;
+      display: flex;
+      justify-content: center;
+      gap: 2em;
+      padding: 1em;
+      margin: 0;
+      background-color: rgba(0, 0, 0, 0.7);
+    }
+
+    .menu-topo a {
+      text-decoration: none;
+      color: #fff;
+      font-weight: bold;
+      padding: 0.5em 1em;
+      border-radius: 8px;
+      transition: background 0.3s;
+    }
+
+    .menu-topo a:hover,
+    .menu-topo .ativo {
+      background-color: #3b82f6;
+    }
+
+    main.hero {
+      min-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      text-align: center;
+      padding: 2em;
+    }
+
+    main.hero h1 {
+      font-size: 3.5rem;
+      text-shadow: 0 0 10px #000;
+    }
+
+    main.hero .subtitulo {
+      font-size: 1.2rem;
+      margin-bottom: 2em;
+      color: #d1d5db;
+    }
+
+    .botoes {
+      display: flex;
+      gap: 1em;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn {
+      background: linear-gradient(135deg, #3b82f6, #22d3ee);
+      color: white;
+      padding: 1em 2em;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: bold;
+      box-shadow: 0 6px 15px rgba(59, 130, 246, 0.5);
+      transition: background 0.4s, transform 0.2s;
+    }
+
+    .btn:hover {
+      background: linear-gradient(135deg, #22d3ee, #3b82f6);
+      transform: translateY(-3px);
+    }
+
+    footer {
+      text-align: center;
+      color: #ccc;
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 1em 0;
+      font-size: 0.9rem;
+    }
+  </style>
 </head>
 <body>
   <header>
@@ -22,8 +123,8 @@
   </header>
 
   <main class="hero">
-    <h1>Bem-vindo ao GYM CONTROL</h1>
-    <p class="subtitulo">Sistema completo para gestão da sua academia.</p>
+    <h1>GYM CONTROL</h1>
+    <p class="subtitulo">Gerencie alunos, evite evasões e melhore seus resultados.</p>
     <div class="botoes">
       <a href="cadastro.html" class="btn">➕ Cadastrar Aluno</a>
       <a href="relatorios.html" class="btn">📊 Ver Relatórios</a>
@@ -38,8 +139,8 @@
   <script>
     document.getElementById('btnLogout').addEventListener('click', function (e) {
       e.preventDefault();
-      localStorage.removeItem('usuarioLogado'); // ou qualquer chave que você usar para controle
-      window.location.href = 'index.html'; // volta para a tela de login
+      localStorage.removeItem('usuarioLogado');
+      window.location.href = 'index.html';
     });
   </script>
 </body>
