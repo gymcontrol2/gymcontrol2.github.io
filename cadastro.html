@@ -129,57 +129,128 @@
   </main>
 
   <script>
-  // Inicializa lista de alunos no localStorage, se não existir
-  if (!localStorage.getItem('listaAlunos')) {
-    localStorage.setItem('listaAlunos', JSON.stringify([]));
-  }
+  let listaOriginal = [];
 
-  // Inicializa dadosAcademia se não existir (para dashboard)
-  if (!localStorage.getItem('dadosAcademia')) {
-    const dadosIniciais = {
-      totalAlunos: 0,
-      alunosAtivos: 0,
-      alunosEvadidos: 0
-    };
-    localStorage.setItem('dadosAcademia', JSON.stringify(dadosIniciais));
-  }
+  function carregarDados(filtro = 'todos') {
+    listaOriginal = JSON.parse(localStorage.getItem('listaAlunos')) || [];
+    let listaFiltrada = [];
 
-  const formCadastro = document.getElementById('formCadastro');
-
-  formCadastro.addEventListener('submit', function(e) {
-    e.preventDefault();
-
-    const nome = formCadastro.nome.value.trim();
-    const email = formCadastro.email.value.trim();
-    const telefone = formCadastro.telefone.value.trim();
-
-    if (nome === '' || email === '' || telefone === '') {
-      alert('Por favor, preencha todos os campos.');
-      return;
+    if (filtro === 'ativos') {
+      listaFiltrada = listaOriginal.filter(a => a.ativo);
+    } else if (filtro === 'evadidos') {
+      listaFiltrada = listaOriginal.filter(a => !a.ativo);
+    } else {
+      listaFiltrada = listaOriginal;
     }
 
-    const listaAlunos = JSON.parse(localStorage.getItem('listaAlunos'));
+    const tbody = document.getElementById('tabela-alunos');
+    tbody.innerHTML = '';
 
-    const novoAluno = {
-      id: Date.now(),
-      nome,
-      email,
-      telefone,
-      ativo: true
+    listaFiltrada.forEach((aluno, index) => {
+      // Para edição e remoção precisamos do índice real na listaOriginal
+      // Encontrar índice real
+      const idxReal = listaOriginal.findIndex(a => a.id === aluno.id);
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${aluno.nome}</td>
+        <td>${aluno.email}</td>
+        <td>${aluno.telefone}</td>
+        <td>${aluno.ativo ? 'Ativo' : 'Evadido'}</td>
+        <td>
+          <button class="btn editar" onclick="editarAluno(${idxReal})">Editar</button>
+          <button class="btn remover" onclick="removerAluno(${idxReal})">Remover</button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    atualizarResumo(listaFiltrada);
+  }
+
+  function atualizarResumo(lista) {
+    const total = lista.length;
+    const ativos = lista.filter(a => a.ativo).length;
+    const evadidos = total - ativos;
+
+    document.getElementById('total').textContent = total;
+    document.getElementById('ativos').textContent = ativos;
+    document.getElementById('evadidos').textContent = evadidos;
+  }
+
+  function removerAluno(index) {
+    if (confirm('Deseja realmente remover este aluno?')) {
+      listaOriginal.splice(index, 1);
+      localStorage.setItem('listaAlunos', JSON.stringify(listaOriginal));
+      carregarDados(document.getElementById('filtroStatus').value);
+    }
+  }
+
+  function editarAluno(index) {
+    const aluno = listaOriginal[index];
+
+    const novoNome = prompt("Editar nome:", aluno.nome);
+    if (!novoNome) return;
+
+    const novoEmail = prompt("Editar email:", aluno.email);
+    if (!novoEmail) return;
+
+    const novoTelefone = prompt("Editar telefone:", aluno.telefone);
+    if (!novoTelefone) return;
+
+    const novoStatus = confirm("Aluno está ativo? OK para sim, Cancelar para não");
+
+    listaOriginal[index] = {
+      ...aluno,
+      nome: novoNome,
+      email: novoEmail,
+      telefone: novoTelefone,
+      ativo: novoStatus
     };
 
-    listaAlunos.push(novoAluno);
-    localStorage.setItem('listaAlunos', JSON.stringify(listaAlunos));
+    localStorage.setItem('listaAlunos', JSON.stringify(listaOriginal));
+    carregarDados(document.getElementById('filtroStatus').value);
+  }
 
-    const dados = JSON.parse(localStorage.getItem('dadosAcademia'));
-    dados.totalAlunos += 1;
-    dados.alunosAtivos += 1;
-    localStorage.setItem('dadosAcademia', JSON.stringify(dados));
+  function exportarCSV() {
+    const filtro = document.getElementById('filtroStatus').value;
+    let listaParaExportar = [];
 
-    alert(`Aluno ${nome} cadastrado com sucesso!`);
-    formCadastro.reset();
+    if (filtro === 'ativos') {
+      listaParaExportar = listaOriginal.filter(a => a.ativo);
+    } else if (filtro === 'evadidos') {
+      listaParaExportar = listaOriginal.filter(a => !a.ativo);
+    } else {
+      listaParaExportar = listaOriginal;
+    }
+
+    let csv = 'Nome,Email,Telefone,Status\n';
+    listaParaExportar.forEach(aluno => {
+      csv += `"${aluno.nome}","${aluno.email}","${aluno.telefone}","${aluno.ativo ? 'Ativo' : 'Evadido'}"\n`;
+    });
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'alunos_gyms_control.csv';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }
+
+  document.getElementById('filtroStatus').addEventListener('change', (e) => {
+    carregarDados(e.target.value);
   });
+
+  document.getElementById('btnExportar').addEventListener('click', exportarCSV);
+
+  // Carrega inicialmente com todos
+  carregarDados();
 </script>
+
 
 </body>
 </html>
