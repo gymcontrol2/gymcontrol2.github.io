@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GYM CONTROL - Home</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <nav>
+      <ul class="menu-topo">
+        <li><a href="home.html" class="ativo">Home</a></li>
+        <li><a href="cadastro.html">Cadastrar Aluno</a></li>
+        <li><a href="relatorios.html">Relatórios</a></li>
+        <li><a href="gestor.html">Área do Gestor</a></li>
+        <li><a href="#" id="btnLogout">Sair</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="hero">
+    <h1>Bem-vindo ao GYM CONTROL</h1>
+    <p class="subtitulo">Sistema completo para gestão da sua academia.</p>
+    <div class="botoes">
+      <a href="cadastro.html" class="btn">➕ Cadastrar Aluno</a>
+      <a href="relatorios.html" class="btn">📊 Ver Relatórios</a>
+      <a href="gestor.html" class="btn">👤 Área do Gestor</a>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 GYM CONTROL - Todos os direitos reservados.</p>
+  </footer>
+
+  <script>
+    document.getElementById('btnLogout').addEventListener('click', function (e) {
+      e.preventDefault();
+      localStorage.removeItem('usuarioLogado'); // ou qualquer chave que você usar para controle
+      window.location.href = 'index.html'; // volta para a tela de login
+    });
+  </script>
+</body>
+</html>
