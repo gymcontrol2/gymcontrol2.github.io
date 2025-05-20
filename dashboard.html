@@ -1,72 +1,12 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <title>Dashboard</title>
-  <style>
-    body { font-family: Arial, sans-serif; padding: 30px; background-color: #f5f5f5; }
-    h1 { margin-bottom: 20px; }
-    .card-container { display: flex; gap: 20px; margin-bottom: 30px; }
-    .card {
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 8px rgba(0,0,0,0.1);
-      width: 200px;
-      text-align: center;
-    }
-    .logout {
-      padding: 10px 20px;
-      background: #dc3545;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .logout:hover { background: #b02a37; }
-  </style>
+  <meta charset="UTF-8" />
+  <title>Dashboard - GYM CONTROL</title>
 </head>
 <body>
-
-  <h1>Dashboard da Academia</h1>
-  <div class="card-container">
-    <div class="card">
-      <h2>Total de Alunos</h2>
-      <p id="total-alunos">0</p>
-    </div>
-    <div class="card">
-      <h2>Ativos</h2>
-      <p id="ativos">0</p>
-    </div>
-    <div class="card">
-      <h2>Em Risco</h2>
-      <p id="em-risco">0</p>
-    </div>
-  </div>
-
-  <button class="logout" onclick="logout()">Sair</button>
-
-  <script>
-    // Protege a página
-    if (localStorage.getItem('usuarioLogado') !== 'true') {
-      window.location.href = 'login.html';
-    }
-
-    // Dados de alunos
-    const alunos = JSON.parse(localStorage.getItem('alunos')) || [];
-
-    const total = alunos.length;
-    const ativos = alunos.filter(a => a.status.toLowerCase() === 'ativo').length;
-    const emRisco = alunos.filter(a => a.status.toLowerCase() === 'em risco').length;
-
-    document.getElementById('total-alunos').innerText = total;
-    document.getElementById('ativos').innerText = ativos;
-    document.getElementById('em-risco').innerText = emRisco;
-
-    function logout() {
-      localStorage.removeItem('usuarioLogado');
-      window.location.href = 'login.html';
-    }
-  </script>
+  <h1>Bem-vindo ao Dashboard do Gestor!</h1>
+  <p>Login efetuado com sucesso.</p>
+  <a href="gestor.html">Voltar para login</a>
 </body>
 </html>
