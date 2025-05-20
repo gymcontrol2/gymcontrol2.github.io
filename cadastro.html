@@ -159,7 +159,7 @@
     // Inicializa o localStorage com alunos aleatórios se não existir
     window.onload = function() {
       if(!localStorage.getItem('listaAlunos')) {
-        const alunosIniciais = gerarAlunosAleatorios(25);
+        const alunosIniciais = gerarAlunosAleatorios(58);
         localStorage.setItem('listaAlunos', JSON.stringify(alunosIniciais));
 
         // Atualiza dadosAcademia para manter contagem certa
