@@ -4,11 +4,112 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>GYM CONTROL - Área do Gestor</title>
-  <link rel="stylesheet" href="style.css" />
-  <!-- Fonte Poppins moderna -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&display=swap" rel="stylesheet" />
   
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
+  
+  <style>
+    /* Estilos extras só para essa página */
+
+    /* Container principal centralizado */
+    main.gestor-login {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+      padding: 2em;
+      text-align: center;
+      max-width: 400px;
+      margin: 0 auto;
+      background: rgba(0, 0, 0, 0.7);
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.8);
+    }
+
+    main.gestor-login h1 {
+      font-size: 3rem;
+      margin-bottom: 0.5em;
+      color: #3b82f6;
+      text-shadow: 0 0 8px #2563eb;
+    }
+
+    main.gestor-login p.subtitulo {
+      font-style: italic;
+      color: #d1d5db;
+      margin-bottom: 2em;
+    }
+
+    form.login-form {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 1.4em;
+    }
+
+    form.login-form label {
+      font-weight: 600;
+      color: #e0e7ff;
+      text-align: left;
+    }
+
+    form.login-form input {
+      padding: 0.8em 1em;
+      border-radius: 8px;
+      border: none;
+      font-size: 1.1rem;
+      outline: none;
+      transition: box-shadow 0.3s ease;
+    }
+
+    form.login-form input:focus {
+      box-shadow: 0 0 10px #3b82f6;
+      background-color: #1e293b;
+      color: #f3f4f6;
+    }
+
+    form.login-form button {
+      margin-top: 1.5em;
+      padding: 1em 0;
+      font-weight: 700;
+      font-size: 1.2rem;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #3b82f6, #22d3ee);
+      border: none;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 6px 15px rgba(59, 130, 246, 0.5);
+      transition: background 0.4s ease, box-shadow 0.4s ease;
+    }
+
+    form.login-form button:hover {
+      background: linear-gradient(135deg, #22d3ee, #3b82f6);
+      box-shadow: 0 8px 25px rgba(59, 130, 246, 0.8);
+    }
+
+    /* Botão voltar fixo no canto inferior esquerdo */
+    .btn-voltar {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      padding: 0.7em 1.6em;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: white;
+      font-weight: 700;
+      border-radius: 12px;
+      text-decoration: none;
+      box-shadow: 0 6px 15px rgba(217, 119, 6, 0.5);
+      transition: background 0.4s ease, box-shadow 0.4s ease;
+      z-index: 10;
+    }
+
+    .btn-voltar:hover {
+      background: linear-gradient(135deg, #d97706, #f59e0b);
+      box-shadow: 0 8px 25px rgba(217, 119, 6, 0.8);
+    }
+  </style>
 </head>
 <body>
   <header>
@@ -22,17 +123,22 @@
     </nav>
   </header>
 
-  <main class="hero">
+  <main class="gestor-login">
     <h1>Área do Gestor</h1>
-    <p class="subtitulo">
-      Bem-vindo à área exclusiva para gestão da academia.<br/>
-      Aqui você pode controlar os alunos, acompanhar a evasão e gerenciar relatórios.
-    </p>
-    <div class="botoes">
-      <a href="index.html" class="btn">← Voltar para Home</a>
-      <!-- Você pode adicionar mais botões ou links aqui conforme a funcionalidade -->
-    </div>
+    <p class="subtitulo">Faça login para acessar o painel de controle da academia</p>
+    
+    <form class="login-form" action="#" method="POST">
+      <label for="usuario">Usuário</label>
+      <input type="text" id="usuario" name="usuario" placeholder="Digite seu usuário" required />
+      
+      <label for="senha">Senha</label>
+      <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required />
+      
+      <button type="submit">Entrar</button>
+    </form>
   </main>
+
+  <a href="index.html" class="btn-voltar">← Voltar para Home</a>
 
   <footer>
     <p>&copy; 2025 GYM CONTROL - Todos os direitos reservados.</p>
