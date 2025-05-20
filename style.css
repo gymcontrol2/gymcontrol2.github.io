@@ -16,7 +16,7 @@ body::before {
   right: 0;
   bottom: 0;
   left: 0;
-  background-color: rgba(0, 0, 0, 0.6); /* Sobreposição escura */
+  background-color: rgba(0, 0, 0, 0.6); /* Sobreposição escura para melhor legibilidade */
   z-index: 0;
 }
 
@@ -24,5 +24,5 @@ main.hero,
 header,
 footer {
   position: relative;
-  z-index: 1; /* Para ficar acima da sobreposição */
+  z-index: 1; /* Garante que o conteúdo fique acima da sobreposição */
 }
