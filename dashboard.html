@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GYM CONTROL - Dashboard do Gestor</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&display=swap" rel="stylesheet" />
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #1e3a8a, #2563eb);
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      padding: 1.5em 2em;
+      background: rgba(30, 58, 138, 0.85);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-weight: 800;
+      font-size: 2.4rem;
+      letter-spacing: 2px;
+      text-shadow: 0 0 10px #93c5fd;
+    }
+
+    main.dashboard {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 2rem;
+      padding: 3em 4em;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    section.card {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 15px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+      padding: 2em;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      transition: background 0.3s ease;
+      cursor: default;
+    }
+
+    section.card:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    section.card h2 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 0.8em;
+      color: #93c5fd;
+      letter-spacing: 1.5px;
+    }
+
+    section.card p.valor {
+      font-size: 3rem;
+      font-weight: 900;
+      margin: 0;
+      color: #dbeafe;
+      text-shadow: 0 0 8px #3b82f6;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1.5em;
+      background: rgba(30, 58, 138, 0.85);
+      color: #cbd5e1;
+      font-size: 0.9rem;
+      box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .btn-logout {
+      margin-top: 3em;
+      padding: 1em 2em;
+      background: #ef4444;
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-weight: 700;
+      font-size: 1.2rem;
+      cursor: pointer;
+      box-shadow: 0 6px 15px rgba(239, 68, 68, 0.5);
+      transition: background 0.3s ease;
+      align-self: center;
+    }
+
+    .btn-logout:hover {
+      background: #dc2626;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Dashboard do Gestor</h1>
+  </header>
+
+  <main class="dashboard">
+    <section class="card">
+      <h2>Total de Alunos</h2>
+      <p class="valor" id="totalAlunos">--</p>
+    </section>
+
+    <section class="card">
+      <h2>Alunos Ativos</h2>
+      <p class="valor" id="alunosAtivos">--</p>
+    </section>
+
+    <section class="card">
+      <h2>Taxa de Evasão (%)</h2>
+      <p class="valor" id="taxaEvasao">--</p>
+    </section>
+
+    <button class="btn-logout" id="btnLogout">Sair</button>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 GYM CONTROL - Todos os direitos reservados.</p>
+  </footer>
+
+  <script>
+    // Simulando dados, depois você pode substituir por dados reais via backend ou API
+    const dadosAcademia = {
+      totalAlunos: 150,
+      alunosAtivos: 120,
+      taxaEvasao: 20,
+    };
+
+    // Atualizando os valores no DOM
+    document.getElementById('totalAlunos').textContent = dadosAcademia.totalAlunos;
+    document.getElementById('alunosAtivos').textContent = dadosAcademia.alunosAtivos;
+    document.getElementById('taxaEvasao').textContent = dadosAcademia.taxaEvasao + '%';
+
+    // Botão sair - redireciona para login (gestor.html)
+    document.getElementById('btnLogout').addEventListener('click', () => {
+      window.location.href = 'gestor.html';
+    });
+  </script>
+</body>
+</html>
