@@ -3,63 +3,114 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Relatórios - GYM CONTROL</title>
+  <title>GYM CONTROL - Relatórios</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&display=swap" rel="stylesheet" />
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #f9fafb;
-      padding: 2rem;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #2563eb, #1e3a8a);
+      color: #f3f4f6;
+      margin: 0; padding: 2rem;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
     h1 {
+      margin-bottom: 1.5rem;
+      text-shadow: 0 0 10px #3b82f6;
+      font-size: 2.8rem;
+      letter-spacing: 3px;
       text-align: center;
-      color: #1e3a8a;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 1rem;
-    }
-    th, td {
-      padding: 1rem;
-      border-bottom: 1px solid #ddd;
-      text-align: left;
-    }
-    th {
-      background-color: #3b82f6;
-      color: white;
-    }
-    tr:hover {
-      background-color: #f1f5f9;
-    }
-    .btn {
-      padding: 0.4rem 0.8rem;
-      border: none;
-      border-radius: 6px;
-      font-weight: bold;
-      cursor: pointer;
-      margin-right: 5px;
-    }
-    .btn-evadir {
-      background-color: #ef4444;
-      color: white;
-    }
-    .btn-evadir:disabled {
-      background-color: #9ca3af;
-      cursor: not-allowed;
-    }
-    .btn-voltar {
-      display: inline-block;
-      margin-top: 2rem;
-      color: #3b82f6;
-      text-decoration: none;
-      font-weight: bold;
     }
     #filtroStatus {
-      padding: 0.5rem;
+      padding: 0.7rem 1rem;
       font-size: 1rem;
-      margin-bottom: 1rem;
-      border-radius: 6px;
-      border: 1px solid #ccc;
+      border-radius: 12px;
+      border: none;
+      margin-bottom: 1.8rem;
+      width: 180px;
+      font-weight: 600;
+      color: #1e293b;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      outline: none;
+      transition: box-shadow 0.3s ease;
+    }
+    #filtroStatus:focus {
+      box-shadow: 0 0 15px #22d3ee;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      max-width: 900px;
+      background: rgba(0,0,0,0.5);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+    }
+    th, td {
+      padding: 1.2rem 1.4rem;
+      text-align: left;
+      border-bottom: 1px solid rgba(255,255,255,0.15);
+      color: #e0e7ff;
+    }
+    th {
+      background: rgba(59, 130, 246, 0.8);
+      font-weight: 700;
+      letter-spacing: 1.1px;
+    }
+    tbody tr:hover {
+      background-color: rgba(255,255,255,0.1);
+    }
+    .status-ativo {
+      color: #22c55e;
+      font-weight: 700;
+    }
+    .status-evadido {
+      color: #ef4444;
+      font-weight: 700;
+    }
+    button.btn-evadir {
+      padding: 0.45rem 0.9rem;
+      border-radius: 10px;
+      border: none;
+      background: linear-gradient(135deg, #ef4444, #b91c1c);
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(239, 68, 68, 0.6);
+      transition: background 0.3s ease;
+    }
+    button.btn-evadir:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+    button.btn-evadir:hover:not(:disabled) {
+      background: linear-gradient(135deg, #b91c1c, #ef4444);
+    }
+    nav {
+      margin-top: 2rem;
+      text-align: center;
+    }
+    nav a {
+      color: #fbbf24;
+      font-weight: 700;
+      text-decoration: none;
+      margin: 0 1rem;
+      font-size: 1.1rem;
+      transition: color 0.3s ease;
+    }
+    nav a:hover {
+      color: #f59e0b;
+      text-decoration: underline;
+    }
+    .msg-info {
+      text-align: center;
+      margin-top: 1rem;
+      color: #facc15;
+      font-weight: 700;
+      font-size: 1.1rem;
     }
   </style>
 </head>
@@ -67,46 +118,53 @@
 
   <h1>Relatórios de Alunos</h1>
 
-  <label for="filtroStatus">Filtrar por status:</label>
-  <select id="filtroStatus">
+  <select id="filtroStatus" aria-label="Filtrar alunos por status">
     <option value="todos">Todos</option>
     <option value="ativos">Ativos</option>
     <option value="evadidos">Evadidos</option>
   </select>
 
-  <table>
+  <table aria-label="Tabela de alunos cadastrados">
     <thead>
       <tr>
         <th>Nome</th>
-        <th>Email</th>
+        <th>E-mail</th>
         <th>Telefone</th>
         <th>Status</th>
         <th>Ações</th>
       </tr>
     </thead>
-    <tbody id="tabelaAlunos"></tbody>
+    <tbody id="tabelaAlunos">
+      <!-- Lista de alunos será inserida aqui -->
+    </tbody>
   </table>
 
-  <a href="index.html" class="btn-voltar">← Voltar para Home</a>
+  <div id="msgInfo" class="msg-info" style="display:none;">Nenhum aluno encontrado.</div>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="cadastrar.html">Cadastrar</a>
+    <a href="gestor.html">Gestor</a>
+  </nav>
 
   <script>
-    // Função para carregar e exibir alunos
     function carregarAlunos() {
       const listaAlunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
       const filtro = document.getElementById('filtroStatus').value;
       const tbody = document.getElementById('tabelaAlunos');
+      const msgInfo = document.getElementById('msgInfo');
+
       tbody.innerHTML = '';
+      msgInfo.style.display = 'none';
 
       const alunosFiltrados = listaAlunos.filter(aluno => {
         if (filtro === 'ativos') return aluno.ativo === true;
         if (filtro === 'evadidos') return aluno.ativo === false;
-        return true; // todos
+        return true;
       });
 
       if (alunosFiltrados.length === 0) {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td colspan="5" style="text-align:center;">Nenhum aluno encontrado.</td>`;
-        tbody.appendChild(tr);
+        msgInfo.style.display = 'block';
         return;
       }
 
@@ -116,9 +174,9 @@
           <td>${aluno.nome}</td>
           <td>${aluno.email}</td>
           <td>${aluno.telefone}</td>
-          <td>${aluno.ativo ? 'Ativo' : 'Evadido'}</td>
+          <td class="${aluno.ativo ? 'status-ativo' : 'status-evadido'}">${aluno.ativo ? 'Ativo' : 'Evadido'}</td>
           <td>
-            <button class="btn btn-evadir" onclick="marcarEvasao(${aluno.id})" ${aluno.ativo ? '' : 'disabled'}>
+            <button class="btn-evadir" onclick="marcarEvasao(${aluno.id})" ${aluno.ativo ? '' : 'disabled'}>
               Marcar Evasão
             </button>
           </td>
@@ -127,7 +185,6 @@
       });
     }
 
-    // Função para marcar evasão
     function marcarEvasao(id) {
       let listaAlunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
       let dadosAcademia = JSON.parse(localStorage.getItem('dadosAcademia')) || {
@@ -140,11 +197,9 @@
       if (index !== -1 && listaAlunos[index].ativo) {
         listaAlunos[index].ativo = false;
 
-        // Atualiza dados da academia
         dadosAcademia.alunosAtivos = Math.max(dadosAcademia.alunosAtivos - 1, 0);
         dadosAcademia.alunosEvadidos += 1;
 
-        // Salva atualizações
         localStorage.setItem('listaAlunos', JSON.stringify(listaAlunos));
         localStorage.setItem('dadosAcademia', JSON.stringify(dadosAcademia));
 
@@ -153,10 +208,8 @@
       }
     }
 
-    // Evento para atualizar filtro
     document.getElementById('filtroStatus').addEventListener('change', carregarAlunos);
 
-    // Carrega alunos ao abrir a página
     window.onload = carregarAlunos;
   </script>
 </body>
