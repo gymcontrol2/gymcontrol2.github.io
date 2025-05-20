@@ -129,61 +129,57 @@
   </main>
 
   <script>
-    // Inicializa lista de alunos no localStorage, se não existir
-    if (!localStorage.getItem('listaAlunos')) {
-      localStorage.setItem('listaAlunos', JSON.stringify([]));
+  // Inicializa lista de alunos no localStorage, se não existir
+  if (!localStorage.getItem('listaAlunos')) {
+    localStorage.setItem('listaAlunos', JSON.stringify([]));
+  }
+
+  // Inicializa dadosAcademia se não existir (para dashboard)
+  if (!localStorage.getItem('dadosAcademia')) {
+    const dadosIniciais = {
+      totalAlunos: 0,
+      alunosAtivos: 0,
+      alunosEvadidos: 0
+    };
+    localStorage.setItem('dadosAcademia', JSON.stringify(dadosIniciais));
+  }
+
+  const formCadastro = document.getElementById('formCadastro');
+
+  formCadastro.addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const nome = formCadastro.nome.value.trim();
+    const email = formCadastro.email.value.trim();
+    const telefone = formCadastro.telefone.value.trim();
+
+    if (nome === '' || email === '' || telefone === '') {
+      alert('Por favor, preencha todos os campos.');
+      return;
     }
 
-    // Inicializa dadosAcademia se não existir (para dashboard)
-    if (!localStorage.getItem('dadosAcademia')) {
-      const dadosIniciais = {
-        totalAlunos: 0,
-        alunosAtivos: 0,
-        alunosEvadidos: 0
-      };
-      localStorage.setItem('dadosAcademia', JSON.stringify(dadosIniciais));
-    }
+    const listaAlunos = JSON.parse(localStorage.getItem('listaAlunos'));
 
-    const formCadastro = document.getElementById('formCadastro');
+    const novoAluno = {
+      id: Date.now(),
+      nome,
+      email,
+      telefone,
+      ativo: true
+    };
 
-    formCadastro.addEventListener('submit', function(e) {
-      e.preventDefault();
+    listaAlunos.push(novoAluno);
+    localStorage.setItem('listaAlunos', JSON.stringify(listaAlunos));
 
-      const nome = formCadastro.nome.value.trim();
-      const email = formCadastro.email.value.trim();
-      const telefone = formCadastro.telefone.value.trim();
+    const dados = JSON.parse(localStorage.getItem('dadosAcademia'));
+    dados.totalAlunos += 1;
+    dados.alunosAtivos += 1;
+    localStorage.setItem('dadosAcademia', JSON.stringify(dados));
 
-      // Validação simples
-      if (nome === '' || email === '' || telefone === '') {
-        alert('Por favor, preencha todos os campos.');
-        return;
-      }
+    alert(`Aluno ${nome} cadastrado com sucesso!`);
+    formCadastro.reset();
+  });
+</script>
 
-      // Pega a lista atual de alunos
-      const listaAlunos = JSON.parse(localStorage.getItem('listaAlunos'));
-
-      // Cria novo aluno (ativo por padrão)
-      const novoAluno = {
-        id: Date.now(),
-        nome,
-        email,
-        telefone,
-        ativo: true
-      };
-
-      listaAlunos.push(novoAluno);
-      localStorage.setItem('listaAlunos', JSON.stringify(listaAlunos));
-
-      // Atualiza os dados da academia
-      const dados = JSON.parse(localStorage.getItem('dadosAcademia'));
-      dados.totalAlunos += 1;
-      dados.alunosAtivos += 1;
-      localStorage.setItem('dadosAcademia', JSON.stringify(dados));
-
-      alert(`Aluno ${nome} cadastrado com sucesso!`);
-
-      formCadastro.reset();
-    });
-  </script>
 </body>
 </html>

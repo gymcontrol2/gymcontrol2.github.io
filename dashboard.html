@@ -3,153 +3,106 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>GYM CONTROL - Dashboard do Gestor</title>
-
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&display=swap" rel="stylesheet" />
-
+  <title>Dashboard - GYM CONTROL</title>
   <style>
     body {
+      font-family: "Segoe UI", sans-serif;
+      background-color: #f1f5f9;
       margin: 0;
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #1e3a8a, #2563eb);
-      color: white;
-      min-height: 100vh;
+      padding: 2rem;
       display: flex;
       flex-direction: column;
-    }
-
-    header {
-      padding: 1.5em 2em;
-      background: rgba(30, 58, 138, 0.85);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-      text-align: center;
-    }
-
-    header h1 {
-      margin: 0;
-      font-weight: 800;
-      font-size: 2.4rem;
-      letter-spacing: 2px;
-      text-shadow: 0 0 10px #93c5fd;
-    }
-
-    main.dashboard {
-      flex: 1;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 2rem;
-      padding: 3em 4em;
-      max-width: 1000px;
-      margin: 0 auto;
-    }
-
-    section.card {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 15px;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
-      padding: 2em;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
       align-items: center;
-      transition: background 0.3s ease;
-      cursor: default;
     }
 
-    section.card:hover {
-      background: rgba(255, 255, 255, 0.2);
+    h1 {
+      color: #1e3a8a;
+      margin-bottom: 2rem;
     }
 
-    section.card h2 {
-      font-size: 1.2rem;
-      font-weight: 700;
-      margin-bottom: 0.8em;
-      color: #93c5fd;
-      letter-spacing: 1.5px;
+    .cards {
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+      justify-content: center;
     }
 
-    section.card p.valor {
-      font-size: 3rem;
-      font-weight: 900;
-      margin: 0;
-      color: #dbeafe;
-      text-shadow: 0 0 8px #3b82f6;
-    }
-
-    footer {
+    .card {
+      background-color: white;
+      border-radius: 1rem;
+      padding: 2rem;
+      width: 260px;
       text-align: center;
-      padding: 1.5em;
-      background: rgba(30, 58, 138, 0.85);
-      color: #cbd5e1;
-      font-size: 0.9rem;
-      box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
 
-    .btn-logout {
-      margin-top: 3em;
-      padding: 1em 2em;
-      background: #ef4444;
-      border: none;
-      border-radius: 12px;
-      color: white;
-      font-weight: 700;
+    .card h2 {
+      font-size: 3rem;
+      margin: 0.5rem 0;
+    }
+
+    .card p {
       font-size: 1.2rem;
-      cursor: pointer;
-      box-shadow: 0 6px 15px rgba(239, 68, 68, 0.5);
-      transition: background 0.3s ease;
-      align-self: center;
+      color: #6b7280;
     }
 
-    .btn-logout:hover {
-      background: #dc2626;
+    .total {
+      border-left: 6px solid #6366f1;
+    }
+
+    .ativos {
+      border-left: 6px solid #10b981;
+    }
+
+    .evadidos {
+      border-left: 6px solid #ef4444;
+    }
+
+    .voltar {
+      margin-top: 2rem;
+      display: inline-block;
+      color: #3b82f6;
+      text-decoration: none;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Dashboard do Gestor</h1>
-  </header>
 
-  <main class="dashboard">
-    <section class="card">
-      <h2>Total de Alunos</h2>
-      <p class="valor" id="totalAlunos">--</p>
-    </section>
+  <h1>Dashboard da Academia</h1>
 
-    <section class="card">
-      <h2>Alunos Ativos</h2>
-      <p class="valor" id="alunosAtivos">--</p>
-    </section>
+  <div class="cards">
+    <div class="card total">
+      <p>Total de Alunos</p>
+      <h2 id="totalAlunos">0</h2>
+    </div>
+    <div class="card ativos">
+      <p>Alunos Ativos</p>
+      <h2 id="alunosAtivos">0</h2>
+    </div>
+    <div class="card evadidos">
+      <p>Alunos Evadidos</p>
+      <h2 id="alunosEvadidos">0</h2>
+    </div>
+  </div>
 
-    <section class="card">
-      <h2>Taxa de Evasão (%)</h2>
-      <p class="valor" id="taxaEvasao">--</p>
-    </section>
-
-    <button class="btn-logout" id="btnLogout">Sair</button>
-  </main>
-
-  <footer>
-    <p>&copy; 2025 GYM CONTROL - Todos os direitos reservados.</p>
-  </footer>
+  <a href="index.html" class="voltar">← Voltar para a Home</a>
 
   <script>
-    // Simulando dados, depois você pode substituir por dados reais via backend ou API
-    const dadosAcademia = {
-      totalAlunos: 150,
-      alunosAtivos: 120,
-      taxaEvasao: 20,
-    };
+    function atualizarDashboard() {
+      const dados = JSON.parse(localStorage.getItem('dadosAcademia')) || {
+        totalAlunos: 0,
+        alunosAtivos: 0,
+        alunosEvadidos: 0
+      };
 
-    // Atualizando os valores no DOM
-    document.getElementById('totalAlunos').textContent = dadosAcademia.totalAlunos;
-    document.getElementById('alunosAtivos').textContent = dadosAcademia.alunosAtivos;
-    document.getElementById('taxaEvasao').textContent = dadosAcademia.taxaEvasao + '%';
+      document.getElementById('totalAlunos').textContent = dados.totalAlunos;
+      document.getElementById('alunosAtivos').textContent = dados.alunosAtivos;
+      document.getElementById('alunosEvadidos').textContent = dados.alunosEvadidos;
+    }
 
-    // Botão sair - redireciona para login (gestor.html)
-    document.getElementById('btnLogout').addEventListener('click', () => {
-      window.location.href = 'gestor.html';
-    });
+    atualizarDashboard();
   </script>
+
 </body>
 </html>
