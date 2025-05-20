@@ -6,41 +6,103 @@
   <title>Dashboard - GYM CONTROL</title>
   <style>
     body {
-      font-family: 'Poppins', sans-serif;
-      background-color: #e0e7ff;
-      color: #1e293b;
-      max-width: 600px;
-      margin: 2rem auto;
+      font-family: "Segoe UI", sans-serif;
+      background-color: #f1f5f9;
+      margin: 0;
       padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 5px 15px rgba(37, 99, 235, 0.2);
-      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
+
     h1 {
-      color: #2563eb;
-      font-weight: 800;
-      margin-bottom: 1rem;
+      color: #1e3a8a;
+      margin-bottom: 2rem;
     }
-    a {
-      display: inline-block;
+
+    .cards {
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .card {
+      background-color: white;
+      border-radius: 1rem;
+      padding: 2rem;
+      width: 260px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .card h2 {
+      font-size: 3rem;
+      margin: 0.5rem 0;
+    }
+
+    .card p {
+      font-size: 1.2rem;
+      color: #6b7280;
+    }
+
+    .total {
+      border-left: 6px solid #6366f1;
+    }
+
+    .ativos {
+      border-left: 6px solid #10b981;
+    }
+
+    .evadidos {
+      border-left: 6px solid #ef4444;
+    }
+
+    .voltar {
       margin-top: 2rem;
-      font-weight: 700;
-      color: #2563eb;
+      display: inline-block;
+      color: #3b82f6;
       text-decoration: none;
-      border: 2px solid #2563eb;
-      padding: 0.6rem 1.2rem;
-      border-radius: 8px;
-      transition: background-color 0.3s, color 0.3s;
-    }
-    a:hover {
-      background-color: #2563eb;
-      color: white;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <h1>Bem-vindo ao Dashboard do Gestor!</h1>
-  <p>Login efetuado com sucesso.</p>
-  <a href="gestor.html">← Voltar para Login</a>
+
+  <h1>Dashboard da Academia</h1>
+
+  <div class="cards">
+    <div class="card total">
+      <p>Total de Alunos</p>
+      <h2 id="totalAlunos">0</h2>
+    </div>
+    <div class="card ativos">
+      <p>Alunos Ativos</p>
+      <h2 id="alunosAtivos">0</h2>
+    </div>
+    <div class="card evadidos">
+      <p>Alunos Evadidos</p>
+      <h2 id="alunosEvadidos">0</h2>
+    </div>
+  </div>
+
+  <a href="index.html" class="voltar">← Voltar para a Home</a>
+
+  <script>
+    function atualizarDashboard() {
+      const dados = JSON.parse(localStorage.getItem('dadosAcademia')) || {
+        totalAlunos: 0,
+        alunosAtivos: 0,
+        alunosEvadidos: 0
+      };
+
+      document.getElementById('totalAlunos').textContent = dados.totalAlunos;
+      document.getElementById('alunosAtivos').textContent = dados.alunosAtivos;
+      document.getElementById('alunosEvadidos').textContent = dados.alunosEvadidos;
+    }
+
+    atualizarDashboard();
+  </script>
+
 </body>
 </html>
