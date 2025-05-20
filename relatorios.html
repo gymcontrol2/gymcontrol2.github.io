@@ -1,337 +1,108 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Relatórios - GYM CONTROL</title>
-
+  <meta charset="UTF-8">
+  <title>Relatórios de Alunos</title>
   <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: #f0f4ff;
-      color: #1e293b;
-      padding: 2rem;
-      max-width: 900px;
-      margin: 0 auto;
-    }
-
-    h1 {
-      text-align: center;
-      margin-bottom: 1rem;
-      color: #2563eb;
-      font-weight: 800;
-    }
-
-    #graficoContainer {
-      max-width: 600px;
-      margin: 0 auto 2rem auto;
-      background: white;
-      padding: 1.5rem;
-      border-radius: 15px;
-      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.2);
-    }
-
-    .filtros {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 1rem;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-
-    select, input[type="text"] {
-      padding: 0.5rem 0.7rem;
-      border-radius: 8px;
-      border: 1px solid #94a3b8;
-      font-size: 1rem;
-      width: 150px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: white;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 3px 15px rgba(0,0,0,0.1);
-    }
-
-    th, td {
-      padding: 1rem;
-      text-align: left;
-      border-bottom: 1px solid #e2e8f0;
-    }
-
-    th {
-      background-color: #2563eb;
-      color: white;
-      font-weight: 700;
-    }
-
-    tr:hover {
-      background-color: #e0e7ff;
-    }
-
-    .btn {
-      padding: 0.4rem 0.8rem;
-      border: none;
-      border-radius: 6px;
-      font-weight: bold;
-      cursor: pointer;
-      font-size: 0.9rem;
-    }
-
-    .btn-evadir {
-      background-color: #ef4444;
-      color: white;
-      transition: background-color 0.3s;
-    }
-
-    .btn-evadir:disabled {
-      background-color: #9ca3af;
-      cursor: not-allowed;
-    }
-
-    .btn-evadir:hover:not(:disabled) {
-      background-color: #dc2626;
-    }
-
-    .btn-editar {
-      background-color: #10b981;
-      color: white;
-      margin-left: 0.5rem;
-      transition: background-color 0.3s;
-    }
-
-    .btn-editar:hover {
-      background-color: #059669;
-    }
-
-    .voltar {
-      display: inline-block;
-      margin-top: 2rem;
-      color: #2563eb;
-      text-decoration: none;
-      font-weight: 700;
-      transition: color 0.3s;
-    }
-
-    .voltar:hover {
-      color: #1e40af;
-    }
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    input[type="text"] { padding: 8px; width: 300px; margin-bottom: 20px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+    th { background-color: #f2f2f2; }
+    button { margin: 0 5px; padding: 5px 10px; }
   </style>
-
 </head>
 <body>
+  <h1>Relatório de Alunos</h1>
 
-  <h1>Relatórios da Academia</h1>
+  <input type="text" id="busca" placeholder="Buscar por nome..." oninput="carregarAlunos()" />
 
-  <div id="graficoContainer">
-    <canvas id="graficoAlunos"></canvas>
-  </div>
-
-  <div class="filtros">
-    <select id="filtroStatus">
-      <option value="todos">Todos</option>
-      <option value="ativos">Ativos</option>
-      <option value="evadidos">Evadidos</option>
-    </select>
-
-    <input type="text" id="busca" placeholder="Buscar por nome ou email..." />
-    
-    <button id="btnExportar">Exportar CSV</button>
-  </div>
-
-  <table>
+  <table id="tabela-alunos">
     <thead>
       <tr>
         <th>Nome</th>
         <th>Email</th>
-        <th>Telefone</th>
         <th>Status</th>
         <th>Ações</th>
       </tr>
     </thead>
-    <tbody id="tabelaAlunos"></tbody>
+    <tbody></tbody>
   </table>
 
-  <a href="index.html" class="voltar">← Voltar para a Home</a>
-
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
   <script>
-    let grafico;
+    function gerarAlunosSeNecessario() {
+      const alunosExistentes = JSON.parse(localStorage.getItem('alunos')) || [];
+      if (alunosExistentes.length >= 70) return; // já existem alunos suficientes
 
-    function carregarAlunos() {
-      const alunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
-      const filtroStatus = document.getElementById('filtroStatus').value;
-      const termoBusca = document.getElementById('busca').value.toLowerCase();
-
-      const tabela = document.getElementById('tabelaAlunos');
-      tabela.innerHTML = '';
-
-      const alunosFiltrados = alunos
-        .filter(aluno => {
-          if (filtroStatus === 'ativos') return aluno.ativo;
-          if (filtroStatus === 'evadidos') return !aluno.ativo;
-          return true;
-        })
-        .filter(aluno =>
-          aluno.nome.toLowerCase().includes(termoBusca) ||
-          aluno.email.toLowerCase().includes(termoBusca)
-        );
-
-      alunosFiltrados.forEach(aluno => {
-        const tr = document.createElement('tr');
-
-        tr.innerHTML = `
-          <td>${aluno.nome}</td>
-          <td>${aluno.email}</td>
-          <td>${aluno.telefone}</td>
-          <td>${aluno.ativo ? 'Ativo' : 'Evadido'}</td>
-          <td>
-            <button class="btn btn-evadir" onclick="marcarEvasao(${aluno.id})" ${!aluno.ativo ? 'disabled' : ''}>
-              Marcar Evasão
-            </button>
-            <button class="btn btn-editar" onclick="editarAluno(${aluno.id})">
-              Editar
-            </button>
-          </td>
-        `;
-
-        tabela.appendChild(tr);
-      });
-
-      atualizarGrafico();
-    }
-
-    function atualizarGrafico() {
-      const alunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
-
-      const totalAtivos = alunos.filter(a => a.ativo).length;
-      const totalEvadidos = alunos.filter(a => !a.ativo).length;
-
-      const ctx = document.getElementById('graficoAlunos').getContext('2d');
-
-      if(grafico) {
-        grafico.destroy();
+      const novosAlunos = [];
+      for (let i = alunosExistentes.length + 1; i <= 70; i++) {
+        novosAlunos.push({
+          nome: `Aluno ${i}`,
+          email: `aluno${i}@academia.com`,
+          status: i % 5 === 0 ? 'em risco' : 'ativo'
+        });
       }
 
-      grafico = new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: ['Alunos Ativos', 'Alunos Evadidos'],
-          datasets: [{
-            label: 'Quantidade',
-            data: [totalAtivos, totalEvadidos],
-            backgroundColor: ['#2563eb', '#ef4444'],
-            borderRadius: 6,
-            maxBarThickness: 80,
-          }]
-        },
-        options: {
-          responsive: true,
-          scales: {
-            y: {
-              beginAtZero: true,
-              precision: 0,
-              ticks: {
-                stepSize: 1
-              }
-            }
-          },
-          plugins: {
-            legend: {
-              display: false
-            },
-            tooltip: {
-              enabled: true
-            }
-          }
-        }
-      });
+      const todos = alunosExistentes.concat(novosAlunos);
+      localStorage.setItem('alunos', JSON.stringify(todos));
     }
 
-    function marcarEvasao(id) {
-      let alunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
-      let dadosAcademia = JSON.parse(localStorage.getItem('dadosAcademia')) || {
-        totalAlunos: 0,
-        alunosAtivos: 0,
-        alunosEvadidos: 0
-      };
+    function carregarAlunos() {
+      const alunos = JSON.parse(localStorage.getItem('alunos')) || [];
+      const filtro = document.getElementById('busca').value.toLowerCase();
+      const tbody = document.querySelector('#tabela-alunos tbody');
+      tbody.innerHTML = '';
 
-      const index = alunos.findIndex(a => a.id === id);
-      if(index !== -1 && alunos[index].ativo) {
-        alunos[index].ativo = false;
+      alunos
+        .filter(aluno => aluno.nome.toLowerCase().includes(filtro))
+        .forEach((aluno, index) => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${aluno.nome}</td>
+            <td>${aluno.email}</td>
+            <td>${aluno.status}</td>
+            <td>
+              <button onclick="editarAluno(${index})">Editar</button>
+              <button onclick="removerAluno(${index})">Remover</button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+    }
 
-        dadosAcademia.alunosAtivos = alunos.filter(a => a.ativo).length;
-        dadosAcademia.alunosEvadidos = alunos.filter(a => !a.ativo).length;
-
-        localStorage.setItem('listaAlunos', JSON.stringify(alunos));
-        localStorage.setItem('dadosAcademia', JSON.stringify(dadosAcademia));
-
+    function removerAluno(index) {
+      const alunos = JSON.parse(localStorage.getItem('alunos')) || [];
+      if (confirm(`Deseja realmente remover ${alunos[index].nome}?`)) {
+        alunos.splice(index, 1);
+        localStorage.setItem('alunos', JSON.stringify(alunos));
         carregarAlunos();
       }
     }
 
-    function editarAluno(id) {
-      alert('Funcionalidade de editar aluno ainda não implementada.');
-    }
+    function editarAluno(index) {
+      const alunos = JSON.parse(localStorage.getItem('alunos')) || [];
+      const aluno = alunos[index];
 
-    document.getElementById('btnExportar').addEventListener('click', () => {
-      const alunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
-      let csv = 'Nome,Email,Telefone,Status\n';
-      alunos.forEach(a => {
-        csv += `"${a.nome}","${a.email}","${a.telefone}","${a.ativo ? 'Ativo' : 'Evadido'}"\n`;
-      });
+      const novoNome = prompt("Editar nome:", aluno.nome);
+      const novoEmail = prompt("Editar email:", aluno.email);
+      const novoStatus = prompt("Editar status (ativo/em risco):", aluno.status);
 
-      const blob = new Blob([csv], {type: 'text/csv'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'alunos_gym_control.csv';
-      a.click();
-      URL.revokeObjectURL(url);
-    });
-
-    document.getElementById('filtroStatus').addEventListener('change', carregarAlunos);
-    document.getElementById('busca').addEventListener('input', carregarAlunos);
-
-    // Geração automática de alunos caso o localStorage esteja vazio
-    function gerarAlunosAleatorios() {
-      const nomes = ["Ana", "Bruno", "Carlos", "Daniela", "Eduardo", "Fernanda", "Gustavo", "Helena", "Igor", "Juliana"];
-      const sobrenomes = ["Silva", "Oliveira", "Souza", "Pereira", "Lima", "Costa"];
-      const lista = [];
-      const total = Math.floor(Math.random() * 20) + 10;
-      const ativos = Math.floor(total * 0.7);
-
-      for (let i = 0; i < total; i++) {
-        const nome = `${nomes[Math.floor(Math.random() * nomes.length)]} ${sobrenomes[Math.floor(Math.random() * sobrenomes.length)]}`;
-        const email = nome.toLowerCase().replace(" ", ".") + "@gmail.com";
-        const telefone = `(11) 9${Math.floor(100000000 + Math.random() * 899999999).toString().substring(0, 8)}`;
-        lista.push({
-          id: Date.now() + i,
-          nome,
-          email,
-          telefone,
-          ativo: i < ativos
-        });
+      if (novoNome && novoEmail && novoStatus) {
+        alunos[index] = {
+          nome: novoNome,
+          email: novoEmail,
+          status: novoStatus
+        };
+        localStorage.setItem('alunos', JSON.stringify(alunos));
+        carregarAlunos();
       }
-
-      localStorage.setItem("listaAlunos", JSON.stringify(lista));
-      localStorage.setItem("dadosAcademia", JSON.stringify({
-        totalAlunos: total,
-        alunosAtivos: ativos,
-        alunosEvadidos: total - ativos
-      }));
     }
 
-    if (!localStorage.getItem("listaAlunos") || JSON.parse(localStorage.getItem("listaAlunos")).length === 0) {
-      gerarAlunosAleatorios();
-    }
-
-    carregarAlunos();
+    // Ao carregar a página:
+    window.onload = () => {
+      gerarAlunosSeNecessario();
+      carregarAlunos();
+    };
   </script>
-
 </body>
 </html>
