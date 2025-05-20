@@ -3,214 +3,220 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>GYM CONTROL - Relatórios</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&display=swap" rel="stylesheet" />
+  <title>Lista de Alunos - GYM CONTROL</title>
   <style>
     body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #2563eb, #1e3a8a);
-      color: #f3f4f6;
-      margin: 0; padding: 2rem;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      font-family: Arial, sans-serif;
+      background-color: #f9fafb;
+      padding: 2rem;
     }
+
     h1 {
-      margin-bottom: 1.5rem;
-      text-shadow: 0 0 10px #3b82f6;
-      font-size: 2.8rem;
-      letter-spacing: 3px;
       text-align: center;
+      color: #1e3a8a;
     }
-    #filtroStatus {
-      padding: 0.7rem 1rem;
+
+    .filtros {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 2rem 0;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    input[type="text"],
+    select {
+      padding: 0.5rem;
       font-size: 1rem;
-      border-radius: 12px;
-      border: none;
-      margin-bottom: 1.8rem;
-      width: 180px;
-      font-weight: 600;
-      color: #1e293b;
-      box-shadow: 0 0 10px rgba(0,0,0,0.3);
-      outline: none;
-      transition: box-shadow 0.3s ease;
+      border-radius: 6px;
+      border: 1px solid #ccc;
     }
-    #filtroStatus:focus {
-      box-shadow: 0 0 15px #22d3ee;
-    }
+
     table {
-      border-collapse: collapse;
       width: 100%;
-      max-width: 900px;
-      background: rgba(0,0,0,0.5);
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-    }
-    th, td {
-      padding: 1.2rem 1.4rem;
-      text-align: left;
-      border-bottom: 1px solid rgba(255,255,255,0.15);
-      color: #e0e7ff;
-    }
-    th {
-      background: rgba(59, 130, 246, 0.8);
-      font-weight: 700;
-      letter-spacing: 1.1px;
-    }
-    tbody tr:hover {
-      background-color: rgba(255,255,255,0.1);
-    }
-    .status-ativo {
-      color: #22c55e;
-      font-weight: 700;
-    }
-    .status-evadido {
-      color: #ef4444;
-      font-weight: 700;
-    }
-    button.btn-evadir {
-      padding: 0.45rem 0.9rem;
-      border-radius: 10px;
-      border: none;
-      background: linear-gradient(135deg, #ef4444, #b91c1c);
-      color: white;
-      font-weight: 700;
-      cursor: pointer;
-      box-shadow: 0 4px 10px rgba(239, 68, 68, 0.6);
-      transition: background 0.3s ease;
-    }
-    button.btn-evadir:disabled {
-      background: #9ca3af;
-      cursor: not-allowed;
-      box-shadow: none;
-    }
-    button.btn-evadir:hover:not(:disabled) {
-      background: linear-gradient(135deg, #b91c1c, #ef4444);
-    }
-    nav {
-      margin-top: 2rem;
-      text-align: center;
-    }
-    nav a {
-      color: #fbbf24;
-      font-weight: 700;
-      text-decoration: none;
-      margin: 0 1rem;
-      font-size: 1.1rem;
-      transition: color 0.3s ease;
-    }
-    nav a:hover {
-      color: #f59e0b;
-      text-decoration: underline;
-    }
-    .msg-info {
-      text-align: center;
+      border-collapse: collapse;
       margin-top: 1rem;
-      color: #facc15;
-      font-weight: 700;
-      font-size: 1.1rem;
+    }
+
+    th, td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #3b82f6;
+      color: white;
+    }
+
+    tr:hover {
+      background-color: #f1f5f9;
+    }
+
+    .btn {
+      padding: 0.4rem 0.8rem;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .btn-evadir {
+      background-color: #ef4444;
+      color: white;
+    }
+
+    .btn-evadir:disabled {
+      background-color: #9ca3af;
+      cursor: not-allowed;
+    }
+
+    .btn-editar {
+      background-color: #10b981;
+      color: white;
+      margin-left: 0.5rem;
+    }
+
+    .voltar {
+      margin-top: 2rem;
+      display: inline-block;
+      color: #3b82f6;
+      text-decoration: none;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
 
-  <h1>Relatórios de Alunos</h1>
+  <h1>Lista de Alunos</h1>
 
-  <select id="filtroStatus" aria-label="Filtrar alunos por status">
-    <option value="todos">Todos</option>
-    <option value="ativos">Ativos</option>
-    <option value="evadidos">Evadidos</option>
-  </select>
+  <div class="filtros">
+    <select id="filtroStatus">
+      <option value="todos">Todos</option>
+      <option value="ativos">Ativos</option>
+      <option value="evadidos">Evadidos</option>
+    </select>
+  </div>
 
-  <table aria-label="Tabela de alunos cadastrados">
+  <table>
     <thead>
       <tr>
         <th>Nome</th>
-        <th>E-mail</th>
+        <th>Email</th>
         <th>Telefone</th>
         <th>Status</th>
         <th>Ações</th>
       </tr>
     </thead>
-    <tbody id="tabelaAlunos">
-      <!-- Lista de alunos será inserida aqui -->
-    </tbody>
+    <tbody id="tabelaAlunos"></tbody>
   </table>
 
-  <div id="msgInfo" class="msg-info" style="display:none;">Nenhum aluno encontrado.</div>
-
-  <nav>
-    <a href="index.html">Home</a>
-    <a href="cadastrar.html">Cadastrar</a>
-    <a href="gestor.html">Gestor</a>
-  </nav>
+  <a href="index.html" class="voltar">← Voltar para a Home</a>
 
   <script>
-    function carregarAlunos() {
-      const listaAlunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
-      const filtro = document.getElementById('filtroStatus').value;
-      const tbody = document.getElementById('tabelaAlunos');
-      const msgInfo = document.getElementById('msgInfo');
+    // Função para gerar alunos aleatórios para popular a lista (apenas na primeira visita)
+    function gerarAlunosAleatorios() {
+      if (localStorage.getItem('listaAlunos')) return; // Já tem dados, não gera
 
-      tbody.innerHTML = '';
-      msgInfo.style.display = 'none';
+      const nomes = ['Ana', 'Bruno', 'Carlos', 'Daniela', 'Eduardo', 'Fernanda', 'Gustavo', 'Helena', 'Igor', 'Júlia', 'Karina', 'Leonardo', 'Mariana', 'Nicolas', 'Olívia', 'Paulo', 'Quésia', 'Rafael', 'Sofia', 'Thiago'];
+      const sobrenomes = ['Silva', 'Souza', 'Oliveira', 'Pereira', 'Almeida', 'Costa', 'Santos', 'Rodrigues', 'Ferreira', 'Gomes'];
 
-      const alunosFiltrados = listaAlunos.filter(aluno => {
-        if (filtro === 'ativos') return aluno.ativo === true;
-        if (filtro === 'evadidos') return aluno.ativo === false;
-        return true;
-      });
+      const lista = [];
+      const total = 30; // Quantidade total de alunos
 
-      if (alunosFiltrados.length === 0) {
-        msgInfo.style.display = 'block';
-        return;
+      for (let i = 0; i < total; i++) {
+        const nome = `${nomes[Math.floor(Math.random() * nomes.length)]} ${sobrenomes[Math.floor(Math.random() * sobrenomes.length)]}`;
+        const email = nome.toLowerCase().replace(' ', '.') + '@exemplo.com';
+        const telefone = `(11) 9${Math.floor(1000 + Math.random() * 9000)}-${Math.floor(1000 + Math.random() * 9000)}`;
+
+        // Define ativo com 70% de chance, evadido com 30%
+        const ativo = Math.random() < 0.7;
+
+        lista.push({
+          id: Date.now() + i,
+          nome,
+          email,
+          telefone,
+          ativo
+        });
       }
 
-      alunosFiltrados.forEach(aluno => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${aluno.nome}</td>
-          <td>${aluno.email}</td>
-          <td>${aluno.telefone}</td>
-          <td class="${aluno.ativo ? 'status-ativo' : 'status-evadido'}">${aluno.ativo ? 'Ativo' : 'Evadido'}</td>
-          <td>
-            <button class="btn-evadir" onclick="marcarEvasao(${aluno.id})" ${aluno.ativo ? '' : 'disabled'}>
-              Marcar Evasão
-            </button>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
+      localStorage.setItem('listaAlunos', JSON.stringify(lista));
+
+      const dadosAcademia = {
+        totalAlunos: total,
+        alunosAtivos: lista.filter(a => a.ativo).length,
+        alunosEvadidos: lista.filter(a => !a.ativo).length
+      };
+
+      localStorage.setItem('dadosAcademia', JSON.stringify(dadosAcademia));
+    }
+
+    function carregarAlunos() {
+      const alunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
+      const filtroStatus = document.getElementById('filtroStatus').value;
+
+      const tabela = document.getElementById('tabelaAlunos');
+      tabela.innerHTML = '';
+
+      alunos
+        .filter(aluno => {
+          if (filtroStatus === 'ativos') return aluno.ativo;
+          if (filtroStatus === 'evadidos') return !aluno.ativo;
+          return true;
+        })
+        .forEach(aluno => {
+          const tr = document.createElement('tr');
+
+          tr.innerHTML = `
+            <td>${aluno.nome}</td>
+            <td>${aluno.email}</td>
+            <td>${aluno.telefone}</td>
+            <td>${aluno.ativo ? 'Ativo' : 'Evadido'}</td>
+            <td>
+              <button class="btn btn-evadir" onclick="marcarEvasao(${aluno.id})" ${!aluno.ativo ? 'disabled' : ''}>
+                Marcar Evasão
+              </button>
+              <button class="btn btn-editar" onclick="editarAluno(${aluno.id})">
+                Editar
+              </button>
+            </td>
+          `;
+
+          tabela.appendChild(tr);
+        });
     }
 
     function marcarEvasao(id) {
-      let listaAlunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
-      let dadosAcademia = JSON.parse(localStorage.getItem('dadosAcademia')) || {
-        totalAlunos: 0,
-        alunosAtivos: 0,
-        alunosEvadidos: 0
-      };
+      let alunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
+      let dados = JSON.parse(localStorage.getItem('dadosAcademia'));
 
-      const index = listaAlunos.findIndex(aluno => aluno.id === id);
-      if (index !== -1 && listaAlunos[index].ativo) {
-        listaAlunos[index].ativo = false;
+      const index = alunos.findIndex(a => a.id === id);
+      if (index === -1) return;
 
-        dadosAcademia.alunosAtivos = Math.max(dadosAcademia.alunosAtivos - 1, 0);
-        dadosAcademia.alunosEvadidos += 1;
+      if (!alunos[index].ativo) return;
 
-        localStorage.setItem('listaAlunos', JSON.stringify(listaAlunos));
-        localStorage.setItem('dadosAcademia', JSON.stringify(dadosAcademia));
+      alunos[index].ativo = false;
+      localStorage.setItem('listaAlunos', JSON.stringify(alunos));
 
-        alert(`Aluno ${listaAlunos[index].nome} marcado como evadido.`);
-        carregarAlunos();
-      }
+      // Atualiza dados academia
+      dados.alunosAtivos = alunos.filter(a => a.ativo).length;
+      dados.alunosEvadidos = alunos.filter(a => !a.ativo).length;
+      localStorage.setItem('dadosAcademia', JSON.stringify(dados));
+
+      carregarAlunos();
+    }
+
+    function editarAluno(id) {
+      alert('Função de editar ainda não implementada.');
     }
 
     document.getElementById('filtroStatus').addEventListener('change', carregarAlunos);
 
+    gerarAlunosAleatorios();
     window.onload = carregarAlunos;
   </script>
+
 </body>
 </html>
