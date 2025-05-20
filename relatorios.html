@@ -157,14 +157,11 @@
 
   <a href="index.html" class="voltar">← Voltar para a Home</a>
 
-  <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <script>
-    // Variável global para o gráfico
     let grafico;
 
-    // Função para carregar e exibir alunos na tabela
     function carregarAlunos() {
       const alunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
       const filtroStatus = document.getElementById('filtroStatus').value;
@@ -208,7 +205,6 @@
       atualizarGrafico();
     }
 
-    // Função para atualizar o gráfico com dados atuais
     function atualizarGrafico() {
       const alunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
 
@@ -218,7 +214,7 @@
       const ctx = document.getElementById('graficoAlunos').getContext('2d');
 
       if(grafico) {
-        grafico.destroy(); // destrói gráfico anterior para atualizar
+        grafico.destroy();
       }
 
       grafico = new Chart(ctx, {
@@ -256,7 +252,6 @@
       });
     }
 
-    // Marca evasão (torna aluno inativo)
     function marcarEvasao(id) {
       let alunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
       let dadosAcademia = JSON.parse(localStorage.getItem('dadosAcademia')) || {
@@ -269,7 +264,6 @@
       if(index !== -1 && alunos[index].ativo) {
         alunos[index].ativo = false;
 
-        // Atualiza dadosAcademia
         dadosAcademia.alunosAtivos = alunos.filter(a => a.ativo).length;
         dadosAcademia.alunosEvadidos = alunos.filter(a => !a.ativo).length;
 
@@ -280,12 +274,10 @@
       }
     }
 
-    // Função fictícia para editar (você pode implementar depois)
     function editarAluno(id) {
       alert('Funcionalidade de editar aluno ainda não implementada.');
     }
 
-    // Exportar tabela para CSV
     document.getElementById('btnExportar').addEventListener('click', () => {
       const alunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
       let csv = 'Nome,Email,Telefone,Status\n';
@@ -302,13 +294,43 @@
       URL.revokeObjectURL(url);
     });
 
-    // Eventos filtro e busca
     document.getElementById('filtroStatus').addEventListener('change', carregarAlunos);
     document.getElementById('busca').addEventListener('input', carregarAlunos);
 
-    // Carregar alunos ao abrir a página
-    carregarAlunos();
+    // Geração automática de alunos caso o localStorage esteja vazio
+    function gerarAlunosAleatorios() {
+      const nomes = ["Ana", "Bruno", "Carlos", "Daniela", "Eduardo", "Fernanda", "Gustavo", "Helena", "Igor", "Juliana"];
+      const sobrenomes = ["Silva", "Oliveira", "Souza", "Pereira", "Lima", "Costa"];
+      const lista = [];
+      const total = Math.floor(Math.random() * 20) + 10;
+      const ativos = Math.floor(total * 0.7);
 
+      for (let i = 0; i < total; i++) {
+        const nome = `${nomes[Math.floor(Math.random() * nomes.length)]} ${sobrenomes[Math.floor(Math.random() * sobrenomes.length)]}`;
+        const email = nome.toLowerCase().replace(" ", ".") + "@gmail.com";
+        const telefone = `(11) 9${Math.floor(100000000 + Math.random() * 899999999).toString().substring(0, 8)}`;
+        lista.push({
+          id: Date.now() + i,
+          nome,
+          email,
+          telefone,
+          ativo: i < ativos
+        });
+      }
+
+      localStorage.setItem("listaAlunos", JSON.stringify(lista));
+      localStorage.setItem("dadosAcademia", JSON.stringify({
+        totalAlunos: total,
+        alunosAtivos: ativos,
+        alunosEvadidos: total - ativos
+      }));
+    }
+
+    if (!localStorage.getItem("listaAlunos") || JSON.parse(localStorage.getItem("listaAlunos")).length === 0) {
+      gerarAlunosAleatorios();
+    }
+
+    carregarAlunos();
   </script>
 
 </body>
