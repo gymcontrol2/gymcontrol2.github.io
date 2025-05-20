@@ -3,166 +3,195 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>GYM CONTROL - Cadastro de Alunos</title>
-
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&display=swap" rel="stylesheet" />
-
+  <title>Cadastro de Alunos - GYM CONTROL</title>
   <style>
     body {
       font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #1e40af, #2563eb);
-      color: white;
-      min-height: 100vh;
-      margin: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 2em;
+      background-color: #e0e7ff;
+      padding: 2rem;
+      max-width: 500px;
+      margin: 0 auto;
+      color: #1e293b;
     }
 
-    header {
-      margin-bottom: 2em;
+    h1 {
       text-align: center;
-    }
-
-    header h1 {
-      font-size: 2.6rem;
-      letter-spacing: 3px;
-      text-shadow: 0 0 10px #3b82f6;
-    }
-
-    main {
-      background: rgba(0, 0, 0, 0.6);
-      padding: 2em 3em;
-      border-radius: 15px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
-      width: 100%;
-      max-width: 400px;
+      margin-bottom: 2rem;
+      color: #2563eb;
+      font-weight: 800;
     }
 
     form {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(37, 99, 235, 0.2);
       display: flex;
       flex-direction: column;
-      gap: 1.3em;
+      gap: 1.2rem;
     }
 
     label {
       font-weight: 600;
-      font-size: 1.1rem;
-      color: #bfdbfe;
+      margin-bottom: 0.3rem;
+      display: block;
     }
 
     input[type="text"],
     input[type="email"],
     input[type="tel"] {
-      padding: 0.9em 1.2em;
-      border-radius: 10px;
-      border: none;
-      font-size: 1.1rem;
-      outline: none;
-      transition: box-shadow 0.3s ease;
+      width: 100%;
+      padding: 0.7rem;
+      border-radius: 8px;
+      border: 1px solid #94a3b8;
+      font-size: 1rem;
+      outline-offset: 2px;
+      outline-color: #2563eb;
+      transition: border-color 0.3s;
     }
-
     input[type="text"]:focus,
     input[type="email"]:focus,
     input[type="tel"]:focus {
-      box-shadow: 0 0 10px #3b82f6;
-      background-color: #1e293b;
-      color: #f3f4f6;
+      border-color: #2563eb;
     }
 
     button {
-      padding: 1em 0;
-      font-weight: 700;
-      font-size: 1.2rem;
-      border-radius: 12px;
-      background: linear-gradient(135deg, #3b82f6, #22d3ee);
-      border: none;
+      padding: 0.8rem;
+      background-color: #2563eb;
       color: white;
-      cursor: pointer;
-      box-shadow: 0 6px 15px rgba(59, 130, 246, 0.5);
-      transition: background 0.4s ease, box-shadow 0.4s ease;
-      margin-top: 1.5em;
-    }
-
-    button:hover {
-      background: linear-gradient(135deg, #22d3ee, #3b82f6);
-      box-shadow: 0 8px 25px rgba(59, 130, 246, 0.8);
-    }
-
-    .btn-voltar {
-      margin-top: 1.5em;
-      display: inline-block;
-      text-decoration: none;
-      color: #fbbf24;
       font-weight: 700;
-      letter-spacing: 1.2px;
-      transition: color 0.3s ease;
+      font-size: 1.1rem;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #1e40af;
     }
 
-    .btn-voltar:hover {
-      color: #f59e0b;
+    .mensagem {
+      margin-top: 1rem;
+      font-weight: 600;
+      color: #059669;
+      text-align: center;
+    }
+
+    a.voltar {
+      display: block;
+      margin-top: 2rem;
+      text-align: center;
+      font-weight: 700;
+      color: #2563eb;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    a.voltar:hover {
+      color: #1e40af;
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>Cadastrar Aluno</h1>
-  </header>
+  <h1>Cadastro de Alunos</h1>
 
-  <main>
-    <form id="formCadastro">
-      <label for="nome">Nome Completo</label>
-      <input type="text" id="nome" name="nome" placeholder="Digite o nome do aluno" required />
+  <form id="formCadastro">
+    <label for="nome">Nome completo</label>
+    <input type="text" id="nome" required placeholder="Digite o nome completo" />
 
-      <label for="email">E-mail</label>
-      <input type="email" id="email" name="email" placeholder="Digite o e-mail do aluno" required />
+    <label for="email">Email</label>
+    <input type="email" id="email" required placeholder="Digite o email" />
 
-      <label for="telefone">Telefone</label>
-      <input type="tel" id="telefone" name="telefone" placeholder="(XX) XXXXX-XXXX" required />
+    <label for="telefone">Telefone</label>
+    <input type="tel" id="telefone" required placeholder="Digite o telefone" />
 
-      <button type="submit">Cadastrar</button>
-    </form>
+    <button type="submit">Cadastrar</button>
+  </form>
 
-    <a href="relatorios.html" class="btn-voltar">← Ver Lista de Alunos</a>
-  </main>
+  <div class="mensagem" id="mensagemSucesso"></div>
+
+  <a href="relatorios.html" class="voltar">→ Ver Relatórios</a>
 
   <script>
-    // Inicializa lista de alunos e dados academia se não existirem
-    if (!localStorage.getItem('listaAlunos')) {
-      localStorage.setItem('listaAlunos', JSON.stringify([]));
+    // Função para gerar ID único simples
+    function gerarId() {
+      return Date.now() + Math.floor(Math.random() * 1000);
     }
 
-    if (!localStorage.getItem('dadosAcademia')) {
-      const dadosIniciais = {
-        totalAlunos: 0,
-        alunosAtivos: 0,
-        alunosEvadidos: 0
-      };
-      localStorage.setItem('dadosAcademia', JSON.stringify(dadosIniciais));
+    // Função para gerar alunos aleatórios (para popular o localStorage na primeira vez)
+    function gerarAlunosAleatorios(qtd) {
+      const nomesExemplo = [
+        "Lucas Silva", "Mariana Costa", "Pedro Oliveira", "Ana Souza",
+        "Carlos Lima", "Beatriz Rocha", "Felipe Alves", "Juliana Dias",
+        "Ricardo Santos", "Camila Ferreira", "João Pereira", "Larissa Gomes",
+        "Rafael Almeida", "Patrícia Martins", "Gustavo Carvalho"
+      ];
+
+      const emailsExemplo = [
+        "lucas@email.com", "mariana@email.com", "pedro@email.com", "ana@email.com",
+        "carlos@email.com", "beatriz@email.com", "felipe@email.com", "juliana@email.com",
+        "rafael@email.com", "patricia@email.com", "gustavo@email.com"
+      ];
+
+      const telefonesExemplo = [
+        "11987654321", "11912345678", "11923456789", "11934567890",
+        "11945678901", "11956789012", "11967890123", "11978901234"
+      ];
+
+      let lista = [];
+      for(let i = 0; i < qtd; i++) {
+        const nome = nomesExemplo[Math.floor(Math.random() * nomesExemplo.length)];
+        const email = emailsExemplo[Math.floor(Math.random() * emailsExemplo.length)];
+        const telefone = telefonesExemplo[Math.floor(Math.random() * telefonesExemplo.length)];
+        const ativo = (i % 3 !== 0); // aproximadamente 2/3 ativos, 1/3 evadidos
+
+        lista.push({
+          id: gerarId() + i,
+          nome,
+          email,
+          telefone,
+          ativo
+        });
+      }
+      return lista;
     }
 
-    const formCadastro = document.getElementById('formCadastro');
+    // Inicializa o localStorage com alunos aleatórios se não existir
+    window.onload = function() {
+      if(!localStorage.getItem('listaAlunos')) {
+        const alunosIniciais = gerarAlunosAleatorios(25);
+        localStorage.setItem('listaAlunos', JSON.stringify(alunosIniciais));
 
-    formCadastro.addEventListener('submit', function(e) {
+        // Atualiza dadosAcademia para manter contagem certa
+        const ativos = alunosIniciais.filter(a => a.ativo).length;
+        const evadidos = alunosIniciais.length - ativos;
+
+        localStorage.setItem('dadosAcademia', JSON.stringify({
+          totalAlunos: alunosIniciais.length,
+          alunosAtivos: ativos,
+          alunosEvadidos: evadidos
+        }));
+      }
+    };
+
+    // Manipula o submit do form para salvar aluno novo
+    document.getElementById('formCadastro').addEventListener('submit', function(e) {
       e.preventDefault();
 
-      const nome = formCadastro.nome.value.trim();
-      const email = formCadastro.email.value.trim();
-      const telefone = formCadastro.telefone.value.trim();
+      const nome = document.getElementById('nome').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const telefone = document.getElementById('telefone').value.trim();
 
-      if (nome === '' || email === '' || telefone === '') {
+      if(!nome || !email || !telefone) {
         alert('Por favor, preencha todos os campos.');
         return;
       }
 
-      // Pega a lista atual de alunos
-      const listaAlunos = JSON.parse(localStorage.getItem('listaAlunos'));
+      let listaAlunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
 
-      // Cria novo aluno (ativo por padrão)
+      // Cria novo aluno com status ativo por padrão
       const novoAluno = {
-        id: Date.now(),
+        id: gerarId(),
         nome,
         email,
         telefone,
@@ -172,16 +201,28 @@
       listaAlunos.push(novoAluno);
       localStorage.setItem('listaAlunos', JSON.stringify(listaAlunos));
 
-      // Atualiza os dados da academia
-      const dados = JSON.parse(localStorage.getItem('dadosAcademia'));
-      dados.totalAlunos += 1;
-      dados.alunosAtivos += 1;
-      localStorage.setItem('dadosAcademia', JSON.stringify(dados));
+      // Atualiza dadosAcademia
+      let dadosAcademia = JSON.parse(localStorage.getItem('dadosAcademia')) || {
+        totalAlunos: 0,
+        alunosAtivos: 0,
+        alunosEvadidos: 0
+      };
 
-      alert(`Aluno ${nome} cadastrado com sucesso!`);
+      dadosAcademia.totalAlunos = listaAlunos.length;
+      dadosAcademia.alunosAtivos = listaAlunos.filter(a => a.ativo).length;
+      dadosAcademia.alunosEvadidos = listaAlunos.length - dadosAcademia.alunosAtivos;
 
-      formCadastro.reset();
+      localStorage.setItem('dadosAcademia', JSON.stringify(dadosAcademia));
+
+      // Limpa o form
+      this.reset();
+
+      // Mensagem sucesso
+      const msg = document.getElementById('mensagemSucesso');
+      msg.textContent = `Aluno "${novoAluno.nome}" cadastrado com sucesso!`;
+      setTimeout(() => { msg.textContent = ''; }, 4000);
     });
   </script>
+
 </body>
 </html>
