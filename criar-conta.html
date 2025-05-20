@@ -1,19 +1,93 @@
-<form id="criarContaForm">
-  <input type="text" id="novoUsuario" placeholder="Novo usuário" required />
-  <input type="password" id="novaSenha" placeholder="Nova senha" required />
-  <button type="submit">Criar Conta</button>
-</form>
+<!-- criar-conta.html -->
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Criar Conta - GYM CONTROL</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #fef3c7;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    h1 {
+      color: #d97706;
+      margin-bottom: 1em;
+    }
+    form {
+      background: white;
+      padding: 2em;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      width: 300px;
+      display: flex;
+      flex-direction: column;
+      gap: 1em;
+    }
+    input {
+      padding: 0.8em;
+      border-radius: 8px;
+      border: 1px solid #94a3b8;
+    }
+    button {
+      padding: 0.8em;
+      border: none;
+      background-color: #d97706;
+      color: white;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    a {
+      text-align: center;
+      display: block;
+      margin-top: 1em;
+      color: #d97706;
+      text-decoration: none;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Criar Conta</h1>
+  <form id="formConta">
+    <input type="text" id="nome" placeholder="Nome completo" required />
+    <input type="text" id="usuario" placeholder="Usuário" required />
+    <input type="password" id="senha" placeholder="Senha" required />
+    <button type="submit">Cadastrar</button>
+  </form>
+  <a href="index.html">Voltar para o login</a>
 
-<script>
-  const form = document.getElementById('criarContaForm');
-  form.addEventListener('submit', function (e) {
-    e.preventDefault();
-    const usuario = document.getElementById('novoUsuario').value.trim();
-    const senha = document.getElementById('novaSenha').value.trim();
+  <script>
+    const form = document.getElementById('formConta');
 
-    const conta = { usuario, senha };
-    localStorage.setItem('contaGestor', JSON.stringify(conta));
-    alert('Conta criada com sucesso!');
-    window.location.href = 'index.html';
-  });
-</script>
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const nome = document.getElementById('nome').value.trim();
+      const usuario = document.getElementById('usuario').value.trim();
+      const senha = document.getElementById('senha').value.trim();
+
+      const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+      
+      const existe = usuarios.some(u => u.usuario === usuario);
+      if (existe) {
+        alert('Usuário já existe. Escolha outro nome de usuário.');
+        return;
+      }
+
+      usuarios.push({ nome, usuario, senha });
+      localStorage.setItem('usuarios', JSON.stringify(usuarios));
+      alert('Conta criada com sucesso!');
+      window.location.href = 'index.html';
+    });
+  </script>
+</body>
+</html>
