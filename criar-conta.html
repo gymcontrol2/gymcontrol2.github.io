@@ -1,0 +1,19 @@
+<form id="criarContaForm">
+  <input type="text" id="novoUsuario" placeholder="Novo usuário" required />
+  <input type="password" id="novaSenha" placeholder="Nova senha" required />
+  <button type="submit">Criar Conta</button>
+</form>
+
+<script>
+  const form = document.getElementById('criarContaForm');
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    const usuario = document.getElementById('novoUsuario').value.trim();
+    const senha = document.getElementById('novaSenha').value.trim();
+
+    const conta = { usuario, senha };
+    localStorage.setItem('contaGestor', JSON.stringify(conta));
+    alert('Conta criada com sucesso!');
+    window.location.href = 'index.html';
+  });
+</script>
