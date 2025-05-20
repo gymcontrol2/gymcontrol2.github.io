@@ -1,14 +1,86 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&display=swap');
 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
   font-family: 'Poppins', sans-serif;
-  /* demais estilos mantidos */
+  background: url('academia.jpg') no-repeat center center fixed;
+  background-size: cover;
+  color: white;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 0;
+}
+
+header {
+  position: relative;
+  z-index: 1;
+}
+
+.menu-topo {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  gap: 2.5em;
+  background-color: rgba(0, 0, 0, 0.6);
+  padding: 1em 0;
+  margin: 0;
+}
+
+.menu-topo li a {
+  color: #f3f4f6;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.1rem;
+  padding: 0.5em 1em;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.menu-topo li a:hover {
+  background-color: #3b82f6; /* azul vibrante */
+  color: white;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.6);
+}
+
+.menu-topo li a.ativo {
+  background-color: #2563eb; /* azul escuro para o ativo */
+  color: #e0e7ff;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.7);
+  cursor: default;
+  pointer-events: none;
+}
+
+.hero {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 2em;
+  position: relative;
+  z-index: 1;
 }
 
 .hero h1 {
   font-size: 5.5rem;
   font-weight: 800;
-  color: #f3f4f6; /* cinza clarinho */
+  color: #f3f4f6;
   letter-spacing: 5px;
   text-transform: uppercase;
   text-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
@@ -21,7 +93,7 @@ body {
   max-width: 700px;
   margin: 0 auto 2.5em auto;
   line-height: 1.6;
-  color: #d1d5db; /* cinza médio */
+  color: #d1d5db;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
   font-style: italic;
 }
@@ -56,4 +128,13 @@ body {
 .botoes a:last-child:hover {
   background: linear-gradient(135deg, #d97706, #f59e0b);
   box-shadow: 0 8px 22px rgba(217, 119, 6, 0.6);
+}
+
+footer {
+  position: relative;
+  z-index: 1;
+  background-color: rgba(0, 0, 0, 0.5);
+  text-align: center;
+  padding: 1em;
+  font-size: 0.9em;
 }
