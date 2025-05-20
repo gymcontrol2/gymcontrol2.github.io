@@ -3,130 +3,113 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>GYM CONTROL - Cadastro de Alunos</title>
-
+  <title>GYM CONTROL - Cadastrar Aluno</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&display=swap" rel="stylesheet" />
-
   <style>
     body {
       font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #1e40af, #2563eb);
-      color: white;
+      background: linear-gradient(135deg, #1e3a8a, #2563eb);
+      color: #f3f4f6;
+      margin: 0; padding: 0;
       min-height: 100vh;
-      margin: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 2em;
+      justify-content: center;
+      padding: 2rem;
     }
-
     header {
-      margin-bottom: 2em;
+      margin-bottom: 2rem;
       text-align: center;
+      text-shadow: 0 0 8px #3b82f6;
     }
-
     header h1 {
-      font-size: 2.6rem;
-      letter-spacing: 3px;
-      text-shadow: 0 0 10px #3b82f6;
+      font-size: 2.8rem;
+      letter-spacing: 4px;
     }
-
     main {
-      background: rgba(0, 0, 0, 0.6);
-      padding: 2em 3em;
-      border-radius: 15px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+      background: rgba(0,0,0,0.65);
+      padding: 2rem 3rem;
+      border-radius: 16px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.6);
       width: 100%;
-      max-width: 400px;
-      position: relative;
+      max-width: 420px;
     }
-
     form {
       display: flex;
       flex-direction: column;
-      gap: 1.3em;
+      gap: 1.4rem;
     }
-
     label {
       font-weight: 600;
       font-size: 1.1rem;
-      color: #bfdbfe;
+      color: #cbd5e1;
     }
-
     input[type="text"],
     input[type="email"],
     input[type="tel"] {
-      padding: 0.9em 1.2em;
+      padding: 0.9rem 1.2rem;
       border-radius: 10px;
       border: none;
       font-size: 1.1rem;
       outline: none;
       transition: box-shadow 0.3s ease;
+      background-color: #1e293b;
+      color: #f8fafc;
     }
-
     input[type="text"]:focus,
     input[type="email"]:focus,
     input[type="tel"]:focus {
-      box-shadow: 0 0 10px #3b82f6;
-      background-color: #1e293b;
-      color: #f3f4f6;
+      box-shadow: 0 0 12px #3b82f6;
+      background-color: #334155;
+      color: white;
     }
-
     button {
-      padding: 1em 0;
+      padding: 1rem 0;
       font-weight: 700;
-      font-size: 1.2rem;
-      border-radius: 12px;
+      font-size: 1.3rem;
+      border-radius: 14px;
       background: linear-gradient(135deg, #3b82f6, #22d3ee);
       border: none;
       color: white;
       cursor: pointer;
-      box-shadow: 0 6px 15px rgba(59, 130, 246, 0.5);
+      box-shadow: 0 6px 15px rgba(59, 130, 246, 0.7);
       transition: background 0.4s ease, box-shadow 0.4s ease;
-      margin-top: 1.5em;
+      margin-top: 1.5rem;
     }
-
     button:hover {
       background: linear-gradient(135deg, #22d3ee, #3b82f6);
-      box-shadow: 0 8px 25px rgba(59, 130, 246, 0.8);
+      box-shadow: 0 8px 25px rgba(59, 130, 246, 1);
     }
-
-    .btn-voltar {
-      margin-top: 1.5em;
-      display: inline-block;
-      text-decoration: none;
+    nav {
+      margin-top: 2rem;
+      text-align: center;
+    }
+    nav a {
       color: #fbbf24;
       font-weight: 700;
-      letter-spacing: 1.2px;
+      text-decoration: none;
+      margin: 0 1rem;
+      font-size: 1.1rem;
       transition: color 0.3s ease;
     }
-
-    .btn-voltar:hover {
+    nav a:hover {
       color: #f59e0b;
+      text-decoration: underline;
     }
-
-    /* Notificação */
-    .notificacao {
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background-color: rgba(59, 130, 246, 0.9);
+    .msg-sucesso {
+      background-color: #22c55e;
       color: white;
-      padding: 1rem 2rem;
-      border-radius: 10px;
-      box-shadow: 0 5px 15px rgba(59, 130, 246, 0.7);
+      padding: 1rem;
+      border-radius: 12px;
+      margin-top: 1.5rem;
+      text-align: center;
       font-weight: 700;
-      font-size: 1.1rem;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.4s ease;
-      z-index: 1000;
+      box-shadow: 0 5px 15px rgba(34, 197, 94, 0.7);
+      animation: fadeOut 4s forwards 2s;
     }
-
-    .notificacao.mostrar {
-      opacity: 1;
-      pointer-events: auto;
+    @keyframes fadeOut {
+      to {opacity: 0; height: 0; padding: 0; margin: 0; overflow: hidden;}
     }
   </style>
 </head>
@@ -137,65 +120,57 @@
   </header>
 
   <main>
-    <form id="formCadastro">
+    <form id="formCadastro" autocomplete="off">
       <label for="nome">Nome Completo</label>
-      <input type="text" id="nome" name="nome" placeholder="Digite o nome do aluno" required />
+      <input type="text" id="nome" name="nome" placeholder="Digite o nome completo" required />
 
       <label for="email">E-mail</label>
-      <input type="email" id="email" name="email" placeholder="Digite o e-mail do aluno" required />
+      <input type="email" id="email" name="email" placeholder="Digite o e-mail" required />
 
       <label for="telefone">Telefone</label>
-      <input type="tel" id="telefone" name="telefone" placeholder="(XX) XXXXX-XXXX" required />
+      <input type="tel" id="telefone" name="telefone" placeholder="(XX) XXXXX-XXXX" required pattern="^\(?\d{2}\)?\s?\d{4,5}-?\d{4}$" />
 
       <button type="submit">Cadastrar</button>
     </form>
 
-    <a href="index.html" class="btn-voltar">← Voltar para Home</a>
+    <div id="msgSucesso" class="msg-sucesso" style="display:none;"></div>
+
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="relatorios.html">Relatórios</a>
+      <a href="gestor.html">Gestor</a>
+    </nav>
   </main>
 
-  <div id="notificacao" class="notificacao"></div>
-
   <script>
-    // Inicializa lista de alunos no localStorage, se não existir
+    // Inicializa localStorage se não existir
     if (!localStorage.getItem('listaAlunos')) {
       localStorage.setItem('listaAlunos', JSON.stringify([]));
     }
-
-    // Inicializa dadosAcademia se não existir (para dashboard)
     if (!localStorage.getItem('dadosAcademia')) {
-      const dadosIniciais = {
-        totalAlunos: 0,
-        alunosAtivos: 0,
-        alunosEvadidos: 0
-      };
+      const dadosIniciais = { totalAlunos: 0, alunosAtivos: 0, alunosEvadidos: 0 };
       localStorage.setItem('dadosAcademia', JSON.stringify(dadosIniciais));
     }
 
-    const formCadastro = document.getElementById('formCadastro');
+    const form = document.getElementById('formCadastro');
+    const msgSucesso = document.getElementById('msgSucesso');
 
-    function mostrarNotificacao(msg) {
-      const noti = document.getElementById('notificacao');
-      noti.textContent = msg;
-      noti.classList.add('mostrar');
-      setTimeout(() => {
-        noti.classList.remove('mostrar');
-      }, 3000);
-    }
-
-    formCadastro.addEventListener('submit', function(e) {
+    form.addEventListener('submit', (e) => {
       e.preventDefault();
 
-      const nome = formCadastro.nome.value.trim();
-      const email = formCadastro.email.value.trim();
-      const telefone = formCadastro.telefone.value.trim();
+      const nome = form.nome.value.trim();
+      const email = form.email.value.trim();
+      const telefone = form.telefone.value.trim();
 
-      if (nome === '' || email === '' || telefone === '') {
-        mostrarNotificacao('Por favor, preencha todos os campos.');
+      if (!nome || !email || !telefone) {
+        alert('Por favor, preencha todos os campos corretamente.');
         return;
       }
 
+      // Pega lista atual
       const listaAlunos = JSON.parse(localStorage.getItem('listaAlunos'));
 
+      // Cria novo aluno
       const novoAluno = {
         id: Date.now(),
         nome,
@@ -207,15 +182,25 @@
       listaAlunos.push(novoAluno);
       localStorage.setItem('listaAlunos', JSON.stringify(listaAlunos));
 
+      // Atualiza dadosAcademia
       const dados = JSON.parse(localStorage.getItem('dadosAcademia'));
-      dados.totalAlunos += 1;
-      dados.alunosAtivos += 1;
+      dados.totalAlunos++;
+      dados.alunosAtivos++;
       localStorage.setItem('dadosAcademia', JSON.stringify(dados));
 
-      mostrarNotificacao(`Aluno ${nome} cadastrado com sucesso!`);
+      // Mensagem sucesso
+      msgSucesso.textContent = `Aluno ${nome} cadastrado com sucesso!`;
+      msgSucesso.style.display = 'block';
 
-      formCadastro.reset();
+      // Limpa form
+      form.reset();
+
+      // Oculta mensagem após 4 segundos
+      setTimeout(() => {
+        msgSucesso.style.display = 'none';
+      }, 4000);
     });
   </script>
+
 </body>
 </html>
