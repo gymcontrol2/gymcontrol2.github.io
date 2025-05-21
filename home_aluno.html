@@ -3,194 +3,70 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Área do Aluno - GYM CONTROL</title>
+  <title>Home Aluno - GYM CONTROL</title>
   <style>
     body {
-      font-family: 'Poppins', sans-serif;
-      background: #f0f4f8;
-      margin: 0;
-      padding: 1rem 2rem;
-      max-width: 700px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-    h1 {
-      color: #2563eb;
-      margin-bottom: 1rem;
-      text-align: center;
-    }
-    .tabs {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f1f5f9;
       display: flex;
-      border-bottom: 2px solid #2563eb;
-      margin-bottom: 1rem;
-      gap: 1rem;
+      flex-direction: column;
       justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      color: #1e3a8a;
     }
-    .tab {
-      padding: 0.5rem 1.2rem;
-      cursor: pointer;
-      font-weight: 600;
-      color: #2563eb;
-      border-bottom: 3px solid transparent;
-      transition: border-color 0.3s;
-      user-select: none;
-      border-radius: 4px 4px 0 0;
-    }
-    .tab.active {
-      border-bottom-color: #2563eb;
+    .container {
       background: white;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    .tab:hover {
-      background: #e0e7ff;
-    }
-    .tab-content {
-      background: white;
-      padding: 1.5rem;
-      border-radius: 0 8px 8px 8px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-      min-height: 200px;
-    }
-    .perfil-item {
-      margin-bottom: 1rem;
-    }
-    .perfil-label {
-      font-weight: 700;
-      color: #334155;
-    }
-    .btn-logout {
-      margin-top: 2rem;
-      display: block;
-      background: #ef4444;
-      color: white;
-      padding: 0.8rem 1.5rem;
-      font-weight: 700;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      width: 90%;
+      max-width: 500px;
       text-align: center;
+    }
+    button {
+      margin-top: 1.5rem;
+      padding: 0.8rem 1.5rem;
+      background-color: #2563eb;
       border: none;
+      color: white;
       border-radius: 8px;
       cursor: pointer;
-      width: 100%;
-      max-width: 200px;
-      margin-left: auto;
-      margin-right: auto;
+      font-weight: bold;
       transition: background-color 0.3s;
     }
-    .btn-logout:hover {
-      background: #b91c1c;
-    }
-    a.treino-link {
-      display: block;
-      margin-top: 1rem;
-      text-align: center;
-      color: #2563eb;
-      font-weight: 600;
-      text-decoration: none;
-    }
-    a.treino-link:hover {
-      text-decoration: underline;
+    button:hover {
+      background-color: #1d4ed8;
     }
   </style>
 </head>
 <body>
-
-  <h1>Área do Aluno</h1>
-
-  <div class="tabs">
-    <div class="tab active" data-tab="perfil">Perfil</div>
-    <div class="tab" data-tab="aulas">Aulas</div>
-    <div class="tab" data-tab="frequencia">Frequência</div>
-    <div class="tab" data-tab="pagamento">Pagamento</div>
+  <div class="container" id="content">
+    <!-- Conteúdo será inserido via JavaScript -->
   </div>
-
-  <div class="tab-content" id="tabContent">
-    <!-- Conteúdo dinâmico aqui -->
-  </div>
-
-  <a href="treino.html" class="treino-link">➡️ Ir para Treino</a>
-
-  <button class="btn-logout" id="btnLogout">Sair</button>
 
   <script>
-    // Pega o id do aluno logado na sessão (armazenado no sessionStorage)
-    const alunoLogadoId = sessionStorage.getItem('alunoLogadoId');
+    // Verifica usuário logado
+    const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
 
-    if(!alunoLogadoId) {
-      alert('Você precisa estar logado para acessar essa página.');
-      window.location.href = 'login.html';
+    if (!usuarioLogado || usuarioLogado.tipo !== 'aluno') {
+      alert('Você precisa estar logado como aluno!');
+      window.location.href = 'index.html';
+    } else {
+      // Se estiver logado, mostra boas-vindas
+      const contentDiv = document.getElementById('content');
+      contentDiv.innerHTML = `
+        <h1>Bem-vindo, ${usuarioLogado.nome}!</h1>
+        <p>Esta é a sua área exclusiva como aluno.</p>
+        <button id="btnLogout">Sair</button>
+      `;
+
+      document.getElementById('btnLogout').addEventListener('click', () => {
+        localStorage.removeItem('usuarioLogado');
+        window.location.href = 'index.html';
+      });
     }
-
-    // Pega lista completa de alunos
-    const listaAlunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
-
-    // Encontra aluno logado
-    const aluno = listaAlunos.find(a => a.id == alunoLogadoId);
-
-    if(!aluno) {
-      alert('Aluno não encontrado. Faça login novamente.');
-      sessionStorage.removeItem('alunoLogadoId');
-      window.location.href = 'login.html';
-    }
-
-    const tabContent = document.getElementById('tabContent');
-    const tabs = document.querySelectorAll('.tab');
-
-    // Funções para montar conteúdo das abas
-    const conteudos = {
-      perfil: () => `
-        <div class="perfil-item"><span class="perfil-label">Nome:</span> ${aluno.nome}</div>
-        <div class="perfil-item"><span class="perfil-label">Email:</span> ${aluno.email}</div>
-        <div class="perfil-item"><span class="perfil-label">Telefone:</span> ${aluno.telefone}</div>
-        <div class="perfil-item"><span class="perfil-label">Status:</span> ${aluno.ativo ? 'Ativo' : 'Evadido'}</div>
-      `,
-      aulas: () => `
-        <p>Você está matriculado em X aulas (exemplo placeholder).</p>
-        <ul>
-          <li>Yoga - Segundas e Quartas às 18h</li>
-          <li>Musculação - Terças e Quintas às 7h</li>
-          <li>Spinning - Sábados às 9h</li>
-        </ul>
-      `,
-      frequencia: () => `
-        <p>Frequência registrada nas últimas 4 semanas (exemplo placeholder):</p>
-        <ul>
-          <li>Semana 1: 3 vezes</li>
-          <li>Semana 2: 4 vezes</li>
-          <li>Semana 3: 2 vezes</li>
-          <li>Semana 4: 3 vezes</li>
-        </ul>
-      `,
-      pagamento: () => `
-        <p>Status do pagamento:</p>
-        <ul>
-          <li>Mês atual: Pago</li>
-          <li>Próximo vencimento: 05/06/2025</li>
-          <li>Forma de pagamento: Cartão de crédito</li>
-        </ul>
-      `
-    };
-
-    // Função para trocar aba
-    function trocarAba(e) {
-      tabs.forEach(t => t.classList.remove('active'));
-      e.target.classList.add('active');
-      const aba = e.target.getAttribute('data-tab');
-      tabContent.innerHTML = conteudos[aba]();
-    }
-
-    // Inicializa com aba Perfil
-    tabContent.innerHTML = conteudos.perfil();
-
-    // Adiciona evento nas tabs
-    tabs.forEach(tab => {
-      tab.addEventListener('click', trocarAba);
-    });
-
-    // Logout
-    document.getElementById('btnLogout').addEventListener('click', () => {
-      sessionStorage.removeItem('alunoLogadoId');
-      window.location.href = 'login.html';
-    });
   </script>
-
 </body>
 </html>
