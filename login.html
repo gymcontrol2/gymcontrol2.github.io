@@ -1,43 +1,145 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <title>Login</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login - GYM CONTROL</title>
   <style>
-    body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: #f7f7f7; }
-    .login-box { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); width: 300px; }
-    input { width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 5px; }
-    button { width: 100%; padding: 10px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
-    button:hover { background: #0056b3; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #e0e7ff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background: white;
+      padding: 2rem 3rem;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
+      width: 320px;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: #2563eb;
+    }
+    label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: 600;
+    }
+    input[type="email"], input[type="password"], select {
+      width: 100%;
+      padding: 0.7rem;
+      border-radius: 8px;
+      border: 1px solid #94a3b8;
+      margin-top: 0.3rem;
+      font-size: 1rem;
+      outline-offset: 2px;
+      outline-color: #2563eb;
+      transition: border-color 0.3s;
+    }
+    input[type="email"]:focus, input[type="password"]:focus, select:focus {
+      border-color: #2563eb;
+    }
+    button {
+      margin-top: 1.8rem;
+      width: 100%;
+      padding: 0.8rem;
+      background-color: #2563eb;
+      color: white;
+      font-weight: 700;
+      font-size: 1.1rem;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #1e40af;
+    }
+    .msg-erro {
+      color: #ef4444;
+      margin-top: 1rem;
+      font-weight: 600;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
-  <div class="login-box">
-    <h2>Login</h2>
-    <input type="email" id="email" placeholder="Email" required />
-    <input type="password" id="senha" placeholder="Senha" required />
-    <button onclick="fazerLogin()">Entrar</button>
+  <div class="container">
+    <h2>Login - GYM CONTROL</h2>
+    <form id="loginForm">
+      <label for="email">Email</label>
+      <input type="email" id="email" required placeholder="Digite seu email" />
+
+      <label for="password">Senha</label>
+      <input type="password" id="password" required placeholder="Digite sua senha" />
+
+      <label for="tipoUsuario">Tipo de Usuário</label>
+      <select id="tipoUsuario" required>
+        <option value="" disabled selected>Selecione</option>
+        <option value="gestor">Gestor</option>
+        <option value="aluno">Aluno</option>
+      </select>
+
+      <button type="submit">Entrar</button>
+      <div class="msg-erro" id="msgErro"></div>
+    </form>
   </div>
 
   <script>
-    // Cria um usuário padrão, se ainda não existir
-    if (!localStorage.getItem('usuarioPadrao')) {
-      const usuario = { email: 'admin@academia.com', senha: '123456' };
-      localStorage.setItem('usuarioPadrao', JSON.stringify(usuario));
-    }
+    // Exemplo simples de usuários cadastrados (em um sistema real, use backend e segurança adequada)
+    const usuarios = {
+      gestor: [
+        { email: "gestor@academia.com", senha: "123456" }
+      ],
+      aluno: [
+        { email: "aluno1@email.com", senha: "123" },
+        { email: "aluno2@email.com", senha: "abc" }
+      ]
+    };
 
-    function fazerLogin() {
-      const email = document.getElementById('email').value;
-      const senha = document.getElementById('senha').value;
-      const usuario = JSON.parse(localStorage.getItem('usuarioPadrao'));
+    const form = document.getElementById('loginForm');
+    const msgErro = document.getElementById('msgErro');
 
-      if (email === usuario.email && senha === usuario.senha) {
-        localStorage.setItem('usuarioLogado', 'true');
-        window.location.href = 'dashboard.html';
-      } else {
-        alert('Email ou senha incorretos!');
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const email = document.getElementById('email').value.trim();
+      const senha = document.getElementById('password').value.trim();
+      const tipoUsuario = document.getElementById('tipoUsuario').value;
+
+      msgErro.textContent = '';
+
+      if (!tipoUsuario) {
+        msgErro.textContent = "Selecione o tipo de usuário.";
+        return;
       }
-    }
+
+      const usuariosDoTipo = usuarios[tipoUsuario] || [];
+      const usuarioEncontrado = usuariosDoTipo.find(u => u.email === email && u.senha === senha);
+
+      if (usuarioEncontrado) {
+        // Salva no localStorage o tipo de usuário logado para controle posterior
+        localStorage.setItem('usuarioLogado', JSON.stringify({
+          email,
+          tipoUsuario
+        }));
+
+        // Redireciona conforme tipo de usuário
+        if (tipoUsuario === 'gestor') {
+          window.location.href = 'home_gestor.html'; // Ajuste para sua página de gestor
+        } else {
+          window.location.href = 'home_aluno.html'; // Ajuste para sua página de aluno
+        }
+      } else {
+        msgErro.textContent = "Email ou senha incorretos.";
+      }
+    });
   </script>
 </body>
 </html>
