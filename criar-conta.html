@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Criar Conta - GYM CONTROL</title>
   <style>
     body {
@@ -36,11 +36,6 @@
       gap: 1rem;
     }
 
-    label {
-      font-weight: 600;
-      color: #374151;
-    }
-
     input[type="text"],
     input[type="email"],
     input[type="password"],
@@ -66,30 +61,20 @@
       background-color: #1d4ed8;
     }
 
-    .link-login {
+    #mensagem {
       text-align: center;
       margin-top: 1rem;
-    }
-
-    .link-login a {
-      color: #2563eb;
-      text-decoration: none;
       font-weight: bold;
+      color: green;
     }
 
-    .link-login a:hover {
-      color: #1d4ed8;
+    #mensagem.erro {
+      color: red;
     }
 
-    .mensagem {
-      margin-top: 1rem;
+    label {
       font-weight: 600;
-      color: #059669;
-      text-align: center;
-    }
-
-    .erro {
-      color: #dc2626;
+      color: #334155;
     }
   </style>
 </head>
@@ -99,49 +84,37 @@
     <h2>Criar Conta - Aluno</h2>
     <form id="formCriarConta">
       <label for="nome">Nome completo</label>
-      <input type="text" id="nome" required placeholder="Digite seu nome completo" />
+      <input type="text" id="nome" placeholder="Seu nome" required />
 
       <label for="username">Nome de usuário</label>
-      <input type="text" id="username" required placeholder="Escolha um nome de usuário" />
+      <input type="text" id="username" placeholder="Seu usuário" required />
 
       <label for="email">Email</label>
-      <input type="email" id="email" required placeholder="Digite seu email" />
+      <input type="email" id="email" placeholder="seuemail@exemplo.com" required />
 
-      <label for="telefone">Telefone (com DDD)</label>
-      <input type="tel" id="telefone" required placeholder="(00) 00000-0000" maxlength="15" />
+      <label for="telefone">Telefone (DDD + número)</label>
+      <input type="tel" id="telefone" placeholder="(00) 00000-0000" required maxlength="15" />
 
       <label for="senha">Senha</label>
-      <input type="password" id="senha" required placeholder="Digite sua senha" />
+      <input type="password" id="senha" placeholder="Senha" required />
 
-      <label for="confirmaSenha">Confirme a senha</label>
-      <input type="password" id="confirmaSenha" required placeholder="Confirme sua senha" />
+      <label for="confirmaSenha">Confirmar Senha</label>
+      <input type="password" id="confirmaSenha" placeholder="Confirme a senha" required />
 
       <button type="submit">Criar Conta</button>
     </form>
-
-    <div class="mensagem" id="mensagem"></div>
-
-    <div class="link-login">
-      <p>Já tem conta? <a href="index.html">Faça login aqui</a></p>
-    </div>
+    <div id="mensagem"></div>
   </div>
 
   <script>
+    // Máscara simples para telefone
     const telefoneInput = document.getElementById('telefone');
-
-    telefoneInput.addEventListener('input', function(e) {
-      let valor = telefoneInput.value;
-
-      // Remove tudo que não for número
-      valor = valor.replace(/\D/g, '');
-
-      // Formata com (XX) XXXXX-XXXX
-      if (valor.length > 0) valor = '(' + valor;
-      if (valor.length > 3) valor = valor.slice(0, 3) + ') ' + valor.slice(3);
-      if (valor.length > 10) valor = valor.slice(0, 10) + '-' + valor.slice(10, 14);
-      if (valor.length > 15) valor = valor.slice(0, 15);
-
-      telefoneInput.value = valor;
+    telefoneInput.addEventListener('input', function (e) {
+      let v = telefoneInput.value.replace(/\D/g, '');
+      if (v.length > 11) v = v.slice(0, 11);
+      v = v.replace(/^(\d{2})(\d)/g, '($1) $2');
+      v = v.replace(/(\d{5})(\d)/, '$1-$2');
+      telefoneInput.value = v;
     });
 
     document.getElementById('formCriarConta').addEventListener('submit', function(e) {
@@ -164,7 +137,7 @@
         return;
       }
 
-      if (telefone.length < 14) { // (XX) XXXXX-XXXX tem 14 caracteres contando espaços e parênteses
+      if (telefone.length < 14) {
         mensagem.textContent = 'Por favor, insira um telefone válido.';
         mensagem.classList.add('erro');
         return;
@@ -172,7 +145,6 @@
 
       let listaAlunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
 
-      // Verificar se username ou email já existem
       const usernameExistente = listaAlunos.some(aluno => aluno.username.toLowerCase() === username.toLowerCase());
       if (usernameExistente) {
         mensagem.textContent = 'Nome de usuário já está em uso.';
@@ -187,7 +159,6 @@
         return;
       }
 
-      // Criar novo aluno
       const novoAluno = {
         id: Date.now(),
         nome,
@@ -202,6 +173,9 @@
       localStorage.setItem('listaAlunos', JSON.stringify(listaAlunos));
 
       mensagem.textContent = 'Conta criada com sucesso! Redirecionando para login...';
+      mensagem.classList.remove('erro');
+
+      console.log('Conta criada:', novoAluno);
 
       setTimeout(() => {
         window.location.href = 'index.html';
