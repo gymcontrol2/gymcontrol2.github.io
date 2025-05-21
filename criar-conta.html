@@ -106,82 +106,94 @@
     <div id="mensagem"></div>
   </div>
 
-  <script>
-    // Máscara simples para telefone
-    const telefoneInput = document.getElementById('telefone');
-    telefoneInput.addEventListener('input', function (e) {
-      let v = telefoneInput.value.replace(/\D/g, '');
-      if (v.length > 11) v = v.slice(0, 11);
-      v = v.replace(/^(\d{2})(\d)/g, '($1) $2');
-      v = v.replace(/(\d{5})(\d)/, '$1-$2');
-      telefoneInput.value = v;
-    });
+ <script>
+  // Máscara para telefone
+  const telefoneInput = document.getElementById('telefone');
+  telefoneInput.addEventListener('input', function () {
+    let v = telefoneInput.value.replace(/\D/g, '');
+    if (v.length > 11) v = v.slice(0, 11);
+    v = v.replace(/^(\d{2})(\d)/g, '($1) $2');
+    v = v.replace(/(\d{5})(\d)/, '$1-$2');
+    telefoneInput.value = v;
+  });
 
-    document.getElementById('formCriarConta').addEventListener('submit', function(e) {
-      e.preventDefault();
+  document.getElementById('formCriarConta').addEventListener('submit', function (e) {
+    e.preventDefault();
 
-      const nome = document.getElementById('nome').value.trim();
-      const username = document.getElementById('username').value.trim();
-      const email = document.getElementById('email').value.trim();
-      const telefone = document.getElementById('telefone').value.trim();
-      const senha = document.getElementById('senha').value;
-      const confirmaSenha = document.getElementById('confirmaSenha').value;
+    const nome = document.getElementById('nome').value.trim();
+    const username = document.getElementById('username').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const telefone = document.getElementById('telefone').value.trim();
+    const senha = document.getElementById('senha').value;
+    const confirmaSenha = document.getElementById('confirmaSenha').value;
+    const mensagem = document.getElementById('mensagem');
 
-      const mensagem = document.getElementById('mensagem');
-      mensagem.textContent = '';
-      mensagem.classList.remove('erro');
+    mensagem.textContent = '';
+    mensagem.classList.remove('erro');
 
-      if (senha !== confirmaSenha) {
-        mensagem.textContent = 'As senhas não coincidem.';
-        mensagem.classList.add('erro');
-        return;
-      }
+    // Validações básicas
+    if (!nome || !username || !email || !telefone || !senha || !confirmaSenha) {
+      mensagem.textContent = 'Preencha todos os campos.';
+      mensagem.classList.add('erro');
+      return;
+    }
 
-      if (telefone.length < 14) {
-        mensagem.textContent = 'Por favor, insira um telefone válido.';
-        mensagem.classList.add('erro');
-        return;
-      }
+    if (senha !== confirmaSenha) {
+      mensagem.textContent = 'As senhas não coincidem.';
+      mensagem.classList.add('erro');
+      return;
+    }
 
-      let listaAlunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
+    if (telefone.length < 14) {
+      mensagem.textContent = 'Por favor, insira um telefone válido.';
+      mensagem.classList.add('erro');
+      return;
+    }
 
-      const usernameExistente = listaAlunos.some(aluno => aluno.username.toLowerCase() === username.toLowerCase());
-      if (usernameExistente) {
-        mensagem.textContent = 'Nome de usuário já está em uso.';
-        mensagem.classList.add('erro');
-        return;
-      }
+    // Carrega os usuários salvos
+    let listaAlunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
 
-      const emailExistente = listaAlunos.some(aluno => aluno.email.toLowerCase() === email.toLowerCase());
-      if (emailExistente) {
-        mensagem.textContent = 'Email já cadastrado.';
-        mensagem.classList.add('erro');
-        return;
-      }
+    const usernameExistente = listaAlunos.some(aluno => aluno.username.toLowerCase() === username.toLowerCase());
+    if (usernameExistente) {
+      mensagem.textContent = 'Nome de usuário já está em uso.';
+      mensagem.classList.add('erro');
+      return;
+    }
 
-      const novoAluno = {
-        id: Date.now(),
-        nome,
-        username,
-        email,
-        telefone,
-        senha,
-        ativo: true
-      };
+    const emailExistente = listaAlunos.some(aluno => aluno.email.toLowerCase() === email.toLowerCase());
+    if (emailExistente) {
+      mensagem.textContent = 'Email já cadastrado.';
+      mensagem.classList.add('erro');
+      return;
+    }
 
-      listaAlunos.push(novoAluno);
-      localStorage.setItem('listaAlunos', JSON.stringify(listaAlunos));
+    // Cria novo aluno
+    const novoAluno = {
+      id: Date.now(),
+      nome,
+      username,
+      email,
+      telefone,
+      senha,
+      ativo: true
+    };
 
-      mensagem.textContent = 'Conta criada com sucesso! Redirecionando para login...';
-      mensagem.classList.remove('erro');
+    listaAlunos.push(novoAluno);
+    localStorage.setItem('listaAlunos', JSON.stringify(listaAlunos));
 
-      console.log('Conta criada:', novoAluno);
+    mensagem.textContent = 'Conta criada com sucesso! Redirecionando...';
+    mensagem.classList.remove('erro');
+    mensagem.style.color = 'green';
 
-      setTimeout(() => {
-        window.location.href = 'index.html';
-      }, 2000);
-    });
-  </script>
+    console.log('Conta criada:', novoAluno);
+
+    // Redireciona para login
+    setTimeout(() => {
+      window.location.href = 'index.html';
+    }, 1500);
+  });
+</script>
+
 
 </body>
 </html>
