@@ -4,6 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Dashboard - GYM CONTROL</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     body {
       font-family: "Segoe UI", sans-serif;
@@ -21,49 +24,87 @@
     }
 
     .cards {
-      display: flex;
-      gap: 2rem;
-      flex-wrap: wrap;
-      justify-content: center;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      width: 100%;
+      max-width: 1200px;
+      margin-bottom: 3rem;
     }
 
     .card {
       background-color: white;
       border-radius: 1rem;
       padding: 2rem;
-      width: 260px;
       text-align: center;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      transition: transform 0.3s ease;
+      position: relative;
+    }
+
+    .card:hover {
+      transform: scale(1.03);
     }
 
     .card h2 {
-      font-size: 3rem;
+      font-size: 2.2rem;
       margin: 0.5rem 0;
     }
 
     .card p {
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       color: #6b7280;
     }
 
-    .total {
-      border-left: 6px solid #6366f1;
+    .icon {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      width: 24px;
+      height: 24px;
+      color: #9ca3af;
     }
 
-    .ativos {
-      border-left: 6px solid #10b981;
-    }
+    .total { border-left: 6px solid #6366f1; }
+    .ativos { border-left: 6px solid #10b981; }
+    .evadidos { border-left: 6px solid #ef4444; }
+    .novos { border-left: 6px solid #3b82f6; }
+    .frequencia { border-left: 6px solid #f59e0b; }
+    .receita { border-left: 6px solid #8b5cf6; }
 
-    .evadidos {
-      border-left: 6px solid #ef4444;
-    }
-
-    .voltar {
+    .voltar, .exportar {
       margin-top: 2rem;
-      display: inline-block;
-      color: #3b82f6;
+      color: white;
+      background-color: #1d4ed8;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.5rem;
       text-decoration: none;
       font-weight: bold;
+      transition: background 0.3s;
+    }
+
+    .voltar:hover, .exportar:hover {
+      background-color: #2563eb;
+    }
+
+    .botoes {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .chart-container {
+      background: white;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      max-width: 600px;
+      width: 100%;
+    }
+
+    canvas {
+      max-width: 100%;
     }
   </style>
 </head>
@@ -73,20 +114,45 @@
 
   <div class="cards">
     <div class="card total">
+      <div class="icon" data-lucide="users"></div>
       <p>Total de Alunos</p>
       <h2 id="totalAlunos">0</h2>
     </div>
     <div class="card ativos">
+      <div class="icon" data-lucide="smile"></div>
       <p>Alunos Ativos</p>
       <h2 id="alunosAtivos">0</h2>
     </div>
     <div class="card evadidos">
+      <div class="icon" data-lucide="alert-triangle"></div>
       <p>Alunos Evadidos</p>
       <h2 id="alunosEvadidos">0</h2>
     </div>
+    <div class="card novos">
+      <div class="icon" data-lucide="plus-circle"></div>
+      <p>Novos no Mês</p>
+      <h2 id="alunosNovos">0</h2>
+    </div>
+    <div class="card frequencia">
+      <div class="icon" data-lucide="activity"></div>
+      <p>Frequência Média</p>
+      <h2 id="frequenciaMedia">0%</h2>
+    </div>
+    <div class="card receita">
+      <div class="icon" data-lucide="credit-card"></div>
+      <p>Receita Estimada</p>
+      <h2 id="receita">R$ 0</h2>
+    </div>
   </div>
 
-  <a href="home.html" class="voltar">← Voltar para a Home</a>
+  <div class="chart-container">
+    <canvas id="graficoAlunos"></canvas>
+  </div>
+
+  <div class="botoes">
+    <a href="home.html" class="voltar">← Voltar para a Home</a>
+    <a href="#" onclick="gerarPDF()" class="exportar">📄 Exportar PDF</a>
+  </div>
 
   <script>
     function atualizarDashboard() {
@@ -96,12 +162,64 @@
         alunosEvadidos: 0
       };
 
+      const alunosNovosMes = 5; // Simulado
+      const frequencia = 72;    // Simulado (%)
+      const mensalidade = 120;
+      const receita = dados.totalAlunos * mensalidade;
+
       document.getElementById('totalAlunos').textContent = dados.totalAlunos;
       document.getElementById('alunosAtivos').textContent = dados.alunosAtivos;
       document.getElementById('alunosEvadidos').textContent = dados.alunosEvadidos;
+      document.getElementById('alunosNovos').textContent = alunosNovosMes;
+      document.getElementById('frequenciaMedia').textContent = `${frequencia}%`;
+      document.getElementById('receita').textContent = `R$ ${receita.toLocaleString('pt-BR')}`;
+
+      const ctx = document.getElementById('graficoAlunos').getContext('2d');
+      new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Ativos', 'Evadidos'],
+          datasets: [{
+            label: 'Situação dos Alunos',
+            data: [dados.alunosAtivos, dados.alunosEvadidos],
+            backgroundColor: ['#10b981', '#ef4444'],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          plugins: {
+            legend: { position: 'bottom' }
+          }
+        }
+      });
+    }
+
+    function gerarPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      doc.setFontSize(16);
+      doc.text("Relatório do Dashboard - GYM CONTROL", 20, 20);
+
+      const total = document.getElementById('totalAlunos').textContent;
+      const ativos = document.getElementById('alunosAtivos').textContent;
+      const evadidos = document.getElementById('alunosEvadidos').textContent;
+      const novos = document.getElementById('alunosNovos').textContent;
+      const freq = document.getElementById('frequenciaMedia').textContent;
+      const receita = document.getElementById('receita').textContent;
+
+      doc.setFontSize(12);
+      doc.text(`📊 Total de Alunos: ${total}`, 20, 40);
+      doc.text(`✅ Ativos: ${ativos}`, 20, 50);
+      doc.text(`⚠️ Evadidos: ${evadidos}`, 20, 60);
+      doc.text(`🆕 Novos no Mês: ${novos}`, 20, 70);
+      doc.text(`📈 Frequência Média: ${freq}`, 20, 80);
+      doc.text(`💰 Receita Estimada: ${receita}`, 20, 90);
+
+      doc.save("relatorio-dashboard.pdf");
     }
 
     atualizarDashboard();
+    lucide.createIcons();
   </script>
 
 </body>
