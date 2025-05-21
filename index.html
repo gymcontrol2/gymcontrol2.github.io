@@ -1,95 +1,216 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Login - GYM CONTROL</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700&display=swap" rel="stylesheet" />
   <style>
     body {
-      font-family: 'Poppins', sans-serif;
-      background-color: #e0e7ff;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f0f4f8;
       display: flex;
-      flex-direction: column;
       justify-content: center;
       align-items: center;
       height: 100vh;
       margin: 0;
+      padding: 1rem;
     }
-    h1 {
-      color: #2563eb;
-      margin-bottom: 1em;
-    }
-    form {
+    .container {
       background: white;
-      padding: 2em;
+      padding: 2rem;
       border-radius: 12px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-      width: 300px;
-      display: flex;
-      flex-direction: column;
-      gap: 1em;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+      width: 320px;
     }
-    input {
-      padding: 0.8em;
-      border-radius: 8px;
-      border: 1px solid #94a3b8;
+    h2 {
+      margin-bottom: 1.5rem;
+      color: #2563eb;
+      text-align: center;
+    }
+    label {
+      display: block;
+      margin: 0.5rem 0 0.2rem;
+      font-weight: 600;
+      color: #334155;
+    }
+    input[type="email"], input[type="password"], input[type="text"] {
+      width: 100%;
+      padding: 0.6rem;
+      border-radius: 6px;
+      border: 1px solid #cbd5e1;
+      font-size: 1rem;
+      outline-offset: 2px;
+      outline-color: #2563eb;
     }
     button {
-      padding: 0.8em;
-      border: none;
+      margin-top: 1rem;
+      width: 100%;
+      padding: 0.8rem;
       background-color: #2563eb;
-      color: white;
-      font-weight: bold;
+      border: none;
       border-radius: 8px;
+      color: white;
+      font-weight: 700;
+      font-size: 1.1rem;
       cursor: pointer;
+      transition: background-color 0.3s;
     }
-    a {
+    button:hover {
+      background-color: #1e40af;
+    }
+    .switch-link {
+      margin-top: 1rem;
       text-align: center;
-      display: block;
-      margin-top: 1em;
       color: #2563eb;
-      text-decoration: none;
-      font-weight: bold;
+      cursor: pointer;
+      font-weight: 600;
+      user-select: none;
     }
-    .erro {
-      color: red;
+    .error {
+      margin-top: 1rem;
+      color: #dc2626;
+      font-weight: 700;
       text-align: center;
-      display: none;
+    }
+    .success {
+      margin-top: 1rem;
+      color: #16a34a;
+      font-weight: 700;
+      text-align: center;
     }
   </style>
 </head>
 <body>
-  <h1>GYM CONTROL</h1>
-  <form id="formLogin">
-    <input type="text" id="usuario" placeholder="Usuário" required />
-    <input type="password" id="senha" placeholder="Senha" required />
-    <button type="submit">Entrar</button>
-    <div class="erro" id="erroLogin">Usuário ou senha inválidos.</div>
-  </form>
-  <a href="criar-conta.html">Criar conta</a>
+
+  <div class="container">
+    <!-- LOGIN -->
+    <form id="loginForm">
+      <h2>Entrar</h2>
+
+      <label for="tipoUsuario">Sou:</label>
+      <select id="tipoUsuario" required>
+        <option value="aluno">Aluno</option>
+        <option value="gestor">Gestor</option>
+      </select>
+
+      <label for="emailLogin">Email:</label>
+      <input type="email" id="emailLogin" placeholder="Digite seu email" required />
+
+      <label for="senhaLogin">Senha:</label>
+      <input type="password" id="senhaLogin" placeholder="Digite sua senha" required />
+
+      <button type="submit">Entrar</button>
+      <div class="switch-link" id="linkCriarConta">Não tem conta? Crie aqui</div>
+      <div class="error" id="loginError"></div>
+    </form>
+
+    <!-- CADASTRO -->
+    <form id="cadastroForm" style="display:none;">
+      <h2>Criar Conta</h2>
+
+      <label for="nomeCadastro">Nome completo:</label>
+      <input type="text" id="nomeCadastro" placeholder="Digite seu nome" required />
+
+      <label for="emailCadastro">Email:</label>
+      <input type="email" id="emailCadastro" placeholder="Digite seu email" required />
+
+      <label for="senhaCadastro">Senha:</label>
+      <input type="password" id="senhaCadastro" placeholder="Crie uma senha" required />
+
+      <button type="submit">Cadastrar</button>
+      <div class="switch-link" id="linkLogin">Já tem conta? Faça login</div>
+      <div class="success" id="cadastroSucesso"></div>
+      <div class="error" id="cadastroErro"></div>
+    </form>
+  </div>
 
   <script>
-    const form = document.getElementById('formLogin');
-    const erroLogin = document.getElementById('erroLogin');
+    // Alterna entre login e cadastro
+    const loginForm = document.getElementById('loginForm');
+    const cadastroForm = document.getElementById('cadastroForm');
+    const linkCriarConta = document.getElementById('linkCriarConta');
+    const linkLogin = document.getElementById('linkLogin');
+    const loginError = document.getElementById('loginError');
+    const cadastroErro = document.getElementById('cadastroErro');
+    const cadastroSucesso = document.getElementById('cadastroSucesso');
 
-    form.addEventListener('submit', function(e) {
+    linkCriarConta.addEventListener('click', () => {
+      loginForm.style.display = 'none';
+      cadastroForm.style.display = 'block';
+      loginError.textContent = '';
+      cadastroErro.textContent = '';
+      cadastroSucesso.textContent = '';
+    });
+
+    linkLogin.addEventListener('click', () => {
+      cadastroForm.style.display = 'none';
+      loginForm.style.display = 'block';
+      loginError.textContent = '';
+      cadastroErro.textContent = '';
+      cadastroSucesso.textContent = '';
+    });
+
+    // Login
+    loginForm.addEventListener('submit', function(e) {
       e.preventDefault();
+      loginError.textContent = '';
 
-      const usuario = document.getElementById('usuario').value.trim();
-      const senha = document.getElementById('senha').value.trim();
+      const tipo = document.getElementById('tipoUsuario').value;
+      const email = document.getElementById('emailLogin').value.trim().toLowerCase();
+      const senha = document.getElementById('senhaLogin').value;
 
-      const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
-      const usuarioEncontrado = usuarios.find(u => u.usuario === usuario && u.senha === senha);
-
-      if (usuarioEncontrado) {
-        localStorage.setItem('usuarioLogado', JSON.stringify(usuarioEncontrado));
-        window.location.href = 'home.html';
+      if(tipo === 'gestor') {
+        // Usuário gestor fixo
+        if(email === 'admin' && senha === '1234') {
+          localStorage.setItem('usuarioLogado', JSON.stringify({ tipo: 'gestor', email }));
+          window.location.href = 'home.html'; // redireciona para página do gestor
+        } else {
+          loginError.textContent = 'Usuário ou senha do gestor incorretos.';
+        }
       } else {
-        erroLogin.style.display = 'block';
+        // Login aluno - verifica no localStorage
+        const alunos = JSON.parse(localStorage.getItem('contasAlunos')) || [];
+        const usuario = alunos.find(u => u.email === email && u.senha === senha);
+
+        if(usuario) {
+          localStorage.setItem('usuarioLogado', JSON.stringify({ tipo: 'aluno', email }));
+          window.location.href = 'aluno.html'; // redireciona para página do aluno
+        } else {
+          loginError.textContent = 'Email ou senha incorretos.';
+        }
       }
     });
+
+    // Cadastro
+    cadastroForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      cadastroErro.textContent = '';
+      cadastroSucesso.textContent = '';
+
+      const nome = document.getElementById('nomeCadastro').value.trim();
+      const email = document.getElementById('emailCadastro').value.trim().toLowerCase();
+      const senha = document.getElementById('senhaCadastro').value;
+
+      if(!nome || !email || !senha) {
+        cadastroErro.textContent = 'Preencha todos os campos.';
+        return;
+      }
+
+      let alunos = JSON.parse(localStorage.getItem('contasAlunos')) || [];
+
+      // Verifica se email já existe
+      if(alunos.some(a => a.email === email)) {
+        cadastroErro.textContent = 'Email já cadastrado.';
+        return;
+      }
+
+      alunos.push({ nome, email, senha });
+      localStorage.setItem('contasAlunos', JSON.stringify(alunos));
+
+      cadastroSucesso.textContent = 'Conta criada com sucesso! Você já pode fazer login.';
+      this.reset();
+    });
   </script>
+
 </body>
 </html>
