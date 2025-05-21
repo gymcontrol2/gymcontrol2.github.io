@@ -1,0 +1,135 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: url('https://png.pngtree.com/background/20250202/original/pngtree-a-gym-with-red-lights-dark-neon-for-motivating-vibe-picture-image_16004068.jpg') no-repeat center center fixed;
+  background-size: cover;
+  color: white;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.7); /* overlay escuro para melhorar leitura */
+  z-index: 0;
+}
+
+header {
+  position: relative;
+  z-index: 1;
+}
+
+.menu-topo {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  gap: 2.5em;
+  background-color: rgba(0, 0, 0, 0.6);
+  padding: 1em 0;
+  margin: 0;
+}
+
+.menu-topo li a {
+  color: #f3f4f6;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.1rem;
+  padding: 0.5em 1em;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.menu-topo li a:hover {
+  background-color: #ef4444; /* vermelho vibrante combinando com a imagem */
+  color: white;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.6);
+}
+
+.menu-topo li a.ativo {
+  background-color: #b91c1c; /* vermelho escuro para o ativo */
+  color: #fca5a5;
+  box-shadow: 0 4px 14px rgba(185, 28, 28, 0.7);
+  cursor: default;
+  pointer-events: none;
+}
+
+.hero {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 2em;
+  position: relative;
+  z-index: 1;
+}
+
+.hero h1 {
+  font-size: 5.5rem;
+  font-weight: 800;
+  color: #f3f4f6;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  text-shadow: 0 4px 15px rgba(0, 0, 0, 0.8);
+  margin-bottom: 0.5em;
+}
+
+.hero .subtitulo {
+  font-size: 1.8rem;
+  font-weight: 600;
+  max-width: 700px;
+  margin: 0 auto 2.5em auto;
+  line-height: 1.6;
+  color: #fca5a5;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+  font-style: italic;
+}
+
+.botoes {
+  display: flex;
+  justify-content: center;
+  gap: 1.2em;
+  flex-wrap: wrap;
+  z-index: 1;
+}
+
+.botoes .btn {
+  padding: 1em 2.4em;
+  font-weight: 600;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #ef4444, #b91c1c);
+  color: white;
+  box-shadow: 0 6px 15px rgba(239, 68, 68, 0.4);
+  transition: background 0.4s ease, box-shadow 0.4s ease;
+  text-decoration: none;
+  min-width: 140px;
+  text-align: center;
+}
+
+.botoes .btn:hover {
+  background: linear-gradient(135deg, #b91c1c, #ef4444);
+  box-shadow: 0 8px 22px rgba(185, 28, 28, 0.6);
+}
+
+footer {
+  position: relative;
+  z-index: 1;
+  background-color: rgba(0, 0, 0, 0.5);
+  text-align: center;
+  padding: 1em;
+  font-size: 0.9em;
+  color: #fca5a5;
+}
