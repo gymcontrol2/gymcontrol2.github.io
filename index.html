@@ -101,7 +101,6 @@
       const tipoUsuario = document.querySelector('input[name="tipoUsuario"]:checked').value;
 
       if (tipoUsuario === 'gestor') {
-        // Login do gestor: usuário ou e-mail
         if ((loginInput === 'admin' || loginInput === 'admin@email.com') && senhaInput === '1234') {
           localStorage.setItem('usuarioLogado', JSON.stringify({
             nome: 'Administrador',
@@ -112,12 +111,13 @@
           alert('Usuário ou senha do gestor incorretos!');
         }
       } else {
-        // Login do aluno: email ou username + senha
         const listaAlunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
 
-        const alunoEncontrado = listaAlunos.find(aluno =>
-          (aluno.email.toLowerCase() === loginInput || aluno.username.toLowerCase() === loginInput) && aluno.senha === senhaInput
-        );
+        const alunoEncontrado = listaAlunos.find(aluno => {
+          const email = aluno.email ? aluno.email.toLowerCase() : '';
+          const username = aluno.username ? aluno.username.toLowerCase() : '';
+          return (email === loginInput || username === loginInput) && aluno.senha === senhaInput;
+        });
 
         if (alunoEncontrado) {
           localStorage.setItem('usuarioLogado', JSON.stringify({
