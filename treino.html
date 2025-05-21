@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Treinos - GYM CONTROL</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f9fafb;
+      margin: 0;
+      padding: 1.5rem 2rem;
+      max-width: 720px;
+      margin-left: auto;
+      margin-right: auto;
+      color: #1e293b;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+    header h1 {
+      color: #2563eb;
+      margin: 0;
+      font-weight: 800;
+      font-size: 1.8rem;
+    }
+    header a {
+      background-color: #2563eb;
+      color: white;
+      padding: 0.6rem 1.2rem;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 700;
+      transition: background-color 0.3s;
+      font-size: 0.95rem;
+    }
+    header a:hover {
+      background-color: #1e40af;
+    }
+
+    .dia-treino {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem 2rem;
+      margin-bottom: 1.8rem;
+      box-shadow: 0 3px 12px rgba(37, 99, 235, 0.15);
+    }
+    .dia-treino h2 {
+      color: #1e293b;
+      margin-top: 0;
+      margin-bottom: 1rem;
+      font-weight: 700;
+      border-bottom: 2px solid #2563eb;
+      padding-bottom: 0.4rem;
+    }
+    ul.exercicios {
+      list-style-type: none;
+      padding-left: 0;
+      margin: 0;
+    }
+    ul.exercicios li {
+      padding: 0.8rem 0;
+      border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 600;
+    }
+    ul.exercicios li:last-child {
+      border-bottom: none;
+    }
+    .nome-exercicio {
+      color: #334155;
+      font-weight: 700;
+    }
+    .detalhes-exercicio {
+      color: #64748b;
+      font-weight: 400;
+      font-size: 0.9rem;
+      text-align: right;
+      min-width: 140px;
+    }
+    @media (max-width: 480px) {
+      body {
+        padding: 1rem;
+      }
+      .dia-treino {
+        padding: 1rem 1.2rem;
+      }
+      ul.exercicios li {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.3rem;
+      }
+      .detalhes-exercicio {
+        text-align: left;
+        min-width: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Treinos Semanais</h1>
+    <a href="home_aluno.html">← Voltar</a>
+  </header>
+
+  <section class="dia-treino">
+    <h2>Segunda-feira</h2>
+    <ul class="exercicios">
+      <li>
+        <span class="nome-exercicio">Agachamento</span>
+        <span class="detalhes-exercicio">3x12 repetições</span>
+      </li>
+      <li>
+        <span class="nome-exercicio">Supino reto</span>
+        <span class="detalhes-exercicio">4x10 repetições</span>
+      </li>
+      <li>
+        <span class="nome-exercicio">Remada curvada</span>
+        <span class="detalhes-exercicio">3x15 repetições</span>
+      </li>
+      <li>
+        <span class="nome-exercicio">Prancha</span>
+        <span class="detalhes-exercicio">3 séries de 30s</span>
+      </li>
+    </ul>
+  </section>
+
+  <section class="dia-treino">
+    <h2>Quarta-feira</h2>
+    <ul class="exercicios">
+      <li>
+        <span class="nome-exercicio">Leg Press</span>
+        <span class="detalhes-exercicio">4x12 repetições</span>
+      </li>
+      <li>
+        <span class="nome-exercicio">Desenvolvimento com halteres</span>
+        <span class="detalhes-exercicio">3x10 repetições</span>
+      </li>
+      <li>
+        <span class="nome-exercicio">Puxada frontal</span>
+        <span class="detalhes-exercicio">4x12 repetições</span>
+      </li>
+      <li>
+        <span class="nome-exercicio">Abdominal crunch</span>
+        <span class="detalhes-exercicio">4x20 repetições</span>
+      </li>
+    </ul>
+  </section>
+
+  <section class="dia-treino">
+    <h2>Sexta-feira</h2>
+    <ul class="exercicios">
+      <li>
+        <span class="nome-exercicio">Stiff</span>
+        <span class="detalhes-exercicio">3x12 repetições</span>
+      </li>
+      <li>
+        <span class="nome-exercicio">Rosca bíceps</span>
+        <span class="detalhes-exercicio">4x10 repetições</span>
+      </li>
+      <li>
+        <span class="nome-exercicio">Tríceps pulley</span>
+        <span class="detalhes-exercicio">3x12 repetições</span>
+      </li>
+      <li>
+        <span class="nome-exercicio">Prancha lateral</span>
+        <span class="detalhes-exercicio">3 séries de 20s cada lado</span>
+      </li>
+    </ul>
+  </section>
+
+</body>
+</html>
