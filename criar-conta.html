@@ -14,6 +14,7 @@
       height: 100vh;
       margin: 0;
     }
+
     .container {
       background: white;
       padding: 2rem;
@@ -22,16 +23,24 @@
       width: 100%;
       max-width: 400px;
     }
+
     h2 {
       text-align: center;
       color: #1e3a8a;
       margin-bottom: 1.5rem;
     }
+
     form {
       display: flex;
       flex-direction: column;
       gap: 1rem;
     }
+
+    label {
+      font-weight: 600;
+      color: #374151;
+    }
+
     input[type="text"],
     input[type="email"],
     input[type="password"],
@@ -41,6 +50,7 @@
       border: 1px solid #94a3b8;
       font-size: 1rem;
     }
+
     button {
       padding: 0.8rem;
       background-color: #2563eb;
@@ -51,67 +61,135 @@
       cursor: pointer;
       transition: background-color 0.3s;
     }
+
     button:hover {
       background-color: #1d4ed8;
     }
+
     .link-login {
       text-align: center;
       margin-top: 1rem;
     }
+
     .link-login a {
       color: #2563eb;
       text-decoration: none;
       font-weight: bold;
     }
+
     .link-login a:hover {
       color: #1d4ed8;
+    }
+
+    .mensagem {
+      margin-top: 1rem;
+      font-weight: 600;
+      color: #059669;
+      text-align: center;
+    }
+
+    .erro {
+      color: #dc2626;
     }
   </style>
 </head>
 <body>
+
   <div class="container">
     <h2>Criar Conta - Aluno</h2>
     <form id="formCriarConta">
-      <input type="text" id="nome" placeholder="Nome completo" required />
-      <input type="text" id="username" placeholder="Nome de usuário" required />
-      <input type="email" id="email" placeholder="Email" required />
-      <input type="tel" id="telefone" placeholder="Telefone" />
-      <input type="password" id="senha" placeholder="Senha" required minlength="4" />
+      <label for="nome">Nome completo</label>
+      <input type="text" id="nome" required placeholder="Digite seu nome completo" />
+
+      <label for="username">Nome de usuário</label>
+      <input type="text" id="username" required placeholder="Escolha um nome de usuário" />
+
+      <label for="email">Email</label>
+      <input type="email" id="email" required placeholder="Digite seu email" />
+
+      <label for="telefone">Telefone (com DDD)</label>
+      <input type="tel" id="telefone" required placeholder="(00) 00000-0000" maxlength="15" />
+
+      <label for="senha">Senha</label>
+      <input type="password" id="senha" required placeholder="Digite sua senha" />
+
+      <label for="confirmaSenha">Confirme a senha</label>
+      <input type="password" id="confirmaSenha" required placeholder="Confirme sua senha" />
+
       <button type="submit">Criar Conta</button>
     </form>
+
+    <div class="mensagem" id="mensagem"></div>
+
     <div class="link-login">
-      <p>Já tem uma conta? <a href="index.html">Fazer login</a></p>
+      <p>Já tem conta? <a href="index.html">Faça login aqui</a></p>
     </div>
   </div>
 
   <script>
-    function gerarId() {
-      return '_' + Math.random().toString(36).substr(2, 9);
-    }
+    const telefoneInput = document.getElementById('telefone');
+
+    telefoneInput.addEventListener('input', function(e) {
+      let valor = telefoneInput.value;
+
+      // Remove tudo que não for número
+      valor = valor.replace(/\D/g, '');
+
+      // Formata com (XX) XXXXX-XXXX
+      if (valor.length > 0) valor = '(' + valor;
+      if (valor.length > 3) valor = valor.slice(0, 3) + ') ' + valor.slice(3);
+      if (valor.length > 10) valor = valor.slice(0, 10) + '-' + valor.slice(10, 14);
+      if (valor.length > 15) valor = valor.slice(0, 15);
+
+      telefoneInput.value = valor;
+    });
 
     document.getElementById('formCriarConta').addEventListener('submit', function(e) {
       e.preventDefault();
 
       const nome = document.getElementById('nome').value.trim();
       const username = document.getElementById('username').value.trim();
-      const email = document.getElementById('email').value.trim().toLowerCase();
+      const email = document.getElementById('email').value.trim();
       const telefone = document.getElementById('telefone').value.trim();
-      const senha = document.getElementById('senha').value.trim();
+      const senha = document.getElementById('senha').value;
+      const confirmaSenha = document.getElementById('confirmaSenha').value;
 
-      let listaAlunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
+      const mensagem = document.getElementById('mensagem');
+      mensagem.textContent = '';
+      mensagem.classList.remove('erro');
 
-      // Verifica se username ou email já existem
-      const usuarioExistente = listaAlunos.some(aluno =>
-        aluno.username.toLowerCase() === username.toLowerCase() || aluno.email === email
-      );
-
-      if (usuarioExistente) {
-        alert('Nome de usuário ou email já estão em uso. Por favor escolha outro.');
+      if (senha !== confirmaSenha) {
+        mensagem.textContent = 'As senhas não coincidem.';
+        mensagem.classList.add('erro');
         return;
       }
 
+      if (telefone.length < 14) { // (XX) XXXXX-XXXX tem 14 caracteres contando espaços e parênteses
+        mensagem.textContent = 'Por favor, insira um telefone válido.';
+        mensagem.classList.add('erro');
+        return;
+      }
+
+      let listaAlunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
+
+      // Verificar se username ou email já existem
+      const usernameExistente = listaAlunos.some(aluno => aluno.username.toLowerCase() === username.toLowerCase());
+      if (usernameExistente) {
+        mensagem.textContent = 'Nome de usuário já está em uso.';
+        mensagem.classList.add('erro');
+        return;
+      }
+
+      const emailExistente = listaAlunos.some(aluno => aluno.email.toLowerCase() === email.toLowerCase());
+      if (emailExistente) {
+        mensagem.textContent = 'Email já cadastrado.';
+        mensagem.classList.add('erro');
+        return;
+      }
+
+      // Criar novo aluno
       const novoAluno = {
-        id: gerarId(),
+        id: Date.now(),
         nome,
         username,
         email,
@@ -123,9 +201,13 @@
       listaAlunos.push(novoAluno);
       localStorage.setItem('listaAlunos', JSON.stringify(listaAlunos));
 
-      alert('Conta criada com sucesso! Agora faça login.');
-      window.location.href = 'index.html';
+      mensagem.textContent = 'Conta criada com sucesso! Redirecionando para login...';
+
+      setTimeout(() => {
+        window.location.href = 'index.html';
+      }, 2000);
     });
   </script>
+
 </body>
 </html>
