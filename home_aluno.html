@@ -2,173 +2,24 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Home Aluno - GYM CONTROL</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&display=swap');
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: url('academia.jpg') no-repeat center center fixed;
-      background-size: cover;
-      color: white;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      position: relative;
-    }
-
-    body::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background-color: rgba(0, 0, 0, 0.6);
-      z-index: 0;
-    }
-
-    header {
-      position: relative;
-      z-index: 1;
-    }
-
-    .menu-topo {
-      list-style: none;
-      display: flex;
-      justify-content: center;
-      gap: 2.5em;
-      background-color: rgba(0, 0, 0, 0.6);
-      padding: 1em 0;
-      margin: 0;
-    }
-
-    .menu-topo li a {
-      color: #f3f4f6;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 1.1rem;
-      padding: 0.5em 1em;
-      border-radius: 8px;
-      transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
-      cursor: pointer;
-    }
-
-    .menu-topo li a:hover {
-      background-color: #3b82f6;
-      color: white;
-      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.6);
-    }
-
-    .menu-topo li a.ativo {
-      background-color: #2563eb;
-      color: #e0e7ff;
-      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.7);
-      cursor: default;
-      pointer-events: none;
-    }
-
-    main {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding: 2em;
-      position: relative;
-      z-index: 1;
-    }
-
-    main h1 {
-      font-size: 3.5rem;
-      font-weight: 800;
-      color: #f3f4f6;
-      letter-spacing: 4px;
-      text-transform: uppercase;
-      text-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
-      margin-bottom: 0.5em;
-    }
-
-    .botoes {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 1.5em;
-      max-width: 700px;
-      margin-top: 2em;
-    }
-
-    .botoes .btn {
-      flex: 1 1 150px;
-      padding: 1.2em 2.4em;
-      font-weight: 600;
-      border-radius: 12px;
-      background: linear-gradient(135deg, #22d3ee, #3b82f6);
-      color: white;
-      box-shadow: 0 6px 15px rgba(59, 130, 246, 0.4);
-      transition: background 0.4s ease, box-shadow 0.4s ease;
-      text-decoration: none;
-      cursor: pointer;
-      user-select: none;
-      text-align: center;
-      font-size: 1.1rem;
-    }
-
-    .botoes .btn:hover {
-      background: linear-gradient(135deg, #3b82f6, #22d3ee);
-      box-shadow: 0 8px 22px rgba(59, 130, 246, 0.6);
-    }
-
-    footer {
-      position: relative;
-      z-index: 1;
-      background-color: rgba(0, 0, 0, 0.5);
-      text-align: center;
-      padding: 1em;
-      font-size: 0.9em;
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Área do Aluno - GYM CONTROL</title>
+  <link rel="stylesheet" href="style_aluno.css">
 </head>
 <body>
-  <header>
-    <ul class="menu-topo">
-      <!-- Só um botão Sair por exemplo -->
-      <li><a href="#" id="btnSair">Sair</a></li>
-    </ul>
-  </header>
-
-  <main>
+  <div class="overlay"></div>
+  <div class="conteudo">
     <h1>Bem-vindo, Aluno!</h1>
-
+    <p class="subtitulo">Acompanhe seu desempenho e aproveite sua jornada fitness.</p>
     <div class="botoes">
-      <a href="treinos.html" class="btn">Meus Treinos</a>
+      <a href="treinos.html" class="btn">Treinos</a>
       <a href="mensalidade.html" class="btn">Mensalidade</a>
-      <a href="presenca.html" class="btn">Presença na Academia</a>
-      <a href="perfil.html" class="btn">Meu Perfil</a>
+      <a href="frequencia.html" class="btn">Frequência</a>
+      <a href="index.html" class="btn btn-sair">Sair</a>
     </div>
-  </main>
-
+  </div>
   <footer>
-    &copy; 2025 GYM CONTROL - Todos os direitos reservados.
+    <p>&copy; 2025 GYM CONTROL - Todos os direitos reservados.</p>
   </footer>
-
-  <script>
-    document.getElementById('btnSair').addEventListener('click', function(e) {
-      e.preventDefault();
-      localStorage.removeItem('usuarioLogado');
-      window.location.href = 'index.html';
-    });
-
-    // Pega o nome do usuário e mostra no título, se quiser
-    const usuario = JSON.parse(localStorage.getItem('usuarioLogado'));
-    if (usuario && usuario.nome) {
-      document.querySelector('main h1').textContent = `Bem-vindo, ${usuario.nome}!`;
-    }
-  </script>
 </body>
 </html>
