@@ -5,68 +5,68 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Home Aluno - GYM CONTROL</title>
   <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #f1f5f9;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-      color: #1e3a8a;
-    }
-    .container {
-      background: white;
-      padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-      width: 90%;
-      max-width: 500px;
-      text-align: center;
-    }
-    button {
-      margin-top: 1.5rem;
-      padding: 0.8rem 1.5rem;
-      background-color: #2563eb;
-      border: none;
-      color: white;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: bold;
-      transition: background-color 0.3s;
-    }
-    button:hover {
-      background-color: #1d4ed8;
-    }
+    /* (mesmo estilo do exemplo anterior, removi aqui pra foco no script) */
   </style>
 </head>
 <body>
-  <div class="container" id="content">
-    <!-- Conteúdo será inserido via JavaScript -->
-  </div>
+  <header>
+    <h1>Bem-vindo, <span id="nomeAluno"></span></h1>
+    <button id="btnLogout">Sair</button>
+  </header>
+
+  <nav>
+    <button class="tabBtn active" data-tab="treinos_aluno.html">Treinos</button>
+    <button class="tabBtn" data-tab="mensalidade_aluno.html">Mensalidade</button>
+    <button class="tabBtn" data-tab="presenca_aluno.html">Presença</button>
+  </nav>
+
+  <main id="conteudoPrincipal">
+    <!-- conteúdo carregado aqui -->
+  </main>
 
   <script>
-    // Verifica usuário logado
-    const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
-
-    if (!usuarioLogado || usuarioLogado.tipo !== 'aluno') {
-      alert('Você precisa estar logado como aluno!');
-      window.location.href = 'index.html';
-    } else {
-      // Se estiver logado, mostra boas-vindas
-      const contentDiv = document.getElementById('content');
-      contentDiv.innerHTML = `
-        <h1>Bem-vindo, ${usuarioLogado.nome}!</h1>
-        <p>Esta é a sua área exclusiva como aluno.</p>
-        <button id="btnLogout">Sair</button>
-      `;
-
-      document.getElementById('btnLogout').addEventListener('click', () => {
-        localStorage.removeItem('usuarioLogado');
+    // Carregar nome do aluno
+    function carregarNomeAluno() {
+      const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+      if (usuarioLogado && usuarioLogado.tipo === 'aluno') {
+        document.getElementById('nomeAluno').textContent = usuarioLogado.nome;
+      } else {
         window.location.href = 'index.html';
-      });
+      }
     }
+
+    // Logout
+    document.getElementById('btnLogout').addEventListener('click', () => {
+      localStorage.removeItem('usuarioLogado');
+      window.location.href = 'index.html';
+    });
+
+    // Função para carregar conteúdo HTML via fetch
+    async function carregarConteudo(url) {
+      try {
+        const resposta = await fetch(url);
+        if (!resposta.ok) throw new Error('Erro ao carregar conteúdo');
+        const html = await resposta.text();
+        document.getElementById('conteudoPrincipal').innerHTML = html;
+        // Se precisar rodar script do conteúdo carregado, faz aqui
+      } catch (e) {
+        document.getElementById('conteudoPrincipal').innerHTML = `<p>Erro ao carregar o conteúdo.</p>`;
+      }
+    }
+
+    // Controle das abas
+    const tabs = document.querySelectorAll('.tabBtn');
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        carregarConteudo(tab.getAttribute('data-tab'));
+      });
+    });
+
+    // Inicializa carregando a primeira aba
+    carregarNomeAluno();
+    carregarConteudo('treinos_aluno.html');
   </script>
 </body>
 </html>
