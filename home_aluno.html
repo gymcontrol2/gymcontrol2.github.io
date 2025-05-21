@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Home - Aluno - GYM CONTROL</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      padding: 2rem;
+      max-width: 800px;
+      margin: 0 auto;
+      background-color: #f1f5f9;
+      color: #1e293b;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+    button.logout {
+      background-color: #ef4444;
+      color: white;
+      border: none;
+      padding: 0.6rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+    button.logout:hover {
+      background-color: #b91c1c;
+    }
+    h1 {
+      color: #2563eb;
+    }
+    nav a {
+      margin-right: 1rem;
+      color: #2563eb;
+      font-weight: 600;
+      text-decoration: none;
+    }
+    nav a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Bem-vindo, Aluno</h1>
+    <button class="logout" id="btnLogout">Sair</button>
+  </header>
+
+  <nav>
+    <a href="perfil_aluno.html">Meu Perfil</a>
+    <a href="treinos.html">Meus Treinos</a>
+    <a href="relatorios_aluno.html">Meus Relatórios</a>
+  </nav>
+
+  <section>
+    <p>Este é seu painel pessoal. Aqui você pode acompanhar seu progresso, acessar seus treinos e relatórios.</p>
+  </section>
+
+  <script>
+    // Verifica se tem usuário logado e é aluno
+    const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+
+    if (!usuarioLogado || usuarioLogado.tipoUsuario !== 'aluno') {
+      alert('Você precisa estar logado como aluno para acessar esta página.');
+      window.location.href = 'login.html';
+    }
+
+    // Logout
+    document.getElementById('btnLogout').addEventListener('click', () => {
+      localStorage.removeItem('usuarioLogado');
+      window.location.href = 'login.html';
+    });
+  </script>
+
+</body>
+</html>
