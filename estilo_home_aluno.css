@@ -8,7 +8,7 @@
 
 body {
   font-family: 'Poppins', sans-serif;
-  background: url('https://img.freepik.com/fotos-premium/uma-academia-escura-com-uma-sala-escura-com-uma-janela-grande-e-uma-janela-grande-que-diz-academia_900958-25486.jpg') no-repeat center center fixed;
+  background: url('academia.jpg') no-repeat center center fixed;
   background-size: cover;
   color: white;
   min-height: 100vh;
@@ -21,7 +21,7 @@ body::before {
   content: '';
   position: absolute;
   inset: 0;
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(0, 0, 0, 0.5); /* diminuído de 0.6 para 0.5 */
   z-index: 0;
 }
 
@@ -37,24 +37,24 @@ body::before {
   z-index: 1;
 }
 
-.hero h1 {
+.titulo-principal {
   font-size: 5.5rem;
   font-weight: 800;
-  color: #f3f4f6;
+  color: #ffffff;
   letter-spacing: 5px;
   text-transform: uppercase;
-  text-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(0, 0, 0, 0.6);
   margin-bottom: 0.5em;
 }
 
-.hero .subtitulo {
+.subtitulo {
   font-size: 1.8rem;
   font-weight: 600;
   max-width: 700px;
   margin: 0 auto 2.5em auto;
   line-height: 1.6;
   color: #d1d5db;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
   font-style: italic;
 }
 
