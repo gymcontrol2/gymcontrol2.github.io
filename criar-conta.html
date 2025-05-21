@@ -36,7 +36,10 @@
       gap: 1rem;
     }
 
-    input,
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="tel"],
     select {
       padding: 0.8rem;
       border-radius: 8px;
@@ -92,7 +95,7 @@
 
       <label for="sexo">Sexo</label>
       <select id="sexo" required>
-        <option value="">Selecione</option>
+        <option value="" disabled selected>Selecione o sexo</option>
         <option value="Masculino">Masculino</option>
         <option value="Feminino">Feminino</option>
         <option value="Outro">Outro</option>
@@ -123,7 +126,7 @@
       telefoneInput.value = v;
     });
 
-    document.getElementById('formCriarConta').addEventListener('submit', function (e) {
+    document.getElementById('formCriarConta').addEventListener('submit', function(e) {
       e.preventDefault();
 
       const nome = document.getElementById('nome').value.trim();
@@ -133,16 +136,10 @@
       const telefone = document.getElementById('telefone').value.trim();
       const senha = document.getElementById('senha').value;
       const confirmaSenha = document.getElementById('confirmaSenha').value;
-      const mensagem = document.getElementById('mensagem');
 
+      const mensagem = document.getElementById('mensagem');
       mensagem.textContent = '';
       mensagem.classList.remove('erro');
-
-      if (!nome || !username || !email || !sexo || !telefone || !senha || !confirmaSenha) {
-        mensagem.textContent = 'Preencha todos os campos.';
-        mensagem.classList.add('erro');
-        return;
-      }
 
       if (senha !== confirmaSenha) {
         mensagem.textContent = 'As senhas não coincidem.';
@@ -156,16 +153,26 @@
         return;
       }
 
+      if (!sexo) {
+        mensagem.textContent = 'Por favor, selecione o sexo.';
+        mensagem.classList.add('erro');
+        return;
+      }
+
       let listaAlunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
 
-      const usernameExistente = listaAlunos.some(aluno => aluno.username.toLowerCase() === username.toLowerCase());
+      const usernameExistente = listaAlunos.some(aluno => 
+        aluno.username && aluno.username.toLowerCase() === username.toLowerCase()
+      );
       if (usernameExistente) {
         mensagem.textContent = 'Nome de usuário já está em uso.';
         mensagem.classList.add('erro');
         return;
       }
 
-      const emailExistente = listaAlunos.some(aluno => aluno.email.toLowerCase() === email.toLowerCase());
+      const emailExistente = listaAlunos.some(aluno => 
+        aluno.email && aluno.email.toLowerCase() === email.toLowerCase()
+      );
       if (emailExistente) {
         mensagem.textContent = 'Email já cadastrado.';
         mensagem.classList.add('erro');
@@ -188,9 +195,6 @@
 
       mensagem.textContent = 'Conta criada com sucesso! Redirecionando para login...';
       mensagem.classList.remove('erro');
-      mensagem.style.color = 'green';
-
-      console.log('Conta criada:', novoAluno);
 
       setTimeout(() => {
         window.location.href = 'index.html';
