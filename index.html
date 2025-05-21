@@ -14,7 +14,6 @@
       height: 100vh;
       margin: 0;
     }
-
     .container {
       background: white;
       padding: 2rem;
@@ -23,19 +22,16 @@
       width: 100%;
       max-width: 400px;
     }
-
     h2 {
       text-align: center;
       color: #1e3a8a;
       margin-bottom: 1.5rem;
     }
-
     form {
       display: flex;
       flex-direction: column;
       gap: 1rem;
     }
-
     input[type="text"],
     input[type="password"] {
       padding: 0.8rem;
@@ -43,7 +39,6 @@
       border: 1px solid #94a3b8;
       font-size: 1rem;
     }
-
     button {
       padding: 0.8rem;
       background-color: #2563eb;
@@ -54,54 +49,44 @@
       cursor: pointer;
       transition: background-color 0.3s;
     }
-
     button:hover {
       background-color: #1d4ed8;
     }
-
     .tipos {
       display: flex;
       justify-content: center;
       gap: 1rem;
     }
-
     .tipos label {
       font-size: 0.9rem;
       color: #374151;
     }
-
     .link-criar {
       text-align: center;
       margin-top: 1rem;
     }
-
     .link-criar a {
       color: #2563eb;
       text-decoration: none;
       font-weight: bold;
     }
-
     .link-criar a:hover {
       color: #1d4ed8;
     }
   </style>
 </head>
 <body>
-
   <div class="container">
     <h2>GYM CONTROL - Login</h2>
     <form id="formLogin">
-      <input type="text" id="email" placeholder="Email ou Usuário" required />
+      <input type="text" id="loginInput" placeholder="Email ou Usuário" required />
       <input type="password" id="senha" placeholder="Senha" required />
-
       <div class="tipos">
         <label><input type="radio" name="tipoUsuario" value="gestor" required /> Gestor</label>
         <label><input type="radio" name="tipoUsuario" value="aluno" required /> Aluno</label>
       </div>
-
       <button type="submit">Entrar</button>
     </form>
-
     <div class="link-criar">
       <p>Não tem conta? <a href="criar-conta.html">Criar conta</a></p>
     </div>
@@ -111,7 +96,7 @@
     document.getElementById('formLogin').addEventListener('submit', function (e) {
       e.preventDefault();
 
-      const loginInput = document.getElementById('email').value.trim();
+      const loginInput = document.getElementById('loginInput').value.trim().toLowerCase();
       const senhaInput = document.getElementById('senha').value.trim();
       const tipoUsuario = document.querySelector('input[name="tipoUsuario"]:checked').value;
 
@@ -127,11 +112,11 @@
           alert('Usuário ou senha do gestor incorretos!');
         }
       } else {
-        // Login do aluno: e-mail ou nome + senha
+        // Login do aluno: email ou username + senha
         const listaAlunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
 
         const alunoEncontrado = listaAlunos.find(aluno =>
-          (aluno.email === loginInput || aluno.nome === loginInput) && aluno.senha === senhaInput
+          (aluno.email.toLowerCase() === loginInput || aluno.username.toLowerCase() === loginInput) && aluno.senha === senhaInput
         );
 
         if (alunoEncontrado) {
@@ -147,6 +132,5 @@
       }
     });
   </script>
-
 </body>
 </html>
