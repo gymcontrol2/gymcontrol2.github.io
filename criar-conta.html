@@ -6,171 +6,126 @@
   <title>Criar Conta - GYM CONTROL</title>
   <style>
     body {
-      font-family: 'Poppins', sans-serif;
-      background-color: #e0f2fe;
-      padding: 2rem;
-      max-width: 500px;
-      margin: 0 auto;
-      color: #1e293b;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f1f5f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
     }
-
-    h1 {
-      text-align: center;
-      margin-bottom: 2rem;
-      color: #2563eb;
-      font-weight: 800;
-    }
-
-    form {
+    .container {
       background: white;
       padding: 2rem;
       border-radius: 12px;
-      box-shadow: 0 5px 15px rgba(37, 99, 235, 0.2);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 400px;
+    }
+    h2 {
+      text-align: center;
+      color: #1e3a8a;
+      margin-bottom: 1.5rem;
+    }
+    form {
       display: flex;
       flex-direction: column;
-      gap: 1.2rem;
+      gap: 1rem;
     }
-
-    label {
-      font-weight: 600;
-      margin-bottom: 0.3rem;
-      display: block;
-    }
-
-    input, select {
-      width: 100%;
-      padding: 0.7rem;
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="tel"] {
+      padding: 0.8rem;
       border-radius: 8px;
       border: 1px solid #94a3b8;
       font-size: 1rem;
-      outline-offset: 2px;
-      outline-color: #2563eb;
-      transition: border-color 0.3s;
     }
-
-    input:focus, select:focus {
-      border-color: #2563eb;
-    }
-
     button {
       padding: 0.8rem;
       background-color: #2563eb;
       color: white;
-      font-weight: 700;
-      font-size: 1.1rem;
+      font-weight: bold;
       border: none;
-      border-radius: 10px;
+      border-radius: 8px;
       cursor: pointer;
       transition: background-color 0.3s;
     }
-
     button:hover {
-      background-color: #1e40af;
+      background-color: #1d4ed8;
     }
-
-    .mensagem {
+    .link-login {
+      text-align: center;
       margin-top: 1rem;
-      font-weight: 600;
-      text-align: center;
     }
-
-    .mensagem.sucesso {
-      color: #059669;
-    }
-
-    .mensagem.erro {
-      color: #dc2626;
-    }
-
-    a.voltar {
-      display: block;
-      margin-top: 2rem;
-      text-align: center;
-      font-weight: 700;
+    .link-login a {
       color: #2563eb;
       text-decoration: none;
-      transition: color 0.3s;
+      font-weight: bold;
     }
-
-    a.voltar:hover {
-      color: #1e40af;
+    .link-login a:hover {
+      color: #1d4ed8;
     }
   </style>
 </head>
 <body>
-
-  <h1>Criar Conta</h1>
-
-  <form id="formCriarConta">
-    <label for="nome">Nome completo</label>
-    <input type="text" id="nome" required placeholder="Digite seu nome completo" />
-
-    <label for="email">Email</label>
-    <input type="email" id="email" required placeholder="Digite seu email" />
-
-    <label for="usuario">Usuário</label>
-    <input type="text" id="usuario" required placeholder="Escolha um nome de usuário" />
-
-    <label for="telefone">Telefone</label>
-    <input type="tel" id="telefone" required placeholder="Digite seu telefone" />
-
-    <label for="sexo">Sexo</label>
-    <select id="sexo" required>
-      <option value="">Selecione</option>
-      <option value="Masculino">Masculino</option>
-      <option value="Feminino">Feminino</option>
-      <option value="Outro">Outro</option>
-    </select>
-
-    <label for="senha">Senha</label>
-    <input type="password" id="senha" required placeholder="Crie uma senha" />
-
-    <button type="submit">Criar Conta</button>
-  </form>
-
-  <div class="mensagem" id="mensagemConta"></div>
-
-  <a href="index.html" class="voltar">← Voltar para o Login</a>
+  <div class="container">
+    <h2>Criar Conta - Aluno</h2>
+    <form id="formCriarConta">
+      <input type="text" id="nome" placeholder="Nome completo" required />
+      <input type="text" id="username" placeholder="Nome de usuário" required />
+      <input type="email" id="email" placeholder="Email" required />
+      <input type="tel" id="telefone" placeholder="Telefone" />
+      <input type="password" id="senha" placeholder="Senha" required minlength="4" />
+      <button type="submit">Criar Conta</button>
+    </form>
+    <div class="link-login">
+      <p>Já tem uma conta? <a href="index.html">Fazer login</a></p>
+    </div>
+  </div>
 
   <script>
-    document.getElementById('formCriarConta').addEventListener('submit', function (e) {
+    function gerarId() {
+      return '_' + Math.random().toString(36).substr(2, 9);
+    }
+
+    document.getElementById('formCriarConta').addEventListener('submit', function(e) {
       e.preventDefault();
 
       const nome = document.getElementById('nome').value.trim();
+      const username = document.getElementById('username').value.trim();
       const email = document.getElementById('email').value.trim().toLowerCase();
-      const usuario = document.getElementById('usuario').value.trim().toLowerCase();
       const telefone = document.getElementById('telefone').value.trim();
-      const sexo = document.getElementById('sexo').value;
-      const senha = document.getElementById('senha').value;
+      const senha = document.getElementById('senha').value.trim();
 
-      const novaConta = { nome, email, usuario, telefone, sexo, senha };
+      let listaAlunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
 
-      // Recuperar contas existentes
-      const contas = JSON.parse(localStorage.getItem('contasUsuarios')) || [];
+      // Verifica se username ou email já existem
+      const usuarioExistente = listaAlunos.some(aluno =>
+        aluno.username.toLowerCase() === username.toLowerCase() || aluno.email === email
+      );
 
-      // Verificar duplicidade de email ou usuário
-      const emailExistente = contas.find(conta => conta.email === email);
-      const usuarioExistente = contas.find(conta => conta.usuario === usuario);
-
-      const msg = document.getElementById('mensagemConta');
-
-      if (emailExistente || usuarioExistente) {
-        msg.textContent = 'Email ou usuário já cadastrado.';
-        msg.className = 'mensagem erro';
+      if (usuarioExistente) {
+        alert('Nome de usuário ou email já estão em uso. Por favor escolha outro.');
         return;
       }
 
-      contas.push(novaConta);
-      localStorage.setItem('contasUsuarios', JSON.stringify(contas));
+      const novoAluno = {
+        id: gerarId(),
+        nome,
+        username,
+        email,
+        telefone,
+        senha,
+        ativo: true
+      };
 
-      msg.textContent = 'Conta criada com sucesso! Redirecionando...';
-      msg.className = 'mensagem sucesso';
+      listaAlunos.push(novoAluno);
+      localStorage.setItem('listaAlunos', JSON.stringify(listaAlunos));
 
-      setTimeout(() => {
-        window.location.href = 'index.html';
-      }, 2000);
+      alert('Conta criada com sucesso! Agora faça login.');
+      window.location.href = 'index.html';
     });
   </script>
-
 </body>
 </html>
