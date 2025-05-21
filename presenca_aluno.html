@@ -1,0 +1,23 @@
+<div>
+  <h3>Presença na Academia</h3>
+  <p>Seu histórico de presença na academia.</p>
+  <ul id="listaPresenca"></ul>
+
+  <script>
+    const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+    const presencas = JSON.parse(localStorage.getItem('presencas')) || [];
+
+    const minhasPresencas = presencas.filter(p => p.idAluno === usuarioLogado.id);
+
+    const ul = document.getElementById('listaPresenca');
+    if (minhasPresencas.length === 0) {
+      ul.innerHTML = '<li>Sem registros de presença.</li>';
+    } else {
+      minhasPresencas.forEach(p => {
+        const li = document.createElement('li');
+        li.textContent = `${p.data} - ${p.presente ? 'Presente' : 'Ausente'}`;
+        ul.appendChild(li);
+      });
+    }
+  </script>
+</div>

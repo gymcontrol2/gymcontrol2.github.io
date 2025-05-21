@@ -1,0 +1,36 @@
+<div>
+  <h3>Mensalidades</h3>
+  <p>Histórico e status das suas mensalidades.</p>
+  <table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+    <thead>
+      <tr>
+        <th>Mês</th>
+        <th>Valor</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody id="tabelaMensalidades"></tbody>
+  </table>
+
+  <script>
+    const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+    const mensalidades = JSON.parse(localStorage.getItem('mensalidades')) || [];
+
+    const minhasMensalidades = mensalidades.filter(m => m.idAluno === usuarioLogado.id);
+
+    const tbody = document.getElementById('tabelaMensalidades');
+    if (minhasMensalidades.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="3">Nenhuma mensalidade cadastrada.</td></tr>';
+    } else {
+      minhasMensalidades.forEach(m => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${m.mes}</td>
+          <td>R$ ${m.valor.toFixed(2)}</td>
+          <td>${m.paga ? 'Paga' : 'Pendente'}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+  </script>
+</div>

@@ -1,0 +1,25 @@
+<div>
+  <h3>Meus Treinos</h3>
+  <p>Aqui estarão seus treinos cadastrados.</p>
+  <ul id="listaTreinos"></ul>
+
+  <script>
+    // Simulação de treinos no localStorage
+    const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+    const listaTreinos = JSON.parse(localStorage.getItem('listaTreinos')) || [];
+
+    // Filtrar treinos do aluno logado
+    const meusTreinos = listaTreinos.filter(t => t.idAluno === usuarioLogado.id);
+
+    const ul = document.getElementById('listaTreinos');
+    if (meusTreinos.length === 0) {
+      ul.innerHTML = '<li>Você não possui treinos cadastrados.</li>';
+    } else {
+      meusTreinos.forEach(treino => {
+        const li = document.createElement('li');
+        li.textContent = `${treino.nome} - ${treino.descricao}`;
+        ul.appendChild(li);
+      });
+    }
+  </script>
+</div>
