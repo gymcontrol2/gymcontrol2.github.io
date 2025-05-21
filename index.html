@@ -2,266 +2,151 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Login - GYM CONTROL</title>
   <style>
     body {
-      font-family: 'Poppins', sans-serif;
-      background-color: #e0e7ff;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f1f5f9;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
       margin: 0;
-      color: #1e293b;
     }
+
     .container {
       background: white;
-      padding: 2rem 3rem;
+      padding: 2rem;
       border-radius: 12px;
-      box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
-      width: 320px;
-      text-align: center;
-    }
-    h2 {
-      margin-bottom: 1.5rem;
-      color: #2563eb;
-      font-weight: 700;
-    }
-    input[type="email"],
-    input[type="password"],
-    input[type="text"] {
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
       width: 100%;
-      padding: 0.7rem;
-      margin-bottom: 1rem;
+      max-width: 400px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #1e3a8a;
+      margin-bottom: 1.5rem;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      padding: 0.8rem;
       border-radius: 8px;
       border: 1px solid #94a3b8;
       font-size: 1rem;
-      outline-offset: 2px;
-      outline-color: #2563eb;
-      transition: border-color 0.3s;
     }
-    input[type="email"]:focus,
-    input[type="password"]:focus,
-    input[type="text"]:focus {
-      border-color: #2563eb;
-    }
+
     button {
-      width: 100%;
       padding: 0.8rem;
       background-color: #2563eb;
       color: white;
-      font-weight: 700;
-      font-size: 1.1rem;
+      font-weight: bold;
       border: none;
-      border-radius: 10px;
+      border-radius: 8px;
       cursor: pointer;
       transition: background-color 0.3s;
-      margin-bottom: 1rem;
     }
+
     button:hover {
-      background-color: #1e40af;
+      background-color: #1d4ed8;
     }
-    .link {
+
+    .tipos {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    .tipos label {
+      font-size: 0.9rem;
+      color: #374151;
+    }
+
+    .link-criar {
+      text-align: center;
+      margin-top: 1rem;
+    }
+
+    .link-criar a {
       color: #2563eb;
-      cursor: pointer;
-      text-decoration: underline;
-      font-weight: 600;
+      text-decoration: none;
+      font-weight: bold;
     }
-    .error {
-      color: #ef4444;
-      margin-bottom: 1rem;
-      font-weight: 600;
-    }
-    .success {
-      color: #059669;
-      margin-bottom: 1rem;
-      font-weight: 600;
+
+    .link-criar a:hover {
+      color: #1d4ed8;
     }
   </style>
 </head>
 <body>
 
-<div class="container">
+  <div class="container">
+    <h2>GYM CONTROL - Login</h2>
+    <form id="formLogin">
+      <input type="text" id="email" placeholder="Email ou Usuário" required />
+      <input type="password" id="senha" placeholder="Senha" required />
 
-  <!-- Formulário de Login -->
-  <div id="loginForm">
-    <h2>Entrar</h2>
-    <div id="loginMsg" class="error"></div>
-    <label for="loginEmail">Email</label>
-    <input type="email" id="loginEmail" placeholder="Digite seu email" required />
-    <label for="loginSenha">Senha</label>
-    <input type="password" id="loginSenha" placeholder="Digite sua senha" required />
-    <button id="btnLogin">Entrar</button>
-    <p>Não tem conta? <span class="link" id="showCreate">Criar conta</span></p>
-    <p>Entrar como gestor? <span class="link" id="showGestor">Clique aqui</span></p>
+      <div class="tipos">
+        <label><input type="radio" name="tipoUsuario" value="gestor" required /> Gestor</label>
+        <label><input type="radio" name="tipoUsuario" value="aluno" required /> Aluno</label>
+      </div>
+
+      <button type="submit">Entrar</button>
+    </form>
+
+    <div class="link-criar">
+      <p>Não tem conta? <a href="criar-conta.html">Criar conta</a></p>
+    </div>
   </div>
 
-  <!-- Formulário de Criar Conta -->
-  <div id="createForm" style="display:none;">
-    <h2>Criar Conta</h2>
-    <div id="createMsg" class="error"></div>
-    <label for="createNome">Nome completo</label>
-    <input type="text" id="createNome" placeholder="Digite seu nome" required />
-    <label for="createEmail">Email</label>
-    <input type="email" id="createEmail" placeholder="Digite seu email" required />
-    <label for="createTelefone">Telefone</label>
-    <input type="text" id="createTelefone" placeholder="Digite seu telefone" required />
-    <label for="createSenha">Senha</label>
-    <input type="password" id="createSenha" placeholder="Digite sua senha" required />
-    <button id="btnCreate">Criar Conta</button>
-    <p>Já tem conta? <span class="link" id="showLoginFromCreate">Entrar</span></p>
-  </div>
+  <script>
+    document.getElementById('formLogin').addEventListener('submit', function (e) {
+      e.preventDefault();
 
-  <!-- Formulário Gestor -->
-  <div id="gestorForm" style="display:none;">
-    <h2>Login Gestor</h2>
-    <div id="gestorMsg" class="error"></div>
-    <label for="gestorUsuario">Usuário</label>
-    <input type="text" id="gestorUsuario" placeholder="Usuário" required />
-    <label for="gestorSenha">Senha</label>
-    <input type="password" id="gestorSenha" placeholder="Senha" required />
-    <button id="btnGestor">Entrar</button>
-    <p>Entrar como aluno? <span class="link" id="showLoginFromGestor">Clique aqui</span></p>
-  </div>
+      const loginInput = document.getElementById('email').value.trim();
+      const senhaInput = document.getElementById('senha').value.trim();
+      const tipoUsuario = document.querySelector('input[name="tipoUsuario"]:checked').value;
 
-</div>
+      if (tipoUsuario === 'gestor') {
+        // Login do gestor: usuário ou e-mail
+        if ((loginInput === 'admin' || loginInput === 'admin@email.com') && senhaInput === '1234') {
+          localStorage.setItem('usuarioLogado', JSON.stringify({
+            nome: 'Administrador',
+            tipo: 'gestor'
+          }));
+          window.location.href = 'home.html';
+        } else {
+          alert('Usuário ou senha do gestor incorretos!');
+        }
+      } else {
+        // Login do aluno: e-mail ou nome + senha
+        const listaAlunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
 
-<script>
-  // Mostra/esconde os formulários
-  const loginForm = document.getElementById('loginForm');
-  const createForm = document.getElementById('createForm');
-  const gestorForm = document.getElementById('gestorForm');
+        const alunoEncontrado = listaAlunos.find(aluno =>
+          (aluno.email === loginInput || aluno.nome === loginInput) && aluno.senha === senhaInput
+        );
 
-  document.getElementById('showCreate').onclick = () => {
-    loginForm.style.display = 'none';
-    createForm.style.display = 'block';
-    gestorForm.style.display = 'none';
-    clearMessages();
-  };
-
-  document.getElementById('showLoginFromCreate').onclick = () => {
-    loginForm.style.display = 'block';
-    createForm.style.display = 'none';
-    gestorForm.style.display = 'none';
-    clearMessages();
-  };
-
-  document.getElementById('showGestor').onclick = () => {
-    loginForm.style.display = 'none';
-    createForm.style.display = 'none';
-    gestorForm.style.display = 'block';
-    clearMessages();
-  };
-
-  document.getElementById('showLoginFromGestor').onclick = () => {
-    loginForm.style.display = 'block';
-    createForm.style.display = 'none';
-    gestorForm.style.display = 'none';
-    clearMessages();
-  };
-
-  // Limpar mensagens
-  function clearMessages() {
-    document.getElementById('loginMsg').textContent = '';
-    document.getElementById('createMsg').textContent = '';
-    document.getElementById('gestorMsg').textContent = '';
-  }
-
-  // Criar conta (salva aluno)
-  document.getElementById('btnCreate').onclick = function() {
-    const nome = document.getElementById('createNome').value.trim();
-    const email = document.getElementById('createEmail').value.trim().toLowerCase();
-    const telefone = document.getElementById('createTelefone').value.trim();
-    const senha = document.getElementById('createSenha').value.trim();
-
-    if (!nome || !email || !telefone || !senha) {
-      document.getElementById('createMsg').textContent = 'Preencha todos os campos.';
-      return;
-    }
-
-    let listaAlunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
-
-    // Verifica se email já está cadastrado
-    if(listaAlunos.some(a => a.email === email)) {
-      document.getElementById('createMsg').textContent = 'Email já cadastrado.';
-      return;
-    }
-
-    // Novo aluno com senha e ativo=true
-    const novoAluno = {
-      id: Date.now(),
-      nome,
-      email,
-      telefone,
-      senha,
-      ativo: true
-    };
-
-    listaAlunos.push(novoAluno);
-    localStorage.setItem('listaAlunos', JSON.stringify(listaAlunos));
-
-    // Atualiza dadosAcademia
-    let dadosAcademia = JSON.parse(localStorage.getItem('dadosAcademia')) || { totalAlunos: 0, alunosAtivos: 0, alunosEvadidos: 0 };
-    dadosAcademia.totalAlunos = listaAlunos.length;
-    dadosAcademia.alunosAtivos = listaAlunos.filter(a => a.ativo).length;
-    dadosAcademia.alunosEvadidos = listaAlunos.length - dadosAcademia.alunosAtivos;
-    localStorage.setItem('dadosAcademia', JSON.stringify(dadosAcademia));
-
-    // Mensagem de sucesso e voltar ao login
-    document.getElementById('createMsg').textContent = '';
-    alert(`Conta criada com sucesso para ${nome}! Agora faça login.`);
-    // Volta ao login
-    createForm.style.display = 'none';
-    loginForm.style.display = 'block';
-
-    // Limpa os campos de criar conta
-    document.getElementById('createNome').value = '';
-    document.getElementById('createEmail').value = '';
-    document.getElementById('createTelefone').value = '';
-    document.getElementById('createSenha').value = '';
-  };
-
-  // Login aluno
-  document.getElementById('btnLogin').onclick = function() {
-    const email = document.getElementById('loginEmail').value.trim().toLowerCase();
-    const senha = document.getElementById('loginSenha').value.trim();
-
-    if (!email || !senha) {
-      document.getElementById('loginMsg').textContent = 'Preencha email e senha.';
-      return;
-    }
-
-    let listaAlunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
-
-    const aluno = listaAlunos.find(a => a.email === email && a.senha === senha);
-
-    if (!aluno) {
-      document.getElementById('loginMsg').textContent = 'Email ou senha inválidos.';
-      return;
-    }
-
-    // Login bem sucedido — salva no localStorage quem está logado
-    localStorage.setItem('usuarioLogado', JSON.stringify({ tipo: 'aluno', id: aluno.id, nome: aluno.nome }));
-
-    // Redireciona para home_aluno.html
-    window.location.href = 'home_aluno.html';
-  };
-
-  // Login gestor
-  document.getElementById('btnGestor').onclick = function() {
-    const usuario = document.getElementById('gestorUsuario').value.trim();
-    const senha = document.getElementById('gestorSenha').value.trim();
-
-    if (usuario === 'admin' && senha === '1234') {
-      localStorage.setItem('usuarioLogado', JSON.stringify({ tipo: 'gestor', nome: 'Administrador' }));
-      window.location.href = 'home.html';
-    } else {
-      document.getElementById('gestorMsg').textContent = 'Usuário ou senha incorretos.';
-    }
-  };
-
-</script>
+        if (alunoEncontrado) {
+          localStorage.setItem('usuarioLogado', JSON.stringify({
+            nome: alunoEncontrado.nome,
+            tipo: 'aluno',
+            id: alunoEncontrado.id
+          }));
+          window.location.href = 'home_aluno.html';
+        } else {
+          alert('Aluno não encontrado ou senha incorreta.');
+        }
+      }
+    });
+  </script>
 
 </body>
 </html>
