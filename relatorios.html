@@ -6,7 +6,6 @@
   <title>Relatórios - GYM CONTROL</title>
 
   <style>
-    /* Seu CSS intacto */
     body {
       font-family: 'Poppins', sans-serif;
       background: #f0f4ff;
@@ -94,6 +93,20 @@
     .btn-editar:hover {
       background-color: #059669;
     }
+    .btn-excluir {
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 0.9rem;
+      background-color: #ef4444;
+      margin-left: 0.5rem;
+      transition: background-color 0.3s;
+    }
+    .btn-excluir:hover {
+      background-color: #dc2626;
+    }
     .voltar {
       display: inline-block;
       margin-top: 2rem;
@@ -138,8 +151,9 @@
   <div class="filtros">
     <select id="filtroStatus">
       <option value="todos">Todos</option>
-      <option value="ativos">Ativos</option>
-      <option value="evadidos">Evadidos</option>
+      <option value="ativo">Ativos</option>
+      <option value="risco">Risco de Evasão</option>
+      <option value="evadido">Evadidos</option>
     </select>
 
     <input type="text" id="busca" placeholder="Buscar por nome ou email..." />
@@ -177,8 +191,9 @@
 
       const alunosFiltrados = alunos
         .filter(aluno => {
-          if (filtroStatus === 'ativos') return aluno.ativo;
-          if (filtroStatus === 'evadidos') return !aluno.ativo;
+          if (filtroStatus === 'ativo') return aluno.status === 'ativo';
+          if (filtroStatus === 'risco') return aluno.status === 'risco';
+          if (filtroStatus === 'evadido') return aluno.status === 'evadido';
           return true;
         })
         .filter(aluno =>
@@ -193,13 +208,16 @@
           <td>${aluno.nome}</td>
           <td>${aluno.email}</td>
           <td>${aluno.telefone}</td>
-          <td>${aluno.ativo ? 'Ativo' : 'Evadido'}</td>
+          <td>${capitalize(aluno.status)}</td>
           <td>
-            <button class="btn btn-evadir" onclick="marcarEvasao(${aluno.id})" ${!aluno.ativo ? 'disabled' : ''}>
+            <button class="btn btn-evadir" onclick="marcarEvasao(${aluno.id})" ${aluno.status === 'evadido' ? 'disabled' : ''}>
               Marcar Evasão
             </button>
             <button class="btn btn-editar" onclick="editarAluno(${aluno.id})">
               Editar
+            </button>
+            <button class="btn btn-excluir" onclick="excluirAluno(${aluno.id})">
+              Excluir
             </button>
           </td>
         `;
@@ -213,8 +231,9 @@
     function atualizarGrafico() {
       const alunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
 
-      const totalAtivos = alunos.filter(a => a.ativo).length;
-      const totalEvadidos = alunos.filter(a => !a.ativo).length;
+      const totalAtivos = alunos.filter(a => a.status === 'ativo').length;
+      const totalRisco = alunos.filter(a => a.status === 'risco').length;
+      const totalEvadidos = alunos.filter(a => a.status === 'evadido').length;
 
       const ctx = document.getElementById('graficoAlunos').getContext('2d');
 
@@ -225,11 +244,11 @@
       grafico = new Chart(ctx, {
         type: 'bar',
         data: {
-          labels: ['Alunos Ativos', 'Alunos Evadidos'],
+          labels: ['Ativos', 'Risco de Evasão', 'Evadidos'],
           datasets: [{
             label: 'Quantidade',
-            data: [totalAtivos, totalEvadidos],
-            backgroundColor: ['#2563eb', '#ef4444'],
+            data: [totalAtivos, totalRisco, totalEvadidos],
+            backgroundColor: ['#2563eb', '#f59e0b', '#ef4444'],
             borderRadius: 6,
             maxBarThickness: 80,
           }]
@@ -246,12 +265,8 @@
             }
           },
           plugins: {
-            legend: {
-              display: false
-            },
-            tooltip: {
-              enabled: true
-            }
+            legend: { display: false },
+            tooltip: { enabled: true }
           }
         }
       });
@@ -261,8 +276,8 @@
       let alunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
 
       const index = alunos.findIndex(a => a.id === id);
-      if(index !== -1 && alunos[index].ativo) {
-        alunos[index].ativo = false;
+      if(index !== -1 && alunos[index].status !== 'evadido') {
+        alunos[index].status = 'evadido';
         localStorage.setItem('listaAlunos', JSON.stringify(alunos));
         carregarAlunos();
       }
@@ -272,56 +287,101 @@
       alert('Funcionalidade de editar aluno ainda não implementada.');
     }
 
-    document.getElementById('btnExportar').addEventListener('click', () => {
-      const alunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
-      let csv = 'Nome,Email,Telefone,Status\n';
-      alunos.forEach(a => {
-        csv += `"${a.nome}","${a.email}","${a.telefone}","${a.ativo ? 'Ativo' : 'Evadido'}"\n`;
-      });
+    function excluirAluno(id) {
+      if(confirm("Tem certeza que deseja excluir este aluno?")) {
+        let alunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
+        alunos = alunos.filter(a => a.id !== id);
+        localStorage.setItem('listaAlunos', JSON.stringify(alunos));
+        carregarAlunos();
+      }
+    }
 
-      const blob = new Blob([csv], {type: 'text/csv'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'alunos_gym_control.csv';
-      a.click();
-      URL.revokeObjectURL(url);
-    });
+    function capitalize(str) {
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    }
 
-    document.getElementById('filtroStatus').addEventListener('change', carregarAlunos);
-    document.getElementById('busca').addEventListener('input', carregarAlunos);
-
-    // Função para gerar 70 alunos fixos só uma vez
     function gerarAlunosAleatorios() {
-      const nomes = ["Ana", "Bruno", "Carlos", "Daniela", "Eduardo", "Fernanda", "Gustavo", "Helena", "Igor", "Juliana"];
-      const sobrenomes = ["Silva", "Oliveira", "Souza", "Pereira", "Lima", "Costa"];
+      const nomes = ["Ana", "Bruno", "Carlos", "Daniela", "Eduardo", "Fernanda", "Gustavo", "Helena", "Igor", "Juliana", "Lucas", "Mariana", "Pedro", "Sofia", "Rafael", "Camila", "Thiago", "Larissa", "Felipe", "Gabriela"];
+      const sobrenomes = ["Silva", "Oliveira", "Souza", "Pereira", "Lima", "Costa", "Almeida", "Barbosa", "Fernandes", "Moura"];
       const lista = [];
-      const total = 70;
-      const ativos = Math.floor(total * 0.7);
+      const total = 90;
+
+      const qtdAtivos = Math.floor(total * 0.6);   // 60%
+      const qtdRisco = Math.floor(total * 0.3);    // 30%
+      const qtdEvadidos = total - qtdAtivos - qtdRisco; // 10%
 
       for (let i = 0; i < total; i++) {
         const nome = nomes[Math.floor(Math.random() * nomes.length)] + " " + sobrenomes[Math.floor(Math.random() * sobrenomes.length)];
-        const email = nome.toLowerCase().replace(" ", ".") + "@gmail.com";
+        const email = nome.toLowerCase().replace(" ", ".") + (1000 + i) + "@gmail.com";
         const telefone = "(11) 9" + Math.floor(10000000 + Math.random() * 89999999).toString();
+
+        let status = "ativo";
+        if (i >= qtdAtivos && i < qtdAtivos + qtdRisco) status = "risco";
+        else if (i >= qtdAtivos + qtdRisco) status = "evadido";
+
         lista.push({
           id: Date.now() + i,
           nome,
           email,
           telefone,
-          ativo: i < ativos
+          status
         });
       }
 
       localStorage.setItem("listaAlunos", JSON.stringify(lista));
     }
 
-    // Só gera os alunos fixos se não existir nenhum aluno salvo
-    if (!localStorage.getItem("listaAlunos") || JSON.parse(localStorage.getItem("listaAlunos")).length === 0) {
-      gerarAlunosAleatorios();
+    function exportarCSV() {
+      const alunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
+      const filtroStatus = document.getElementById('filtroStatus').value;
+      const termoBusca = document.getElementById('busca').value.toLowerCase();
+
+      const alunosFiltrados = alunos
+        .filter(aluno => {
+          if (filtroStatus === 'ativo') return aluno.status === 'ativo';
+          if (filtroStatus === 'risco') return aluno.status === 'risco';
+          if (filtroStatus === 'evadido') return aluno.status === 'evadido';
+          return true;
+        })
+        .filter(aluno =>
+          aluno.nome.toLowerCase().includes(termoBusca) ||
+          aluno.email.toLowerCase().includes(termoBusca)
+        );
+
+      if(alunosFiltrados.length === 0) {
+        alert("Nenhum aluno para exportar.");
+        return;
+      }
+
+      const cabecalho = ['Nome', 'Email', 'Telefone', 'Status'];
+      const linhas = alunosFiltrados.map(a => [a.nome, a.email, a.telefone, capitalize(a.status)]);
+      const csvContent = [cabecalho, ...linhas]
+        .map(e => e.map(c => `"${c.replace(/"/g, '""')}"`).join(';'))
+        .join('\n');
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute('download', 'relatorio_alunos.csv');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
 
-    carregarAlunos();
+    // Inicialização
+    window.onload = function() {
+      if(!localStorage.getItem("listaAlunos")) {
+        gerarAlunosAleatorios();
+      }
 
+      carregarAlunos();
+
+      document.getElementById('filtroStatus').addEventListener('change', carregarAlunos);
+      document.getElementById('busca').addEventListener('input', carregarAlunos);
+      document.getElementById('btnExportar').addEventListener('click', exportarCSV);
+    }
   </script>
 
 </body>
