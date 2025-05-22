@@ -69,5 +69,54 @@
   <footer>
     <p>&copy; 2025 GYM CONTROL - Todos os direitos reservados.</p>
   </footer>
+ <!-- Botão para resetar a lista de alunos -->
+<button id="resetAlunos" style="margin-top:20px; padding:10px 20px; background:#ef4444; color:#fff; border:none; border-radius:8px; cursor:pointer;">
+  Resetar Lista de Alunos
+</button>
+
+<script>
+  function gerarAlunosIniciais() {
+    const nomes = [
+      "Ana Silva", "Bruno Souza", "Carla Oliveira", "Daniel Pereira", "Eduardo Costa",
+      "Fernanda Gomes", "Gabriel Martins", "Helena Rocha", "Igor Alves", "Júlia Lima",
+      "Karla Santos", "Lucas Ferreira", "Mariana Dias", "Natan Melo", "Olívia Barros",
+      "Paulo Ribeiro", "Quésia Fernandes", "Rafael Carvalho", "Sabrina Monteiro", "Tiago Moreira",
+      "Úrsula Duarte", "Vitor Henrique", "Wesley Castro", "Xavier Pacheco", "Yara Mendonça",
+      "Zé Carlos", "Alice Moretti", "Bruna Faria", "Caio Henrique", "Débora Luz",
+      "Emanuel Costa", "Fabiana Prado", "Gustavo Almeida", "Heloísa Rocha", "Isabela Nunes",
+      "João Pedro", "Karen Silva", "Leonardo Gomes", "Marta Vasconcelos", "Nelson Reis",
+      "Patrícia Fonseca", "Ricardo Alves", "Sandra Lima", "Thiago Barbosa", "Vanessa Santos",
+      "Wagner Moura", "Ximena Rocha", "Yuri Ferreira", "Zilda Costa", "André Luiz",
+      "Bianca Lopes", "César Moura", "Diana Paiva", "Eduarda Ribeiro", "Felipe Souza",
+      "Giovana Mendes", "Henrique Barros", "Isadora Lima", "Júlio César", "Kátia Melo"
+    ];
+
+    const alunos = nomes.map((nome, index) => ({
+      id: `AL${index + 1}`,
+      nome,
+      email: nome.toLowerCase().replace(/ /g, '.') + '@exemplo.com',
+      telefone: '(11) 9' + String(Math.floor(Math.random() * 90000000) + 10000000),
+      ativo: Math.random() > 0.15,
+      frequencia: Math.floor(Math.random() * 30) + 1,
+      mensalidadePaga: Math.random() > 0.2
+    }));
+
+    return alunos;
+  }
+
+  function salvarAlunosNoStorage() {
+    const alunosIniciais = gerarAlunosIniciais();
+    localStorage.setItem('listaAlunos', JSON.stringify(alunosIniciais));
+    alert('Lista inicial de alunos foi resetada com sucesso!');
+    location.reload();
+  }
+
+  document.getElementById('resetAlunos').addEventListener('click', () => {
+    if (confirm('Tem certeza que deseja resetar a lista de alunos? Isso apagará os dados atuais.')) {
+      salvarAlunosNoStorage();
+    }
+  });
+</script>
+
 </body>
 </html>
