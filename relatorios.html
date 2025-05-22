@@ -205,10 +205,10 @@
         const tr = document.createElement('tr');
 
         tr.innerHTML = `
-          <td>${aluno.nome || ''}</td>
-          <td>${aluno.email || ''}</td>
-          <td>${aluno.telefone || ''}</td>
-          <td>${capitalize(aluno.status || '')}</td>
+          <td>${aluno.nome}</td>
+          <td>${aluno.email}</td>
+          <td>${aluno.telefone}</td>
+          <td>${capitalize(aluno.status)}</td>
           <td>
             <button class="btn btn-evadir" onclick="marcarEvasao(${aluno.id})" ${aluno.status === 'evadido' ? 'disabled' : ''}>
               Marcar Evasão
@@ -225,15 +225,13 @@
         tabela.appendChild(tr);
       });
 
-      atualizarGrafico();
+      atualizarGrafico(alunosFiltrados);
     }
 
-    function atualizarGrafico() {
-      const alunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
-
-      const totalAtivos = alunos.filter(a => a.status === 'ativo').length;
-      const totalRisco = alunos.filter(a => a.status === 'risco').length;
-      const totalEvadidos = alunos.filter(a => a.status === 'evadido').length;
+    function atualizarGrafico(alunosFiltrados) {
+      const totalAtivos = alunosFiltrados.filter(a => a.status === 'ativo').length;
+      const totalRisco = alunosFiltrados.filter(a => a.status === 'risco').length;
+      const totalEvadidos = alunosFiltrados.filter(a => a.status === 'evadido').length;
 
       const ctx = document.getElementById('graficoAlunos').getContext('2d');
 
@@ -296,9 +294,7 @@
       }
     }
 
-    // Função capitalize segura para evitar erro caso valor seja undefined, null ou vazio
     function capitalize(str) {
-      if (typeof str !== 'string' || str.length === 0) return '';
       return str.charAt(0).toUpperCase() + str.slice(1);
     }
 
@@ -313,25 +309,23 @@
       const qtdEvadidos = total - qtdAtivos - qtdRisco; // 10%
 
       for (let i = 0; i < total; i++) {
-        const nome = nomes[Math.floor(Math.random() * nomes.length)] + " " + sobrenomes[Math.floor(Math.random() * sobrenomes.length)];
-        const email = nome.toLowerCase().replace(" ", ".") + (1000 + i) + "@gmail.com";
-        const telefone = "(11) 9" + Math.floor(10000000 + Math.random() * 89999999).toString();
+        const nome = nomes[Math.floor(Math.random() * nomes.length)] + ' ' + sobrenomes[Math.floor(Math.random() * sobrenomes.length)];
+        const email = nome.toLowerCase().replace(/ /g, '.') + '@exemplo.com';
+        const telefone = '9' + Math.floor(100000000 + Math.random() * 899999999);
+        let status = 'ativo';
+        if (i < qtdAtivos) status = 'ativo';
+        else if (i < qtdAtivos + qtdRisco) status = 'risco';
+        else status = 'evadido';
 
-        let status = "ativo";
-        if (i >= qtdAtivos && i < qtdAtivos + qtdRisco) status = "risco";
-        else if (i >= qtdAtivos + qtdRisco) status = "evadido";
-
-        lista.push({
-          id: Date.now() + i,
-          nome,
-          email,
-          telefone,
-          status
-        });
+        lista.push({id: i+1, nome, email, telefone, status});
       }
-
-      localStorage.setItem("listaAlunos", JSON.stringify(lista));
+      localStorage.setItem('listaAlunos', JSON.stringify(lista));
+      carregarAlunos();
     }
+
+    document.getElementById('filtroStatus').addEventListener('change', carregarAlunos);
+    document.getElementById('busca').addEventListener('input', carregarAlunos);
+    document.getElementById('btnExportar').addEventListener('click', exportarCSV);
 
     function exportarCSV() {
       const alunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
@@ -350,38 +344,36 @@
           (aluno.email && aluno.email.toLowerCase().includes(termoBusca))
         );
 
-      if(alunosFiltrados.length === 0) {
-        alert("Nenhum aluno para exportar.");
+      if(alunosFiltrados.length === 0){
+        alert('Nenhum aluno para exportar.');
         return;
       }
 
-      const cabecalho = ['Nome', 'Email', 'Telefone', 'Status'];
-      const linhas = alunosFiltrados.map(a => [a.nome, a.email, a.telefone, capitalize(a.status)]);
-      const csvContent = [cabecalho, ...linhas].map(e => e.join(",")).join("\n");
+      let csv = 'Nome,Email,Telefone,Status\n';
 
-      const blob = new Blob([csvContent], {type: 'text/csv;charset=utf-8;'});
+      alunosFiltrados.forEach(a => {
+        csv += `"${a.nome}","${a.email}","${a.telefone}","${capitalize(a.status)}"\n`;
+      });
+
+      const blob = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
       const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'relatorio_alunos.csv';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'relatorio_alunos.csv';
+      link.style.display = 'none';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
       URL.revokeObjectURL(url);
     }
 
-    // Eventos dos filtros e busca
-    document.getElementById('filtroStatus').addEventListener('change', carregarAlunos);
-    document.getElementById('busca').addEventListener('input', carregarAlunos);
-    document.getElementById('btnExportar').addEventListener('click', exportarCSV);
-
-    // Se não existir alunos, cria 90 aleatórios para teste
-    if (!localStorage.getItem('listaAlunos')) {
+    // Se não existir lista, gera dados para testes
+    if(!localStorage.getItem('listaAlunos')) {
       gerarAlunosAleatorios();
+    } else {
+      carregarAlunos();
     }
-
-    carregarAlunos();
-
   </script>
 
 </body>
