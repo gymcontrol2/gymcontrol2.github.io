@@ -15,7 +15,7 @@
 
     body {
       font-family: 'Poppins', sans-serif;
-      background: url('https://img1.migalhas.uol.com.br/gf_base/empresas/MIGA/imagens/2C71280522FB94283F907E4CEC8EF03F25FF_academia.jpg') no-repeat center center fixed;
+      background: url('https://png.pngtree.com/background/20250202/original/pngtree-a-gym-with-red-lights-dark-neon-for-motivating-vibe-picture-image_16004068.jpg') no-repeat center center fixed;
       background-size: cover;
       color: #f3f4f6;
       min-height: 100vh;
@@ -25,6 +25,7 @@
       justify-content: center;
       position: relative;
       text-align: center;
+      padding: 1rem;
     }
 
     /* Camada escura sobre a imagem */
@@ -32,44 +33,46 @@
       content: '';
       position: fixed;
       inset: 0;
-      background-color: rgba(0, 0, 0, 0.7);
+      background-color: rgba(0, 0, 0, 0.75);
       z-index: 0;
+      pointer-events: none;
     }
 
     .container {
       position: relative;
       z-index: 1;
       max-width: 600px;
-      padding: 2rem 3rem;
-      background-color: rgba(15, 23, 42, 0.85);
+      padding: 2.5rem 3rem;
+      background-color: rgba(15, 23, 42, 0.9);
       border-radius: 16px;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
+      box-shadow: 0 8px 35px rgba(0, 0, 0, 0.85);
       user-select: none;
+      backdrop-filter: blur(8px);
     }
 
     h1 {
       font-size: 4rem;
       font-weight: 800;
       letter-spacing: 4px;
-      margin-bottom: 0.2em;
+      margin-bottom: 0.3em;
       text-transform: uppercase;
       color: #e0e7ff;
-      text-shadow: 0 2px 10px rgba(59, 130, 246, 0.7);
+      text-shadow: 0 3px 12px rgba(59, 130, 246, 0.9);
     }
 
     .subtitulo {
       font-size: 1.8rem;
       font-weight: 600;
-      margin-bottom: 2em;
+      margin-bottom: 2.5em;
       color: #94a3b8;
       font-style: italic;
-      text-shadow: 0 1px 6px rgba(0, 0, 0, 0.7);
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.75);
     }
 
     .botoes {
       display: flex;
       justify-content: center;
-      gap: 1.5em;
+      gap: 1.8em;
       flex-wrap: wrap;
     }
 
@@ -79,19 +82,23 @@
       border-radius: 12px;
       background: linear-gradient(135deg, #1f2937, #374151);
       color: #f3f4f6;
-      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.7);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.75);
       border: 1.5px solid #4b5563;
       transition: background 0.4s ease, box-shadow 0.4s ease, color 0.4s ease;
       text-decoration: none;
       cursor: pointer;
       min-width: 140px;
       text-align: center;
+      user-select: none;
+      letter-spacing: 0.03em;
     }
 
-    .botoes .btn:hover {
-      background: linear-gradient(135deg, #374151, #1f2937);
-      box-shadow: 0 10px 25px rgba(59, 130, 246, 0.5);
-      color: #bfdbfe;
+    .botoes .btn:hover,
+    .botoes .btn:focus {
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      box-shadow: 0 12px 30px rgba(59, 130, 246, 0.7);
+      color: #e0e7ff;
+      outline: none;
     }
 
     footer {
@@ -102,6 +109,27 @@
       position: relative;
       z-index: 1;
       user-select: none;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+    }
+
+    /* Responsividade simples */
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 3rem;
+      }
+
+      .subtitulo {
+        font-size: 1.4rem;
+      }
+
+      .botoes {
+        gap: 1em;
+      }
+
+      .botoes .btn {
+        min-width: 120px;
+        padding: 0.9em 2em;
+      }
     }
   </style>
 </head>
