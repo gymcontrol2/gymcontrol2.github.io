@@ -1,152 +1,312 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Mensalidade - Área do Aluno</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&display=swap" rel="stylesheet" />
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&display=swap');
+
     * {
-      margin: 0; padding: 0; box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
+
     body {
       font-family: 'Poppins', sans-serif;
-      background: url('https://png.pngtree.com/background/20250202/original/pngtree-a-gym-with-red-lights-dark-neon-for-motivating-vibe-picture-image_16004068.jpg') no-repeat center center fixed;
+      background: url('https://img1.migalhas.uol.com.br/gf_base/empresas/MIGA/imagens/2C71280522FB94283F907E4CEC8EF03F25FF_academia.jpg') no-repeat center center fixed;
       background-size: cover;
-      color: white;
+      color: #f3f4f6;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       position: relative;
-      padding: 2rem;
       text-align: center;
+      padding: 2rem;
     }
+
     body::before {
-      content: "";
-      position: absolute;
+      content: '';
+      position: fixed;
       inset: 0;
-      background-color: rgba(0,0,0,0.7);
+      background-color: rgba(0, 0, 0, 0.75);
       z-index: 0;
     }
-    main {
+
+    .container {
       position: relative;
       z-index: 1;
-      background-color: rgba(10,10,10,0.75);
-      padding: 2rem 3rem;
+      max-width: 450px;
+      background-color: rgba(15, 23, 42, 0.9);
+      padding: 2.5rem 3rem;
       border-radius: 16px;
-      max-width: 400px;
-      width: 100%;
-      box-shadow: 0 0 20px #ff2e63;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.8);
+      user-select: none;
+      text-align: center;
     }
+
     h1 {
+      font-size: 3rem;
       font-weight: 800;
+      color: #60a5fa;
+      margin-bottom: 1.2rem;
+      text-shadow: 0 2px 8px #2563eb;
+    }
+
+    .info {
+      font-size: 1.2rem;
       margin-bottom: 1rem;
-      font-size: 2.8rem;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      text-shadow: 0 0 12px #ff2e63;
+      color: #cbd5e1;
+      letter-spacing: 0.05em;
     }
+
     .status {
-      font-size: 1.5rem;
-      margin-bottom: 2rem;
-      padding: 0.8rem 1.5rem;
-      border-radius: 50px;
       font-weight: 700;
+      font-size: 1.3rem;
+      margin: 1.2rem 0;
+      padding: 0.5rem 1rem;
+      border-radius: 12px;
       display: inline-block;
-      min-width: 130px;
-      box-shadow: 0 0 10px #ff2e63;
+      min-width: 120px;
+      text-transform: uppercase;
     }
+
     .status.pago {
-      background-color: #10b981; /* verde */
-      box-shadow: 0 0 15px #10b981;
+      background-color: #10b981;
+      color: #d1fae5;
+      box-shadow: 0 0 10px #10b981aa;
     }
+
+    .status.atrasado {
+      background-color: #ef4444;
+      color: #fee2e2;
+      box-shadow: 0 0 10px #ef4444aa;
+    }
+
     .status.pendente {
-      background-color: #ef4444; /* vermelho */
-      box-shadow: 0 0 15px #ef4444;
+      background-color: #fbbf24;
+      color: #92400e;
+      box-shadow: 0 0 10px #fbbf24aa;
     }
+
     button {
-      background: linear-gradient(135deg, #ff2e63, #ff3366);
-      color: white;
+      margin-top: 1.5rem;
+      padding: 0.8rem 2.5rem;
       font-weight: 700;
-      padding: 1rem 2rem;
+      border-radius: 12px;
       border: none;
-      border-radius: 50px;
+      background: linear-gradient(135deg, #2563eb, #60a5fa);
+      color: white;
       font-size: 1.1rem;
       cursor: pointer;
+      box-shadow: 0 6px 15px #60a5faaa;
       transition: background 0.3s ease, box-shadow 0.3s ease;
-      margin-bottom: 1.5rem;
-      box-shadow: 0 4px 15px #ff2e63;
     }
+
     button:hover {
-      background: linear-gradient(135deg, #ff3366, #ff2e63);
-      box-shadow: 0 6px 20px #ff3366;
+      background: linear-gradient(135deg, #60a5fa, #2563eb);
+      box-shadow: 0 8px 22px #2563ebcc;
     }
-    .voltar {
-      background: transparent;
-      box-shadow: none;
-      color: #d1d5db;
-      text-decoration: underline;
-      font-weight: 600;
-      cursor: pointer;
+
+    .historico {
+      margin-top: 2rem;
       font-size: 1rem;
-      margin-top: 1rem;
+      color: #94a3b8;
+      border-top: 1px solid #374151;
+      padding-top: 1rem;
+      text-align: left;
     }
-    .voltar:hover {
-      color: #ff2e63;
+
+    .historico h2 {
+      font-size: 1.2rem;
+      color: #60a5fa;
+      margin-bottom: 0.6rem;
     }
+
+    .historico ul {
+      list-style: none;
+      max-height: 120px;
+      overflow-y: auto;
+      padding-left: 1rem;
+    }
+
+    .historico li {
+      padding: 0.2rem 0;
+      border-bottom: 1px solid #1e293b;
+    }
+
+    a.voltar-home {
+      display: inline-block;
+      margin-top: 2rem;
+      color: #60a5fa;
+      font-weight: 700;
+      text-decoration: none;
+      user-select: none;
+      transition: color 0.3s;
+    }
+
+    a.voltar-home:hover {
+      color: #2563eb;
+    }
+
   </style>
 </head>
 <body>
-  <main>
+
+  <div class="container">
     <h1>Mensalidade</h1>
+
+    <p class="info">Valor fixo da mensalidade: <strong>R$ 120,00</strong></p>
+    <p class="info">Vencimento mensal: <strong>Todo dia 10</strong></p>
+
+    <p>Status atual da sua mensalidade:</p>
     <div id="statusMensalidade" class="status pendente">Carregando...</div>
-    <button id="botaoAtualizar">Marcar como Pago</button>
-    <button class="voltar" id="btnVoltar">← Voltar para Home</button>
-  </main>
+
+    <button id="btnPagar">Marcar como Pago</button>
+
+    <div class="historico">
+      <h2>Histórico de Pagamentos</h2>
+      <ul id="listaPagamentos">
+        <!-- Datas dos pagamentos aparecerão aqui -->
+      </ul>
+    </div>
+
+    <a href="home.html" class="voltar-home">← Voltar para a Home</a>
+  </div>
 
   <script>
-    // Pega o usuário logado do localStorage (supõe que tem id e tipo)
-    const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+    const VALOR_MENSALIDADE = 120;
+    const DIA_VENCIMENTO = 10; // Todo dia 10 do mês
+    const alunoLogadoId = localStorage.getItem('alunoLogadoId');
 
-    if (!usuarioLogado || usuarioLogado.tipo !== 'aluno') {
-      alert('Você precisa estar logado como aluno para acessar esta página.');
-      window.location.href = 'index.html';
+    if(!alunoLogadoId) {
+      alert('Aluno não logado. Por favor, faça login.');
+      window.location.href = 'index.html'; // redirecionar para login
     }
 
-    const statusEl = document.getElementById('statusMensalidade');
-    const botaoAtualizar = document.getElementById('botaoAtualizar');
-    const btnVoltar = document.getElementById('btnVoltar');
+    // Função para carregar os dados do aluno da mensalidade
+    function carregarMensalidade() {
+      const listaAlunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
+      const aluno = listaAlunos.find(a => a.id == alunoLogadoId);
+      if(!aluno) {
+        alert('Aluno não encontrado.');
+        return;
+      }
 
-    // Chave no localStorage para salvar status da mensalidade do aluno
-    // Exemplo: mensalidade_123 para aluno com id 123
-    const chaveMensalidade = 'mensalidade_' + usuarioLogado.id;
+      // Mensalidade salvo dentro do próprio aluno (ou criar objeto mensalidade)
+      if(!aluno.mensalidade) {
+        // inicializa com dados padrão
+        aluno.mensalidade = {
+          pagos: [], // array com datas de pagamento
+          ultimoPagamento: null
+        };
+        salvarAluno(aluno);
+      }
 
-    // Função para carregar status
-    function carregarStatus() {
-      const status = localStorage.getItem(chaveMensalidade) || 'pendente';
-      statusEl.textContent = status === 'pago' ? 'Pago' : 'Pendente';
-      statusEl.className = 'status ' + (status === 'pago' ? 'pago' : 'pendente');
-      botaoAtualizar.textContent = status === 'pago' ? 'Marcar como Pendente' : 'Marcar como Pago';
+      const hoje = new Date();
+      const dataAtual = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate());
+      // Próximo vencimento: dia 10 do próximo mês se já passou esse mês, senão dia 10 do mês atual
+      let proxVencimento = new Date(hoje.getFullYear(), hoje.getMonth(), DIA_VENCIMENTO);
+      if(dataAtual > proxVencimento) {
+        proxVencimento = new Date(hoje.getFullYear(), hoje.getMonth() + 1, DIA_VENCIMENTO);
+      }
+
+      // Verifica status da mensalidade
+      // Se último pagamento >= mês e ano do vencimento atual -> pago
+      // Se hoje > vencimento e não pago -> atrasado
+      // Se hoje < vencimento e não pago -> pendente
+
+      const statusDiv = document.getElementById('statusMensalidade');
+      const btnPagar = document.getElementById('btnPagar');
+
+      let pago = false;
+      if(aluno.mensalidade.ultimoPagamento) {
+        const ultPag = new Date(aluno.mensalidade.ultimoPagamento);
+        // verifica se último pagamento é do mês e ano do vencimento atual (do mês do proxVencimento - 1 mês)
+        const mesReferencia = proxVencimento.getMonth() === 0 ? 11 : proxVencimento.getMonth() - 1;
+        const anoReferencia = proxVencimento.getMonth() === 0 ? proxVencimento.getFullYear() - 1 : proxVencimento.getFullYear();
+        if(ultPag.getMonth() === mesReferencia && ultPag.getFullYear() === anoReferencia) {
+          pago = true;
+        }
+      }
+
+      if(pago) {
+        statusDiv.textContent = "Pago";
+        statusDiv.className = 'status pago';
+        btnPagar.disabled = true;
+      } else {
+        if(dataAtual > proxVencimento) {
+          statusDiv.textContent = "Atrasado";
+          statusDiv.className = 'status atrasado';
+        } else {
+          statusDiv.textContent = "Pendente";
+          statusDiv.className = 'status pendente';
+        }
+        btnPagar.disabled = false;
+      }
+
+      // Atualizar histórico
+      atualizarHistorico(aluno.mensalidade.pagos);
     }
 
-    // Função para alternar status
-    function alternarStatus() {
-      const statusAtual = localStorage.getItem(chaveMensalidade) || 'pendente';
-      const novoStatus = statusAtual === 'pago' ? 'pendente' : 'pago';
-      localStorage.setItem(chaveMensalidade, novoStatus);
-      carregarStatus();
+    function atualizarHistorico(pagos) {
+      const ul = document.getElementById('listaPagamentos');
+      ul.innerHTML = '';
+      if(pagos.length === 0) {
+        ul.innerHTML = '<li>Nenhum pagamento registrado.</li>';
+        return;
+      }
+
+      // Ordena decrescente
+      pagos.sort((a,b) => new Date(b) - new Date(a));
+
+      pagos.forEach(dataStr => {
+        const data = new Date(dataStr);
+        const dataFormatada = data.toLocaleDateString('pt-BR', {day: '2-digit', month: 'short', year: 'numeric'});
+        const li = document.createElement('li');
+        li.textContent = dataFormatada;
+        ul.appendChild(li);
+      });
     }
 
-    // Event listeners
-    botaoAtualizar.addEventListener('click', alternarStatus);
-    btnVoltar.addEventListener('click', () => {
-      window.location.href = 'home_aluno.html';
+    function salvarAluno(aluno) {
+      const listaAlunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
+      const index = listaAlunos.findIndex(a => a.id == aluno.id);
+      if(index !== -1) {
+        listaAlunos[index] = aluno;
+      } else {
+        listaAlunos.push(aluno);
+      }
+      localStorage.setItem('listaAlunos', JSON.stringify(listaAlunos));
+    }
+
+    // Ao clicar em pagar mensalidade, registra o pagamento de hoje
+    document.getElementById('btnPagar').addEventListener('click', () => {
+      const listaAlunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
+      const aluno = listaAlunos.find(a => a.id == alunoLogadoId);
+      if(!aluno) {
+        alert('Aluno não encontrado.');
+        return;
+      }
+
+      const hojeStr = new Date().toISOString();
+
+      if(!aluno.mensalidade) {
+        aluno.mensalidade = { pagos: [], ultimoPagamento: null };
+      }
+
+      aluno.mensalidade.pagos.push(hojeStr);
+      aluno.mensalidade.ultimoPagamento = hojeStr;
+      salvarAluno(aluno);
+      carregarMensalidade();
+      alert('Pagamento registrado com sucesso!');
     });
 
-    // Inicializa
-    carregarStatus();
+    carregarMensalidade();
   </script>
+
 </body>
 </html>
