@@ -25,7 +25,6 @@
       justify-content: center;
       position: relative;
       text-align: center;
-      padding: 1rem;
     }
 
     /* Camada escura sobre a imagem */
@@ -35,44 +34,42 @@
       inset: 0;
       background-color: rgba(0, 0, 0, 0.75);
       z-index: 0;
-      pointer-events: none;
     }
 
     .container {
       position: relative;
       z-index: 1;
       max-width: 600px;
-      padding: 2.5rem 3rem;
-      background-color: rgba(15, 23, 42, 0.9);
+      padding: 2rem 3rem;
+      background-color: rgba(15, 23, 42, 0.85);
       border-radius: 16px;
-      box-shadow: 0 8px 35px rgba(0, 0, 0, 0.85);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
       user-select: none;
-      backdrop-filter: blur(8px);
     }
 
     h1 {
       font-size: 4rem;
       font-weight: 800;
       letter-spacing: 4px;
-      margin-bottom: 0.3em;
+      margin-bottom: 0.2em;
       text-transform: uppercase;
       color: #e0e7ff;
-      text-shadow: 0 3px 12px rgba(59, 130, 246, 0.9);
+      text-shadow: 0 2px 10px rgba(59, 130, 246, 0.7);
     }
 
     .subtitulo {
       font-size: 1.8rem;
       font-weight: 600;
-      margin-bottom: 2.5em;
+      margin-bottom: 2em;
       color: #94a3b8;
       font-style: italic;
-      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.75);
+      text-shadow: 0 1px 6px rgba(0, 0, 0, 0.7);
     }
 
     .botoes {
       display: flex;
       justify-content: center;
-      gap: 1.8em;
+      gap: 1.5em;
       flex-wrap: wrap;
     }
 
@@ -82,23 +79,36 @@
       border-radius: 12px;
       background: linear-gradient(135deg, #1f2937, #374151);
       color: #f3f4f6;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.75);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.7);
       border: 1.5px solid #4b5563;
       transition: background 0.4s ease, box-shadow 0.4s ease, color 0.4s ease;
       text-decoration: none;
       cursor: pointer;
       min-width: 140px;
       text-align: center;
-      user-select: none;
-      letter-spacing: 0.03em;
     }
 
-    .botoes .btn:hover,
-    .botoes .btn:focus {
-      background: linear-gradient(135deg, #3b82f6, #2563eb);
-      box-shadow: 0 12px 30px rgba(59, 130, 246, 0.7);
-      color: #e0e7ff;
-      outline: none;
+    .botoes .btn:hover {
+      background: linear-gradient(135deg, #374151, #1f2937);
+      box-shadow: 0 10px 25px rgba(59, 130, 246, 0.5);
+      color: #bfdbfe;
+    }
+
+    #resetAlunos {
+      margin-top: 2rem;
+      padding: 0.8rem 1.5rem;
+      border-radius: 10px;
+      border: none;
+      background-color: #ef4444;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      user-select: none;
+    }
+
+    #resetAlunos:hover {
+      background-color: #b91c1c;
     }
 
     footer {
@@ -109,43 +119,77 @@
       position: relative;
       z-index: 1;
       user-select: none;
-      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
-    }
-
-    /* Responsividade simples */
-    @media (max-width: 480px) {
-      h1 {
-        font-size: 3rem;
-      }
-
-      .subtitulo {
-        font-size: 1.4rem;
-      }
-
-      .botoes {
-        gap: 1em;
-      }
-
-      .botoes .btn {
-        min-width: 120px;
-        padding: 0.9em 2em;
-      }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Bem Vindo, Aluno</h1>
-    <p class="subtitulo">Acompanhe seus treinos, mensalidades e sua Frequência</p>
-    <div class="botoes">
-      <a href="treinos.html" class="btn">Treinos</a>
-      <a href="mensalidade.html" class="btn">Mensalidade</a>
-      <a href="frequencia.html" class="btn">Frequência</a>
-      <!-- Você pode adicionar mais botões aqui -->
-    </div>
+  <!-- ... sua estrutura HTML e CSS ... -->
+
+<div class="container">
+  <h1>Bem Vindo, Aluno</h1>
+  <p class="subtitulo">Acompanhe seus treinos, mensalidades e sua Frequência</p>
+  <div class="botoes">
+    <a href="treinos.html" class="btn">Treinos</a>
+    <a href="mensalidade.html" class="btn">Mensalidade</a>
+    <a href="frequencia.html" class="btn">Frequência</a>
   </div>
+</div>
+
+<!-- Não inclui o botão de reset aqui -->
+
+<!-- Também não precisa do script que reseta a lista -->
+
   <footer>
     &copy; 2025 Gym Control - Todos os direitos reservados
   </footer>
+
+  <script>
+    function gerarAlunosIniciais() {
+      const nomes = [
+        "Ana Silva", "Bruno Souza", "Carla Oliveira", "Daniel Pereira", "Eduardo Costa",
+        "Fernanda Gomes", "Gabriel Martins", "Helena Rocha", "Igor Alves", "Júlia Lima",
+        "Karla Santos", "Lucas Ferreira", "Mariana Dias", "Natan Melo", "Olívia Barros",
+        "Paulo Ribeiro", "Quésia Fernandes", "Rafael Carvalho", "Sabrina Monteiro", "Tiago Moreira",
+        "Úrsula Duarte", "Vitor Henrique", "Wesley Castro", "Xavier Pacheco", "Yara Mendonça",
+        "Zé Carlos", "Alice Moretti", "Bruna Faria", "Caio Henrique", "Débora Luz",
+        "Emanuel Costa", "Fabiana Prado", "Gustavo Almeida", "Heloísa Rocha", "Isabela Nunes",
+        "João Pedro", "Karen Silva", "Leonardo Gomes", "Marta Vasconcelos", "Nelson Reis",
+        "Patrícia Fonseca", "Ricardo Alves", "Sandra Lima", "Thiago Barbosa", "Vanessa Santos",
+        "Wagner Moura", "Ximena Rocha", "Yuri Ferreira", "Zilda Costa", "André Luiz",
+        "Bianca Lopes", "César Moura", "Diana Paiva", "Eduarda Ribeiro", "Felipe Souza",
+        "Giovana Mendes", "Henrique Barros", "Isadora Lima", "Júlio César", "Kátia Melo"
+      ];
+
+      const alunos = nomes.map((nome, index) => ({
+        id: `AL${index + 1}`,
+        nome,
+        email: nome.toLowerCase().replace(/ /g, '.') + '@exemplo.com',
+        telefone: '(11) 9' + String(Math.floor(Math.random() * 90000000) + 10000000),
+        ativo: Math.random() > 0.15,
+        frequencia: Math.floor(Math.random() * 30) + 1,
+        mensalidadePaga: Math.random() > 0.2
+      }));
+
+      return alunos;
+    }
+
+    function salvarAlunosNoStorage() {
+      const alunosIniciais = gerarAlunosIniciais();
+      localStorage.setItem('listaAlunos', JSON.stringify(alunosIniciais));
+      alert('Lista inicial de alunos foi resetada com sucesso!');
+      location.reload();
+    }
+
+    // Cria lista inicial se não existir
+    if (!localStorage.getItem('listaAlunos')) {
+      salvarAlunosNoStorage();
+    }
+
+    document.getElementById('resetAlunos').addEventListener('click', () => {
+      if(confirm('Tem certeza que deseja resetar a lista de alunos? Isso apagará os dados atuais.')) {
+        salvarAlunosNoStorage();
+      }
+    });
+  </script>
 </body>
 </html>
