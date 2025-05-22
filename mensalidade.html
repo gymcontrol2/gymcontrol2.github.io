@@ -1,36 +1,152 @@
-<div>
-  <h3>Mensalidades</h3>
-  <p>Histórico e status das suas mensalidades.</p>
-  <table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%;">
-    <thead>
-      <tr>
-        <th>Mês</th>
-        <th>Valor</th>
-        <th>Status</th>
-      </tr>
-    </thead>
-    <tbody id="tabelaMensalidades"></tbody>
-  </table>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mensalidade - Área do Aluno</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+    }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: url('https://png.pngtree.com/background/20250202/original/pngtree-a-gym-with-red-lights-dark-neon-for-motivating-vibe-picture-image_16004068.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 2rem;
+      text-align: center;
+    }
+    body::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-color: rgba(0,0,0,0.7);
+      z-index: 0;
+    }
+    main {
+      position: relative;
+      z-index: 1;
+      background-color: rgba(10,10,10,0.75);
+      padding: 2rem 3rem;
+      border-radius: 16px;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 0 20px #ff2e63;
+    }
+    h1 {
+      font-weight: 800;
+      margin-bottom: 1rem;
+      font-size: 2.8rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      text-shadow: 0 0 12px #ff2e63;
+    }
+    .status {
+      font-size: 1.5rem;
+      margin-bottom: 2rem;
+      padding: 0.8rem 1.5rem;
+      border-radius: 50px;
+      font-weight: 700;
+      display: inline-block;
+      min-width: 130px;
+      box-shadow: 0 0 10px #ff2e63;
+    }
+    .status.pago {
+      background-color: #10b981; /* verde */
+      box-shadow: 0 0 15px #10b981;
+    }
+    .status.pendente {
+      background-color: #ef4444; /* vermelho */
+      box-shadow: 0 0 15px #ef4444;
+    }
+    button {
+      background: linear-gradient(135deg, #ff2e63, #ff3366);
+      color: white;
+      font-weight: 700;
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 50px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: background 0.3s ease, box-shadow 0.3s ease;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 15px #ff2e63;
+    }
+    button:hover {
+      background: linear-gradient(135deg, #ff3366, #ff2e63);
+      box-shadow: 0 6px 20px #ff3366;
+    }
+    .voltar {
+      background: transparent;
+      box-shadow: none;
+      color: #d1d5db;
+      text-decoration: underline;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 1rem;
+      margin-top: 1rem;
+    }
+    .voltar:hover {
+      color: #ff2e63;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Mensalidade</h1>
+    <div id="statusMensalidade" class="status pendente">Carregando...</div>
+    <button id="botaoAtualizar">Marcar como Pago</button>
+    <button class="voltar" id="btnVoltar">← Voltar para Home</button>
+  </main>
 
   <script>
+    // Pega o usuário logado do localStorage (supõe que tem id e tipo)
     const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
-    const mensalidades = JSON.parse(localStorage.getItem('mensalidades')) || [];
 
-    const minhasMensalidades = mensalidades.filter(m => m.idAluno === usuarioLogado.id);
-
-    const tbody = document.getElementById('tabelaMensalidades');
-    if (minhasMensalidades.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="3">Nenhuma mensalidade cadastrada.</td></tr>';
-    } else {
-      minhasMensalidades.forEach(m => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${m.mes}</td>
-          <td>R$ ${m.valor.toFixed(2)}</td>
-          <td>${m.paga ? 'Paga' : 'Pendente'}</td>
-        `;
-        tbody.appendChild(tr);
-      });
+    if (!usuarioLogado || usuarioLogado.tipo !== 'aluno') {
+      alert('Você precisa estar logado como aluno para acessar esta página.');
+      window.location.href = 'index.html';
     }
+
+    const statusEl = document.getElementById('statusMensalidade');
+    const botaoAtualizar = document.getElementById('botaoAtualizar');
+    const btnVoltar = document.getElementById('btnVoltar');
+
+    // Chave no localStorage para salvar status da mensalidade do aluno
+    // Exemplo: mensalidade_123 para aluno com id 123
+    const chaveMensalidade = 'mensalidade_' + usuarioLogado.id;
+
+    // Função para carregar status
+    function carregarStatus() {
+      const status = localStorage.getItem(chaveMensalidade) || 'pendente';
+      statusEl.textContent = status === 'pago' ? 'Pago' : 'Pendente';
+      statusEl.className = 'status ' + (status === 'pago' ? 'pago' : 'pendente');
+      botaoAtualizar.textContent = status === 'pago' ? 'Marcar como Pendente' : 'Marcar como Pago';
+    }
+
+    // Função para alternar status
+    function alternarStatus() {
+      const statusAtual = localStorage.getItem(chaveMensalidade) || 'pendente';
+      const novoStatus = statusAtual === 'pago' ? 'pendente' : 'pago';
+      localStorage.setItem(chaveMensalidade, novoStatus);
+      carregarStatus();
+    }
+
+    // Event listeners
+    botaoAtualizar.addEventListener('click', alternarStatus);
+    btnVoltar.addEventListener('click', () => {
+      window.location.href = 'home_aluno.html';
+    });
+
+    // Inicializa
+    carregarStatus();
   </script>
-</div>
+</body>
+</html>
