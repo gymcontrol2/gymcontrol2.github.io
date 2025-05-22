@@ -197,18 +197,18 @@
           return true;
         })
         .filter(aluno =>
-          aluno.nome.toLowerCase().includes(termoBusca) ||
-          aluno.email.toLowerCase().includes(termoBusca)
+          (aluno.nome && aluno.nome.toLowerCase().includes(termoBusca)) ||
+          (aluno.email && aluno.email.toLowerCase().includes(termoBusca))
         );
 
       alunosFiltrados.forEach(aluno => {
         const tr = document.createElement('tr');
 
         tr.innerHTML = `
-          <td>${aluno.nome}</td>
-          <td>${aluno.email}</td>
-          <td>${aluno.telefone}</td>
-          <td>${capitalize(aluno.status)}</td>
+          <td>${aluno.nome || ''}</td>
+          <td>${aluno.email || ''}</td>
+          <td>${aluno.telefone || ''}</td>
+          <td>${capitalize(aluno.status || '')}</td>
           <td>
             <button class="btn btn-evadir" onclick="marcarEvasao(${aluno.id})" ${aluno.status === 'evadido' ? 'disabled' : ''}>
               Marcar Evasão
@@ -296,7 +296,9 @@
       }
     }
 
+    // Função capitalize segura para evitar erro caso valor seja undefined, null ou vazio
     function capitalize(str) {
+      if (typeof str !== 'string' || str.length === 0) return '';
       return str.charAt(0).toUpperCase() + str.slice(1);
     }
 
@@ -344,8 +346,8 @@
           return true;
         })
         .filter(aluno =>
-          aluno.nome.toLowerCase().includes(termoBusca) ||
-          aluno.email.toLowerCase().includes(termoBusca)
+          (aluno.nome && aluno.nome.toLowerCase().includes(termoBusca)) ||
+          (aluno.email && aluno.email.toLowerCase().includes(termoBusca))
         );
 
       if(alunosFiltrados.length === 0) {
@@ -355,33 +357,31 @@
 
       const cabecalho = ['Nome', 'Email', 'Telefone', 'Status'];
       const linhas = alunosFiltrados.map(a => [a.nome, a.email, a.telefone, capitalize(a.status)]);
-      const csvContent = [cabecalho, ...linhas]
-        .map(e => e.map(c => `"${c.replace(/"/g, '""')}"`).join(';'))
-        .join('\n');
+      const csvContent = [cabecalho, ...linhas].map(e => e.join(",")).join("\n");
 
-      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const blob = new Blob([csvContent], {type: 'text/csv;charset=utf-8;'});
       const url = URL.createObjectURL(blob);
-
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute('download', 'relatorio_alunos.csv');
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'relatorio_alunos.csv';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
     }
 
-    // Inicialização
-    window.onload = function() {
-      if(!localStorage.getItem("listaAlunos")) {
-        gerarAlunosAleatorios();
-      }
+    // Eventos dos filtros e busca
+    document.getElementById('filtroStatus').addEventListener('change', carregarAlunos);
+    document.getElementById('busca').addEventListener('input', carregarAlunos);
+    document.getElementById('btnExportar').addEventListener('click', exportarCSV);
 
-      carregarAlunos();
-
-      document.getElementById('filtroStatus').addEventListener('change', carregarAlunos);
-      document.getElementById('busca').addEventListener('input', carregarAlunos);
-      document.getElementById('btnExportar').addEventListener('click', exportarCSV);
+    // Se não existir alunos, cria 90 aleatórios para teste
+    if (!localStorage.getItem('listaAlunos')) {
+      gerarAlunosAleatorios();
     }
+
+    carregarAlunos();
+
   </script>
 
 </body>
