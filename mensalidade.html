@@ -106,9 +106,15 @@
       transition: background 0.3s ease, box-shadow 0.3s ease;
     }
 
-    button:hover {
+    button:hover:not(:disabled) {
       background: linear-gradient(135deg, #60a5fa, #2563eb);
       box-shadow: 0 8px 22px #2563ebcc;
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      box-shadow: none;
     }
 
     .historico {
@@ -118,6 +124,8 @@
       border-top: 1px solid #374151;
       padding-top: 1rem;
       text-align: left;
+      max-height: 120px;
+      overflow-y: auto;
     }
 
     .historico h2 {
@@ -128,8 +136,6 @@
 
     .historico ul {
       list-style: none;
-      max-height: 120px;
-      overflow-y: auto;
       padding-left: 1rem;
     }
 
@@ -151,7 +157,6 @@
     a.voltar-home:hover {
       color: #2563eb;
     }
-
   </style>
 </head>
 <body>
@@ -182,25 +187,24 @@
     const DIA_VENCIMENTO = 10; // Todo dia 10 do mês
     const alunoLogadoId = localStorage.getItem('alunoLogadoId');
 
-    if(!alunoLogadoId) {
-      alert('Aluno não logado. Por favor, faça login.');
-      window.location.href = 'index.html'; // redirecionar para login
-    }
-
-    // Função para carregar os dados do aluno da mensalidade
     function carregarMensalidade() {
       const listaAlunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
       const aluno = listaAlunos.find(a => a.id == alunoLogadoId);
+      const statusDiv = document.getElementById('statusMensalidade');
+      const btnPagar = document.getElementById('btnPagar');
+      const historicoUL = document.getElementById('listaPagamentos');
+
       if(!aluno) {
-        alert('Aluno não encontrado.');
+        statusDiv.textContent = "Aluno não encontrado.";
+        statusDiv.className = 'status pendente';
+        btnPagar.disabled = true;
+        historicoUL.innerHTML = '<li>Nenhum pagamento registrado.</li>';
         return;
       }
 
-      // Mensalidade salvo dentro do próprio aluno (ou criar objeto mensalidade)
       if(!aluno.mensalidade) {
-        // inicializa com dados padrão
         aluno.mensalidade = {
-          pagos: [], // array com datas de pagamento
+          pagos: [],
           ultimoPagamento: null
         };
         salvarAluno(aluno);
@@ -208,24 +212,15 @@
 
       const hoje = new Date();
       const dataAtual = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate());
-      // Próximo vencimento: dia 10 do próximo mês se já passou esse mês, senão dia 10 do mês atual
+
       let proxVencimento = new Date(hoje.getFullYear(), hoje.getMonth(), DIA_VENCIMENTO);
       if(dataAtual > proxVencimento) {
         proxVencimento = new Date(hoje.getFullYear(), hoje.getMonth() + 1, DIA_VENCIMENTO);
       }
 
-      // Verifica status da mensalidade
-      // Se último pagamento >= mês e ano do vencimento atual -> pago
-      // Se hoje > vencimento e não pago -> atrasado
-      // Se hoje < vencimento e não pago -> pendente
-
-      const statusDiv = document.getElementById('statusMensalidade');
-      const btnPagar = document.getElementById('btnPagar');
-
       let pago = false;
       if(aluno.mensalidade.ultimoPagamento) {
         const ultPag = new Date(aluno.mensalidade.ultimoPagamento);
-        // verifica se último pagamento é do mês e ano do vencimento atual (do mês do proxVencimento - 1 mês)
         const mesReferencia = proxVencimento.getMonth() === 0 ? 11 : proxVencimento.getMonth() - 1;
         const anoReferencia = proxVencimento.getMonth() === 0 ? proxVencimento.getFullYear() - 1 : proxVencimento.getFullYear();
         if(ultPag.getMonth() === mesReferencia && ultPag.getFullYear() === anoReferencia) {
@@ -248,7 +243,6 @@
         btnPagar.disabled = false;
       }
 
-      // Atualizar histórico
       atualizarHistorico(aluno.mensalidade.pagos);
     }
 
@@ -260,7 +254,6 @@
         return;
       }
 
-      // Ordena decrescente
       pagos.sort((a,b) => new Date(b) - new Date(a));
 
       pagos.forEach(dataStr => {
@@ -283,12 +276,11 @@
       localStorage.setItem('listaAlunos', JSON.stringify(listaAlunos));
     }
 
-    // Ao clicar em pagar mensalidade, registra o pagamento de hoje
     document.getElementById('btnPagar').addEventListener('click', () => {
       const listaAlunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
       const aluno = listaAlunos.find(a => a.id == alunoLogadoId);
       if(!aluno) {
-        alert('Aluno não encontrado.');
+        document.getElementById('btnPagar').disabled = true;
         return;
       }
 
