@@ -1,52 +1,164 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <title>Relatórios</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Relatórios - GYM CONTROL</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    body { font-family: Arial; margin: 20px; }
-    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-    th { background-color: #f4f4f4; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f8fafc;
+      padding: 2rem;
+      color: #1e293b;
+    }
+
+    h1 {
+      text-align: center;
+      color: #2563eb;
+      margin-bottom: 1.5rem;
+      font-weight: 800;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      max-width: 400px;
+      display: block;
+      margin: 0 auto 1.5rem auto;
+      padding: 0.8rem;
+      font-size: 1rem;
+      border: 1px solid #94a3b8;
+      border-radius: 8px;
+    }
+
+    canvas {
+      max-width: 400px;
+      margin: 0 auto 2rem auto;
+      display: block;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 2rem;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    th, td {
+      padding: 1rem;
+      border-bottom: 1px solid #e2e8f0;
+      text-align: left;
+    }
+
+    th {
+      background-color: #2563eb;
+      color: white;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .ativo {
+      color: #059669;
+      font-weight: 600;
+    }
+
+    .evadido {
+      color: #dc2626;
+      font-weight: 600;
+    }
+
+    .btn-excluir {
+      background-color: #ef4444;
+      color: white;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .btn-excluir:hover {
+      background-color: #dc2626;
+    }
+
+    a.voltar {
+      display: block;
+      text-align: center;
+      margin-top: 2rem;
+      font-weight: 700;
+      color: #2563eb;
+      text-decoration: none;
+    }
+
+    a.voltar:hover {
+      color: #1e40af;
+    }
   </style>
 </head>
 <body>
+
   <h1>Relatório de Alunos</h1>
-  <canvas id="graficoStatus" width="400" height="200"></canvas>
 
-  <h2>Alunos Ativos</h2>
-  <table id="tabelaAtivos"><thead><tr><th>Nome</th><th>Email</th><th>Telefone</th></tr></thead><tbody></tbody></table>
+  <input type="text" id="filtroNome" placeholder="Filtrar por nome..." />
 
-  <h2>Alunos Evadidos</h2>
-  <table id="tabelaEvadidos"><thead><tr><th>Nome</th><th>Email</th><th>Telefone</th></tr></thead><tbody></tbody></table>
+  <canvas id="graficoAlunos"></canvas>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Email</th>
+        <th>Telefone</th>
+        <th>Status</th>
+        <th>Ação</th>
+      </tr>
+    </thead>
+    <tbody id="tabelaAlunos"></tbody>
+  </table>
+
+  <a href="cadastro.html" class="voltar">← Voltar para Cadastro</a>
 
   <script>
-    function atualizarRelatorio() {
-      const lista = JSON.parse(localStorage.getItem('listaAlunos')) || [];
+    let grafico;
 
-      const ativos = lista.filter(aluno => aluno.ativo);
-      const evadidos = lista.filter(aluno => !aluno.ativo);
+    function carregarRelatorio(filtro = '') {
+      const listaAlunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
+      const tabela = document.getElementById('tabelaAlunos');
+      tabela.innerHTML = '';
 
-      const tabelaAtivos = document.querySelector('#tabelaAtivos tbody');
-      const tabelaEvadidos = document.querySelector('#tabelaEvadidos tbody');
-      tabelaAtivos.innerHTML = '';
-      tabelaEvadidos.innerHTML = '';
+      let ativos = 0;
+      let evadidos = 0;
 
-      ativos.forEach(aluno => {
-        tabelaAtivos.innerHTML += `<tr><td>${aluno.nome}</td><td>${aluno.email}</td><td>${aluno.telefone}</td></tr>`;
+      const alunosFiltrados = listaAlunos.filter(a =>
+        a.nome.toLowerCase().includes(filtro.toLowerCase())
+      );
+
+      alunosFiltrados.forEach(aluno => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${aluno.nome}</td>
+          <td>${aluno.email}</td>
+          <td>${aluno.telefone}</td>
+          <td class="${aluno.ativo ? 'ativo' : 'evadido'}">${aluno.ativo ? 'Ativo' : 'Evadido'}</td>
+          <td><button class="btn-excluir" onclick="excluirAluno(${aluno.id})">Excluir</button></td>
+        `;
+        tabela.appendChild(tr);
+
+        aluno.ativo ? ativos++ : evadidos++;
       });
 
-      evadidos.forEach(aluno => {
-        tabelaEvadidos.innerHTML += `<tr><td>${aluno.nome}</td><td>${aluno.email}</td><td>${aluno.telefone}</td></tr>`;
-      });
-
-      atualizarGrafico(ativos.length, evadidos.length);
+      atualizarGrafico(ativos, evadidos);
     }
 
-    let grafico;
     function atualizarGrafico(ativos, evadidos) {
-      const ctx = document.getElementById('graficoStatus').getContext('2d');
+      const ctx = document.getElementById('graficoAlunos').getContext('2d');
+
       if (grafico) grafico.destroy();
 
       grafico = new Chart(ctx, {
@@ -54,22 +166,59 @@
         data: {
           labels: ['Ativos', 'Evadidos'],
           datasets: [{
-            label: 'Alunos',
             data: [ativos, evadidos],
-            backgroundColor: ['#4CAF50', '#F44336']
+            backgroundColor: ['#2563eb', '#ef4444'],
           }]
         },
         options: {
           responsive: true,
           plugins: {
-            legend: { position: 'top' }
+            legend: {
+              position: 'bottom'
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  const total = context.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+                  const valor = context.parsed;
+                  const porcentagem = ((valor / total) * 100).toFixed(1);
+                  return `${context.label}: ${valor} (${porcentagem}%)`;
+                }
+              }
+            }
           }
         }
       });
     }
 
-    window.addEventListener('storage', () => atualizarRelatorio());
-    document.addEventListener('DOMContentLoaded', () => atualizarRelatorio());
+    function excluirAluno(id) {
+      if (!confirm("Tem certeza que deseja excluir este aluno?")) return;
+
+      let lista = JSON.parse(localStorage.getItem('listaAlunos')) || [];
+      lista = lista.filter(a => a.id !== id);
+      localStorage.setItem('listaAlunos', JSON.stringify(lista));
+
+      // Atualiza contadores
+      const ativos = lista.filter(a => a.ativo).length;
+      const evadidos = lista.length - ativos;
+      localStorage.setItem('dadosAcademia', JSON.stringify({
+        totalAlunos: lista.length,
+        alunosAtivos: ativos,
+        alunosEvadidos: evadidos
+      }));
+
+      carregarRelatorio(document.getElementById('filtroNome').value);
+    }
+
+    document.getElementById('filtroNome').addEventListener('input', e => {
+      carregarRelatorio(e.target.value);
+    });
+
+    window.addEventListener('storage', () => {
+      carregarRelatorio(document.getElementById('filtroNome').value);
+    });
+
+    window.onload = () => carregarRelatorio();
   </script>
 </body>
 </html>
