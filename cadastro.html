@@ -113,12 +113,10 @@
   <a href="relatorios.html" class="voltar">→ Ver Relatórios</a>
 
   <script>
-    // Função para gerar ID único simples
     function gerarId() {
       return Date.now() + Math.floor(Math.random() * 1000);
     }
 
-    // Função para gerar alunos aleatórios (para popular o localStorage na primeira vez)
     function gerarAlunosAleatorios(qtd) {
       const nomesExemplo = [
         "Lucas Silva", "Mariana Costa", "Pedro Oliveira", "Ana Souza",
@@ -126,13 +124,11 @@
         "Ricardo Santos", "Camila Ferreira", "João Pereira", "Larissa Gomes",
         "Rafael Almeida", "Patrícia Martins", "Gustavo Carvalho"
       ];
-
       const emailsExemplo = [
         "lucas@email.com", "mariana@email.com", "pedro@email.com", "ana@email.com",
         "carlos@email.com", "beatriz@email.com", "felipe@email.com", "juliana@email.com",
         "rafael@email.com", "patricia@email.com", "gustavo@email.com"
       ];
-
       const telefonesExemplo = [
         "11987654321", "11912345678", "11923456789", "11934567890",
         "11945678901", "11956789012", "11967890123", "11978901234"
@@ -143,7 +139,7 @@
         const nome = nomesExemplo[Math.floor(Math.random() * nomesExemplo.length)];
         const email = emailsExemplo[Math.floor(Math.random() * emailsExemplo.length)];
         const telefone = telefonesExemplo[Math.floor(Math.random() * telefonesExemplo.length)];
-        const ativo = (i % 3 !== 0); // aproximadamente 2/3 ativos, 1/3 evadidos
+        const ativo = (i % 3 !== 0); // ~2/3 ativos
 
         lista.push({
           id: gerarId() + i,
@@ -156,13 +152,11 @@
       return lista;
     }
 
-    // Inicializa o localStorage com alunos aleatórios se não existir
     window.onload = function() {
       if(!localStorage.getItem('listaAlunos')) {
         const alunosIniciais = gerarAlunosAleatorios(58);
         localStorage.setItem('listaAlunos', JSON.stringify(alunosIniciais));
 
-        // Atualiza dadosAcademia para manter contagem certa
         const ativos = alunosIniciais.filter(a => a.ativo).length;
         const evadidos = alunosIniciais.length - ativos;
 
@@ -174,7 +168,6 @@
       }
     };
 
-    // Manipula o submit do form para salvar aluno novo
     document.getElementById('formCadastro').addEventListener('submit', function(e) {
       e.preventDefault();
 
@@ -189,7 +182,6 @@
 
       let listaAlunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
 
-      // Cria novo aluno com status ativo por padrão
       const novoAluno = {
         id: gerarId(),
         nome,
@@ -201,7 +193,6 @@
       listaAlunos.push(novoAluno);
       localStorage.setItem('listaAlunos', JSON.stringify(listaAlunos));
 
-      // Atualiza dadosAcademia
       let dadosAcademia = JSON.parse(localStorage.getItem('dadosAcademia')) || {
         totalAlunos: 0,
         alunosAtivos: 0,
@@ -214,10 +205,11 @@
 
       localStorage.setItem('dadosAcademia', JSON.stringify(dadosAcademia));
 
-      // Limpa o form
+      // Dispara o evento para atualizar gráficos em outras abas
+      window.dispatchEvent(new Event('storage'));
+
       this.reset();
 
-      // Mensagem sucesso
       const msg = document.getElementById('mensagemSucesso');
       msg.textContent = `Aluno "${novoAluno.nome}" cadastrado com sucesso!`;
       setTimeout(() => { msg.textContent = ''; }, 4000);
