@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Frequência dos Alunos - GYM CONTROL</title>
+<style>
+  body {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background: #f9fafb;
+    margin: 0;
+    padding: 2rem;
+    color: #1f2937;
+  }
+  h1 {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #2563eb;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    max-width: 900px;
+    margin: 0 auto 2rem;
+    box-shadow: 0 0 10px rgb(0 0 0 / 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  th, td {
+    padding: 12px 15px;
+    text-align: left;
+  }
+  thead {
+    background: #2563eb;
+    color: white;
+  }
+  tbody tr:nth-child(even) {
+    background: #f3f4f6;
+  }
+  tbody tr.alerta {
+    background: #fdecea;
+    color: #b91c1c;
+    font-weight: 600;
+  }
+  button.whatsapp-btn {
+    background: #25d366;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: background 0.3s;
+  }
+  button.whatsapp-btn:hover {
+    background: #1ebe57;
+  }
+  .aviso {
+    max-width: 900px;
+    margin: 0 auto 1rem;
+    font-size: 1.1rem;
+    color: #b91c1c;
+    font-weight: 700;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+  <h1>Frequência dos Alunos</h1>
+
+  <div class="aviso" id="avisoBaixaFrequencia"></div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>E-mail</th>
+        <th>Telefone</th>
+        <th>Frequência (%)</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody id="listaAlunosBody">
+      <!-- Alunos serão inseridos aqui -->
+    </tbody>
+  </table>
+
+  <script>
+    // Puxa a lista do localStorage
+    const listaAlunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
+
+    const tbody = document.getElementById('listaAlunosBody');
+    const aviso = document.getElementById('avisoBaixaFrequencia');
+
+    // Filtra alunos com baixa frequência
+    const alunosBaixaFreq = listaAlunos.filter(a => (a.frequencia ?? 0) < 70);
+
+    // Exibe aviso se houver alunos com frequência baixa
+    if(alunosBaixaFreq.length > 0) {
+      aviso.textContent = `⚠ Atenção! ${alunosBaixaFreq.length} aluno(s) com frequência abaixo de 70%. Vamos chamar eles para melhorar!`;
+    } else {
+      aviso.textContent = "👍 Todos os alunos com frequência adequada.";
+    }
+
+    // Função para abrir WhatsApp já com mensagem personalizada
+    function enviarWhatsApp(telefone, nome, frequencia) {
+      // Formata telefone para padrão internacional (exemplo Brasil +55)
+      let telFormatado = telefone.replace(/\D/g, ''); // só números
+      if(!telFormatado.startsWith('55')) telFormatado = '55' + telFormatado;
+
+      const mensagem = `Olá ${nome}, percebemos que sua frequência está em ${frequencia}%. Queremos saber como podemos ajudar para você voltar com tudo para a academia! Temos promoções e condições especiais para você. Abraços, equipe GYM CONTROL.`;
+      const url = `https://api.whatsapp.com/send?phone=${telFormatado}&text=${encodeURIComponent(mensagem)}`;
+
+      window.open(url, '_blank');
+    }
+
+    // Preenche a tabela
+    listaAlunos.forEach(aluno => {
+      const tr = document.createElement('tr');
+      if((aluno.frequencia ?? 0) < 70) {
+        tr.classList.add('alerta');
+      }
+
+      tr.innerHTML = `
+        <td>${aluno.nome}</td>
+        <td>${aluno.email ?? '-'}</td>
+        <td>${aluno.telefone ?? '-'}</td>
+        <td>${(aluno.frequencia ?? 0).toFixed(0)}%</td>
+        <td>
+          <button class="whatsapp-btn" onclick="enviarWhatsApp('${aluno.telefone}', '${aluno.nome}', ${(aluno.frequencia ?? 0).toFixed(0)})">
+            📲 Chamar no WhatsApp
+          </button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+  </script>
+
+</body>
+</html>
