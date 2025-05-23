@@ -145,11 +145,35 @@
       outline-color: #2563eb;
       min-width: 120px;
     }
+
+    /* Botão para Frequências */
+    #btnFrequencias {
+      padding: 0.8rem 1.5rem;
+      background-color: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      margin-bottom: 2rem;
+      max-width: 600px;
+      width: 100%;
+    }
+    #btnFrequencias:hover {
+      background-color: #1d4ed8;
+    }
   </style>
 </head>
 <body>
 
   <h1>Dashboard da Academia</h1>
+
+  <!-- Botão para Frequências -->
+  <button id="btnFrequencias" title="Ir para Frequências dos Alunos">
+    Ver Frequências dos Alunos
+  </button>
 
   <div class="filtros">
     <select id="filtroStatus">
@@ -199,9 +223,7 @@
   <div class="chart-container">
     <canvas id="graficoBarra"></canvas>
   </div>
-  <div class="chart-container">
-    <canvas id="graficoPizza"></canvas>
-  </div>
+  <!-- Gráfico de pizza removido -->
 
   <div class="botoes">
     <a href="home.html" class="voltar">← Voltar para a Home</a>
@@ -211,7 +233,7 @@
   <button id="btnRiscoEvasao" title="Ir para Risco de Evasão">Risco de Evasão</button>
 
   <script>
-    let chartDoughnut, chartBarra, chartPizza;
+    let chartDoughnut, chartBarra;
 
     function atualizarDashboard() {
       const listaAlunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
@@ -233,7 +255,7 @@
       const alunosAtivos = listaAlunos.filter(a => a.ativo).length;
       const alunosEvadidos = listaAlunos.filter(a => !a.ativo).length;
 
-      // Exemplo para novos do mês - aqui você pode usar a data real (aqui simulado)
+      // Novos no mês (simulação)
       const dataAtual = new Date();
       const mesAtual = dataAtual.getMonth();
       const alunosNovosMes = listaAlunos.filter(a => {
@@ -242,10 +264,10 @@
         return dt.getMonth() === mesAtual && dt.getFullYear() === dataAtual.getFullYear();
       }).length;
 
-      // Frequência média fixa em 70%
+      // Frequência média fixa (exemplo)
       document.getElementById('frequenciaMedia').textContent = '70%';
 
-      // Receita estimada (exemplo, pode ajustar)
+      // Receita estimada
       const mensalidade = 120;
       const receita = alunosAtivos * mensalidade;
 
@@ -254,14 +276,13 @@
       document.getElementById('alunosAtivos').textContent = alunosAtivos;
       document.getElementById('alunosEvadidos').textContent = alunosEvadidos;
       document.getElementById('alunosNovos').textContent = alunosNovosMes;
-      // frequência já atualizada acima
       document.getElementById('receita').textContent = `R$ ${receita.toLocaleString('pt-BR')}`;
 
       // Atualizar gráficos
-      atualizarGraficos(alunosAtivos, alunosEvadidos, alunosFiltrados);
+      atualizarGraficos(alunosAtivos, alunosEvadidos);
     }
 
-    function atualizarGraficos(ativos, evadidos, alunosFiltrados) {
+    function atualizarGraficos(ativos, evadidos) {
       // Doughnut - status alunos
       const ctxDoughnut = document.getElementById('graficoDoughnut').getContext('2d');
       if(chartDoughnut) chartDoughnut.destroy();
@@ -301,36 +322,6 @@
           plugins: { legend: { display: false } }
         }
       });
-
-      // Pizza - alunos filtrados por nome (exemplo visual)
-      // Se quiser, pode substituir para outro dado mais útil
-      const nomesFiltrados = alunosFiltrados.map(a => a.nome);
-      const ctxPizza = document.getElementById('graficoPizza').getContext('2d');
-      if(chartPizza) chartPizza.destroy();
-      chartPizza = new Chart(ctxPizza, {
-        type: 'pie',
-        data: {
-          labels: nomesFiltrados.length > 0 ? nomesFiltrados : ['Nenhum'],
-          datasets: [{
-            label: 'Alunos Filtrados',
-            data: nomesFiltrados.length > 0 ? new Array(nomesFiltrados.length).fill(1) : [1],
-            backgroundColor: nomesFiltrados.length > 0 ? nomesFiltrados.map(() => randomCor()) : ['#d1d5db']
-          }]
-        },
-        options: {
-          plugins: { legend: { position: 'right' } }
-        }
-      });
-    }
-
-    // Função para gerar cores aleatórias para gráfico pizza
-    function randomCor() {
-      const letras = '0123456789ABCDEF';
-      let cor = '#';
-      for(let i=0; i<6; i++){
-        cor += letras[Math.floor(Math.random()*16)];
-      }
-      return cor;
     }
 
     // Função para gerar PDF do dashboard
@@ -343,15 +334,18 @@
     document.getElementById('filtroNome').addEventListener('input', atualizarDashboard);
 
     // Botão risco de evasão
-    document.getElementById('btnRiscoEvasao').addEventListener('click', () => {
-      window.location.href = 'relatorioRiscoEvasao.html';
-    });
+    document.getElementById('btnRiscoEvasao').onclick = () => {
+      window.location.href = 'evadidos.html';
+    };
 
-    // Inicializa dashboard ao carregar a página
-    window.addEventListener('load', () => {
-      atualizarDashboard();
-      lucide.replace();
-    });
+    // Botão frequências dos alunos
+    document.getElementById('btnFrequencias').onclick = () => {
+      window.location.href = 'frequencia.html';
+    };
+
+    // Inicializar dashboard ao carregar
+    atualizarDashboard();
+    lucide.replace();
   </script>
 </body>
 </html>
