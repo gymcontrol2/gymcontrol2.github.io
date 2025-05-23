@@ -16,22 +16,24 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      min-height: 100vh;
+      position: relative;
     }
-
     h1 {
       color: #1e3a8a;
       margin-bottom: 2rem;
+      text-align: center;
+      width: 100%;
+      max-width: 1200px;
     }
-
     .cards {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 1.5rem;
       width: 100%;
       max-width: 1200px;
-      margin-bottom: 3rem;
+      margin-bottom: 2rem;
     }
-
     .card {
       background-color: white;
       border-radius: 1rem;
@@ -41,21 +43,17 @@
       transition: transform 0.3s ease;
       position: relative;
     }
-
     .card:hover {
       transform: scale(1.03);
     }
-
     .card h2 {
       font-size: 2.2rem;
       margin: 0.5rem 0;
     }
-
     .card p {
       font-size: 1.1rem;
       color: #6b7280;
     }
-
     .icon {
       position: absolute;
       top: 1rem;
@@ -64,7 +62,6 @@
       height: 24px;
       color: #9ca3af;
     }
-
     .total { border-left: 6px solid #6366f1; }
     .ativos { border-left: 6px solid #10b981; }
     .evadidos { border-left: 6px solid #ef4444; }
@@ -72,8 +69,16 @@
     .frequencia { border-left: 6px solid #f59e0b; }
     .receita { border-left: 6px solid #8b5cf6; }
 
+    .botoes {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 2rem;
+      width: 100%;
+      max-width: 1200px;
+    }
     .voltar, .exportar {
-      margin-top: 2rem;
       color: white;
       background-color: #1d4ed8;
       padding: 0.75rem 1.5rem;
@@ -81,17 +86,11 @@
       text-decoration: none;
       font-weight: bold;
       transition: background 0.3s;
+      user-select: none;
+      cursor: pointer;
     }
-
     .voltar:hover, .exportar:hover {
       background-color: #2563eb;
-    }
-
-    .botoes {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-      justify-content: center;
     }
 
     .chart-container {
@@ -101,16 +100,65 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.05);
       max-width: 600px;
       width: 100%;
+      margin-bottom: 2rem;
     }
-
     canvas {
       max-width: 100%;
+    }
+
+    /* Botão fixo para aba risco de evasão */
+    #btnRiscoEvasao {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background-color: #ef4444;
+      color: white;
+      border: none;
+      padding: 1rem 1.5rem;
+      font-weight: 700;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(239,68,68,0.5);
+      transition: background-color 0.3s;
+      z-index: 1000;
+    }
+    #btnRiscoEvasao:hover {
+      background-color: #b91c1c;
+    }
+
+    /* Filtros */
+    .filtros {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      max-width: 600px;
+      width: 100%;
+      justify-content: center;
+    }
+    .filtros select, .filtros input {
+      padding: 0.5rem 0.75rem;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: 1px solid #94a3b8;
+      outline-offset: 2px;
+      outline-color: #2563eb;
+      min-width: 120px;
     }
   </style>
 </head>
 <body>
 
   <h1>Dashboard da Academia</h1>
+
+  <div class="filtros">
+    <select id="filtroStatus">
+      <option value="todos">Todos</option>
+      <option value="ativos">Ativos</option>
+      <option value="evadidos">Evadidos</option>
+    </select>
+    <input type="text" id="filtroNome" placeholder="Buscar por nome..." />
+  </div>
 
   <div class="cards">
     <div class="card total">
@@ -146,50 +194,141 @@
   </div>
 
   <div class="chart-container">
-    <canvas id="graficoAlunos"></canvas>
+    <canvas id="graficoDoughnut"></canvas>
+  </div>
+  <div class="chart-container">
+    <canvas id="graficoBarra"></canvas>
+  </div>
+  <div class="chart-container">
+    <canvas id="graficoPizza"></canvas>
   </div>
 
   <div class="botoes">
     <a href="home.html" class="voltar">← Voltar para a Home</a>
-    <a href="#" onclick="gerarPDF()" class="exportar">📄 Exportar PDF</a>
+    <button class="exportar" onclick="gerarPDF()">📄 Exportar PDF</button>
   </div>
 
+  <button id="btnRiscoEvasao" title="Ir para Risco de Evasão">Risco de Evasão</button>
+
   <script>
+    let chartDoughnut, chartBarra, chartPizza;
+
     function atualizarDashboard() {
-      const dados = JSON.parse(localStorage.getItem('dadosAcademia')) || {
-        totalAlunos: 0,
-        alunosAtivos: 0,
-        alunosEvadidos: 0
-      };
+      const listaAlunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
 
-      const alunosNovosMes = 5; // Simulado
-      const frequencia = 72;    // Simulado (%)
+      // Aplicar filtro
+      const filtroStatus = document.getElementById('filtroStatus').value;
+      const filtroNome = document.getElementById('filtroNome').value.trim().toLowerCase();
+
+      let alunosFiltrados = listaAlunos.filter(aluno => {
+        const statusMatch = filtroStatus === 'todos' || 
+          (filtroStatus === 'ativos' && aluno.ativo) || 
+          (filtroStatus === 'evadidos' && !aluno.ativo);
+        const nomeMatch = aluno.nome.toLowerCase().includes(filtroNome);
+        return statusMatch && nomeMatch;
+      });
+
+      // Dados calculados
+      const totalAlunos = listaAlunos.length;
+      const alunosAtivos = listaAlunos.filter(a => a.ativo).length;
+      const alunosEvadidos = listaAlunos.filter(a => !a.ativo).length;
+
+      // Exemplo para novos do mês - aqui você pode usar a data real (aqui simulado)
+      const dataAtual = new Date();
+      const mesAtual = dataAtual.getMonth();
+      const alunosNovosMes = listaAlunos.filter(a => {
+        if(!a.dataCadastro) return false;
+        const dt = new Date(a.dataCadastro);
+        return dt.getMonth() === mesAtual && dt.getFullYear() === dataAtual.getFullYear();
+      }).length;
+
+      // Frequência média - supondo que cada aluno tenha propriedade 'frequencia' (0 a 100)
+      const frequencias = listaAlunos.map(a => a.frequencia ?? 0);
+      const frequenciaMedia = frequencias.length > 0 ? (frequencias.reduce((acc, cur) => acc + cur, 0) / frequencias.length) : 0;
+
+      // Receita estimada (exemplo, pode ajustar)
       const mensalidade = 120;
-      const receita = dados.totalAlunos * mensalidade;
+      const receita = alunosAtivos * mensalidade;
 
-      document.getElementById('totalAlunos').textContent = dados.totalAlunos;
-      document.getElementById('alunosAtivos').textContent = dados.alunosAtivos;
-      document.getElementById('alunosEvadidos').textContent = dados.alunosEvadidos;
+      // Atualiza os cards
+      document.getElementById('totalAlunos').textContent = totalAlunos;
+      document.getElementById('alunosAtivos').textContent = alunosAtivos;
+      document.getElementById('alunosEvadidos').textContent = alunosEvadidos;
       document.getElementById('alunosNovos').textContent = alunosNovosMes;
-      document.getElementById('frequenciaMedia').textContent = `${frequencia}%`;
+      document.getElementById('frequenciaMedia').textContent = frequenciaMedia.toFixed(0) + '%';
       document.getElementById('receita').textContent = `R$ ${receita.toLocaleString('pt-BR')}`;
 
-      const ctx = document.getElementById('graficoAlunos').getContext('2d');
-      new Chart(ctx, {
+      // Atualizar gráficos
+      atualizarGraficos(alunosAtivos, alunosEvadidos, alunosFiltrados);
+    }
+
+    function atualizarGraficos(ativos, evadidos, alunosFiltrados) {
+      // Doughnut - status alunos
+      const ctxDoughnut = document.getElementById('graficoDoughnut').getContext('2d');
+      if(chartDoughnut) chartDoughnut.destroy();
+      chartDoughnut = new Chart(ctxDoughnut, {
         type: 'doughnut',
         data: {
           labels: ['Ativos', 'Evadidos'],
           datasets: [{
             label: 'Situação dos Alunos',
-            data: [dados.alunosAtivos, dados.alunosEvadidos],
+            data: [ativos, evadidos],
             backgroundColor: ['#10b981', '#ef4444'],
             borderWidth: 1
           }]
         },
         options: {
-          plugins: {
-            legend: { position: 'bottom' }
-          }
+          plugins: { legend: { position: 'bottom' } }
+        }
+      });
+
+      // Barra - quantidade por status (ativo, evadido)
+      const ctxBarra = document.getElementById('graficoBarra').getContext('2d');
+      if(chartBarra) chartBarra.destroy();
+      chartBarra = new Chart(ctxBarra, {
+        type: 'bar',
+        data: {
+          labels: ['Ativos', 'Evadidos'],
+          datasets: [{
+            label: 'Quantidade',
+            data: [ativos, evadidos],
+            backgroundColor: ['#10b981', '#ef4444']
+          }]
+        },
+        options: {
+          scales: {
+            y: { beginAtZero: true, stepSize: 1 }
+          },
+          plugins: { legend: { display: false } }
+        }
+      });
+
+      // Pizza - alunos filtrados por nome e status (apenas nomes e quantidades)
+      // Aqui fazemos uma contagem dos nomes distintos ou agrupamos por status e frequencia
+      // Vamos mostrar contagem de alunos por faixa de frequencia: Baixa (<40%), Média(40-70%), Alta(>70%)
+
+      let faixaBaixa = 0, faixaMedia = 0, faixaAlta = 0;
+      alunosFiltrados.forEach(a => {
+        const f = a.frequencia ?? 0;
+        if(f < 40) faixaBaixa++;
+        else if(f <= 70) faixaMedia++;
+        else faixaAlta++;
+      });
+
+      const ctxPizza = document.getElementById('graficoPizza').getContext('2d');
+      if(chartPizza) chartPizza.destroy();
+      chartPizza = new Chart(ctxPizza, {
+        type: 'pie',
+        data: {
+          labels: ['Frequência Baixa (<40%)', 'Frequência Média (40-70%)', 'Frequência Alta (>70%)'],
+          datasets: [{
+            label: 'Frequência dos Alunos',
+            data: [faixaBaixa, faixaMedia, faixaAlta],
+            backgroundColor: ['#ef4444', '#f59e0b', '#10b981']
+          }]
+        },
+        options: {
+          plugins: { legend: { position: 'bottom' } }
         }
       });
     }
@@ -218,6 +357,17 @@
       doc.save("relatorio-dashboard.pdf");
     }
 
+    // Evento do filtro
+    document.getElementById('filtroStatus').addEventListener('change', atualizarDashboard);
+    document.getElementById('filtroNome').addEventListener('input', atualizarDashboard);
+
+    // Botão risco evasão
+    document.getElementById('btnRiscoEvasao').addEventListener('click', () => {
+      // Link para sua página de risco de evasão (ajuste o nome do arquivo)
+      window.location.href = 'riscoevasao.html';
+    });
+
+    // Inicia o dashboard
     atualizarDashboard();
     lucide.createIcons();
   </script>
