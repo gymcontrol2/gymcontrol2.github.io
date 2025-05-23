@@ -102,6 +102,26 @@
   </style>
 </head>
 <body>
+  <!-- Coloque isso dentro do <body> no topo da página relatorios.html -->
+
+<header style="width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem; background-color: #1e3a8a; color: white; position: fixed; top: 0; left: 0; z-index: 1000;">
+  <button onclick="window.location.href='cadastro.html'" style="background: none; border: none; color: white; font-size: 1rem; cursor: pointer;">
+    ← Voltar para Cadastros
+  </button>
+
+  <h2 style="margin: 0; font-weight: 600;">Relatórios</h2>
+
+  <button onclick="window.location.href='home.html'" style="background: none; border: none; color: white; font-size: 1rem; cursor: pointer;">
+    Home →
+  </button>
+</header>
+
+<!-- IMPORTANTE: adiciona um padding-top no corpo para o conteúdo não ficar embaixo do header fixo -->
+<style>
+  body {
+    padding-top: 60px; /* ajusta conforme a altura do header */
+  }
+</style>
 
   <h1>Relatório de Alunos</h1>
 
