@@ -1,314 +1,276 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Risco de Evasão - GYM CONTROL</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style>
-    body {
-      font-family: "Segoe UI", sans-serif;
-      background-color: #fff7ed;
-      margin: 0;
-      padding: 2rem;
-      max-width: 1200px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-    h1 {
-      text-align: center;
-      color: #dc2626;
-      margin-bottom: 2rem;
-    }
-    .filtros {
-      display: flex;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-    .filtros input, .filtros select {
-      padding: 0.5rem;
-      font-size: 1rem;
-      border-radius: 8px;
-      border: 1px solid #dc2626;
-      min-width: 180px;
-      outline-color: #dc2626;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 2rem;
-    }
-    th, td {
-      border: 1px solid #f87171;
-      padding: 0.5rem;
-      text-align: center;
-      font-size: 0.9rem;
-    }
-    th {
-      background-color: #fecaca;
-      color: #991b1b;
-    }
-    tr:nth-child(even) {
-      background-color: #fff1f0;
-    }
-    .btn-whatsapp, .btn-promocao, .btn-recuperado {
-      background-color: #dc2626;
-      border: none;
-      color: white;
-      padding: 0.3rem 0.6rem;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 0.8rem;
-      margin: 0 2px;
-      transition: background-color 0.3s;
-    }
-    .btn-whatsapp:hover { background-color: #b91c1c; }
-    .btn-promocao.active { background-color: #15803d; }
-    .btn-recuperado.active { background-color: #059669; }
-    .motivo-input {
-      width: 90%;
-      padding: 0.3rem;
-      font-size: 0.9rem;
-      border: 1px solid #dc2626;
-      border-radius: 5px;
-    }
-    .resumo {
-      display: flex;
-      justify-content: space-around;
-      margin-bottom: 2rem;
-      font-weight: bold;
-      color: #b91c1c;
-    }
-    .chart-container {
-      max-width: 600px;
-      height: 400px;
-      margin: 0 auto 2rem auto;
-      background: #fee2e2;
-      padding: 1rem;
-      border-radius: 1rem;
-      box-shadow: 0 2px 6px rgba(220, 38, 38, 0.3);
-    }
-    .voltar {
-      display: inline-block;
-      background-color: #dc2626;
-      color: white;
-      padding: 0.75rem 1.5rem;
-      border-radius: 0.5rem;
-      text-decoration: none;
-      font-weight: bold;
-      transition: background-color 0.3s;
-      margin-bottom: 2rem;
-    }
-    .voltar:hover {
-      background-color: #b91c1c;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Risco de Evasão - GYM CONTROL</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  body {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background: #f9fafb;
+    margin: 0;
+    padding: 1rem;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  h1 {
+    text-align: center;
+    color: #ef4444;
+  }
+  .aluno-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 6px rgb(0 0 0 / 0.1);
+    margin-bottom: 1rem;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+  }
+  .aluno-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .aluno-nome {
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: #1f2937;
+  }
+  .aluno-frequencia {
+    font-weight: 700;
+    color: #f59e0b;
+  }
+  .aluno-ultima {
+    font-size: 0.9rem;
+    color: #6b7280;
+  }
+  label {
+    font-weight: 600;
+    margin-top: 0.5rem;
+  }
+  textarea {
+    width: 100%;
+    border-radius: 6px;
+    border: 1px solid #d1d5db;
+    padding: 0.5rem;
+    resize: vertical;
+    font-family: inherit;
+    font-size: 0.95rem;
+  }
+  button {
+    margin-top: 0.7rem;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 6px;
+    background-color: #3b82f6;
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.25s ease;
+  }
+  button:hover {
+    background-color: #2563eb;
+  }
+  .promocao-btn {
+    background-color: #10b981;
+  }
+  .promocao-btn:hover {
+    background-color: #047857;
+  }
+  .chamou {
+    background-color: #6b7280 !important;
+    cursor: default !important;
+  }
+  .btns-container {
+    margin-top: 0.5rem;
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .grafico-container {
+    max-width: 600px;
+    margin: 2rem auto 1rem;
+    background: white;
+    border-radius: 10px;
+    padding: 1rem;
+    box-shadow: 0 1px 6px rgb(0 0 0 / 0.1);
+  }
+  #filtroBusca {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    border-radius: 10px;
+    border: 1px solid #94a3b8;
+    margin-bottom: 1rem;
+    outline-offset: 2px;
+    outline-color: #3b82f6;
+  }
+</style>
 </head>
 <body>
 
-  <a href="dashboard.html" class="voltar">← Voltar para Dashboard</a>
+<h1>Risco de Evasão - GYM CONTROL</h1>
 
-  <h1>Alunos em Risco de Evasão</h1>
+<input type="text" id="filtroBusca" placeholder="Buscar aluno por nome..." />
 
-  <div class="resumo">
-    <div>Total em risco: <span id="totalRisco">0</span></div>
-    <div>Média frequência: <span id="mediaFreq">0%</span></div>
-    <div>Sem presença > <span id="diasSemPresenca">30</span> dias</div>
-  </div>
+<div id="listaAlunos"></div>
 
-  <div class="filtros">
-    <input type="text" id="filtroNome" placeholder="Buscar por nome..." />
-    <select id="filtroFreq">
-      <option value="todas">Todas frequências</option>
-      <option value="baixa">Frequência &lt; 40%</option>
-      <option value="media">40% a 70%</option>
-      <option value="alta">&gt; 70%</option>
-    </select>
-  </div>
+<div class="grafico-container">
+  <canvas id="graficoFrequencia"></canvas>
+</div>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Nome</th>
-        <th>Telefone</th>
-        <th>Frequência %</th>
-        <th>Dias sem pres.</th>
-        <th>Motivo da Falta</th>
-        <th>Ações</th>
-      </tr>
-    </thead>
-    <tbody id="listaAlunosRisco">
-      <!-- lista preenchida via JS -->
-    </tbody>
-  </table>
+<script>
+  // Lista inicial de alunos (só cria se não existir)
+  function criarAlunosExemplo() {
+    const exemploAlunos = [
+      {nome:"João Silva", telefone:"5511999998888", frequencia:30, ultimaPresenca:"2025-04-10", motivoFalta:"", interessePromocao:false, recuperado:false},
+      {nome:"Maria Oliveira", telefone:"5511988887777", frequencia:65, ultimaPresenca:"2025-05-01", motivoFalta:"Problemas de saúde", interessePromocao:true, recuperado:false},
+      {nome:"Carlos Pereira", telefone:"5511977776666", frequencia:80, ultimaPresenca:"2025-05-20", motivoFalta:"", interessePromocao:false, recuperado:false},
+      {nome:"Ana Souza", telefone:"5511966665555", frequencia:15, ultimaPresenca:"2025-03-20", motivoFalta:"Trabalho intenso", interessePromocao:true, recuperado:false},
+      {nome:"Pedro Gomes", telefone:"5511955554444", frequencia:0, ultimaPresenca:"2025-01-15", motivoFalta:"", interessePromocao:false, recuperado:false},
+      {nome:"Lucas Costa", telefone:"5511944443333", frequencia:50, ultimaPresenca:"2025-04-28", motivoFalta:"", interessePromocao:false, recuperado:true}
+    ];
+    localStorage.setItem('listaAlunos', JSON.stringify(exemploAlunos));
+  }
 
-  <div class="chart-container">
-    <canvas id="graficoFreq"></canvas>
-  </div>
+  if (!localStorage.getItem('listaAlunos')) criarAlunosExemplo();
 
-  <script>
-    // Busca listaAlunos no localStorage, estrutura esperada:
-    // [{nome, telefone, frequencia (0-100), ultimaPresenca (data ISO), motivoFalta, interessePromocao, recuperado}]
-    let listaAlunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
+  // Função para salvar lista atualizada
+  function salvarAlunos(lista) {
+    localStorage.setItem('listaAlunos', JSON.stringify(lista));
+  }
 
-    const diasSemPresencaLimite = 30;
+  // Função para abrir WhatsApp com mensagem personalizada
+  function abrirWhatsApp(numero, nome) {
+    const texto = encodeURIComponent(`Olá ${nome}, sentimos sua falta na academia! Que tal voltar com uma promoção especial? Responda aqui para saber mais.`);
+    window.open(`https://wa.me/${numero}?text=${texto}`, '_blank');
+  }
 
-    function diasDesdeUltimaPresenca(dataStr) {
-      if (!dataStr) return 9999;
-      const ultima = new Date(dataStr);
-      const hoje = new Date();
-      const diff = hoje - ultima;
-      return Math.floor(diff / (1000 * 60 * 60 * 24));
+  // Função para renderizar lista de alunos com filtro
+  function renderizarLista(filtro='') {
+    const container = document.getElementById('listaAlunos');
+    const listaAlunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
+
+    // Filtra por nome
+    const listaFiltrada = listaAlunos.filter(a => a.nome.toLowerCase().includes(filtro.toLowerCase()));
+
+    container.innerHTML = '';
+    if(listaFiltrada.length === 0){
+      container.innerHTML = '<p style="text-align:center; color:#6b7280;">Nenhum aluno encontrado.</p>';
+      return;
     }
 
-    function salvarAlunos() {
-      localStorage.setItem('listaAlunos', JSON.stringify(listaAlunos));
-    }
+    listaFiltrada.forEach((aluno, idx) => {
+      const card = document.createElement('div');
+      card.className = 'aluno-card';
 
-    function atualizarRisco() {
-      const filtroNome = document.getElementById('filtroNome').value.toLowerCase();
-      const filtroFreq = document.getElementById('filtroFreq').value;
+      card.innerHTML = `
+        <div class="aluno-header">
+          <div>
+            <div class="aluno-nome">${aluno.nome}</div>
+            <div class="aluno-ultima">Última presença: ${aluno.ultimaPresenca}</div>
+          </div>
+          <div class="aluno-frequencia">${aluno.frequencia}%</div>
+        </div>
+        <label for="motivo-${idx}">Motivo da falta:</label>
+        <textarea id="motivo-${idx}" placeholder="Descreva o motivo..." rows="2">${aluno.motivoFalta || ''}</textarea>
+        <div class="btns-container">
+          <button onclick="salvarMotivo(${idx})">Salvar Motivo</button>
+          <button class="promocao-btn ${aluno.interessePromocao ? 'chamou' : ''}" onclick="togglePromocao(${idx}, this)">
+            ${aluno.interessePromocao ? 'Promoção solicitada ✓' : 'Enviar Promoção'}
+          </button>
+          <button ${aluno.recuperado ? 'disabled class="chamou"' : ''} onclick="marcarRecuperado(${idx}, this)">
+            ${aluno.recuperado ? 'Aluno recuperado ✓' : 'Marcar como Recuperado'}
+          </button>
+          <button onclick="abrirWhatsApp('${aluno.telefone}', '${aluno.nome}')">📱 Chamar no WhatsApp</button>
+        </div>
+      `;
 
-      let alunosRisco = listaAlunos.filter(a => {
-        const freq = a.frequencia ?? 0;
-        const diasAusente = diasDesdeUltimaPresenca(a.ultimaPresenca);
-        const emRisco = !a.recuperado && (freq < 50 || diasAusente > diasSemPresencaLimite);
+      container.appendChild(card);
+    });
+  }
 
-        if (!emRisco) return false;
-        if (filtroNome && !a.nome.toLowerCase().includes(filtroNome)) return false;
+  // Salvar motivo da falta
+  function salvarMotivo(index){
+    const listaAlunos = JSON.parse(localStorage.getItem('listaAlunos'));
+    const textarea = document.getElementById(`motivo-${index}`);
+    listaAlunos[index].motivoFalta = textarea.value.trim();
+    salvarAlunos(listaAlunos);
+    alert('Motivo salvo!');
+  }
 
-        if (filtroFreq === 'baixa' && freq >= 40) return false;
-        if (filtroFreq === 'media' && (freq < 40 || freq > 70)) return false;
-        if (filtroFreq === 'alta' && freq <= 70) return false;
+  // Alternar interesse em promoção
+  function togglePromocao(index, btn){
+    const listaAlunos = JSON.parse(localStorage.getItem('listaAlunos'));
+    listaAlunos[index].interessePromocao = !listaAlunos[index].interessePromocao;
+    salvarAlunos(listaAlunos);
+    btn.classList.toggle('chamou');
+    btn.textContent = listaAlunos[index].interessePromocao ? 'Promoção solicitada ✓' : 'Enviar Promoção';
+  }
 
-        return true;
-      });
+  // Marcar aluno como recuperado
+  function marcarRecuperado(index, btn){
+    const listaAlunos = JSON.parse(localStorage.getItem('listaAlunos'));
+    listaAlunos[index].recuperado = true;
+    salvarAlunos(listaAlunos);
+    btn.disabled = true;
+    btn.classList.add('chamou');
+    btn.textContent = 'Aluno recuperado ✓';
+    alert('Aluno marcado como recuperado!');
+    renderizarLista(document.getElementById('filtroBusca').value);
+  }
 
-      document.getElementById('totalRisco').textContent = alunosRisco.length;
+  // Gráfico de frequência média dos alunos (baixa, média, alta)
+  function criarGrafico() {
+    const ctx = document.getElementById('graficoFrequencia').getContext('2d');
+    const listaAlunos = JSON.parse(localStorage.getItem('listaAlunos'));
 
-      const mediaFreq = alunosRisco.length > 0 ? (alunosRisco.reduce((acc, a) => acc + (a.frequencia ?? 0), 0) / alunosRisco.length).toFixed(0) : 0;
-      document.getElementById('mediaFreq').textContent = mediaFreq + '%';
-      document.getElementById('diasSemPresenca').textContent = diasSemPresencaLimite;
+    // Categorizar alunos por frequência
+    let baixa = 0, media = 0, alta = 0;
+    listaAlunos.forEach(a => {
+      if (a.frequencia < 30) baixa++;
+      else if (a.frequencia < 70) media++;
+      else alta++;
+    });
 
-      const tbody = document.getElementById('listaAlunosRisco');
-      tbody.innerHTML = '';
+    if(window.graficoInstance) window.graficoInstance.destroy();
 
-      alunosRisco.forEach(aluno => {
-        const tr = document.createElement('tr');
-
-        const tdNome = document.createElement('td');
-        tdNome.textContent = aluno.nome;
-        tr.appendChild(tdNome);
-
-        const tdTel = document.createElement('td');
-        tdTel.textContent = aluno.telefone || '-';
-        tr.appendChild(tdTel);
-
-        const tdFreq = document.createElement('td');
-        tdFreq.textContent = (aluno.frequencia ?? 0) + '%';
-        tr.appendChild(tdFreq);
-
-        const tdDias = document.createElement('td');
-        tdDias.textContent = diasDesdeUltimaPresenca(aluno.ultimaPresenca);
-        tr.appendChild(tdDias);
-
-        const tdMotivo = document.createElement('td');
-        const inputMotivo = document.createElement('input');
-        inputMotivo.type = 'text';
-        inputMotivo.className = 'motivo-input';
-        inputMotivo.value = aluno.motivoFalta || '';
-        inputMotivo.placeholder = 'Digite o motivo...';
-        inputMotivo.addEventListener('change', e => {
-          aluno.motivoFalta = e.target.value;
-          salvarAlunos();
-        });
-        tdMotivo.appendChild(inputMotivo);
-        tr.appendChild(tdMotivo);
-
-        const tdAcoes = document.createElement('td');
-
-        const btnZap = document.createElement('button');
-        btnZap.className = 'btn-whatsapp';
-        btnZap.textContent = 'WhatsApp';
-        btnZap.title = 'Enviar mensagem no WhatsApp';
-        btnZap.onclick = () => {
-          if (!aluno.telefone) return alert('Telefone não informado');
-          const msg = encodeURIComponent(`Olá ${aluno.nome}, sentimos sua falta na academia! Queremos ajudar você a voltar com descontos e promoções. Fale conosco!`);
-          window.open(`https://wa.me/${aluno.telefone.replace(/\D/g,'')}?text=${msg}`, '_blank');
-        };
-        tdAcoes.appendChild(btnZap);
-
-        const btnPromo = document.createElement('button');
-        btnPromo.className = 'btn-promocao';
-        btnPromo.textContent = 'Promoção';
-        btnPromo.title = 'Marcar interesse em promoção';
-        if (aluno.interessePromocao) btnPromo.classList.add('active');
-        btnPromo.onclick = () => {
-          aluno.interessePromocao = !aluno.interessePromocao;
-          btnPromo.classList.toggle('active');
-          salvarAlunos();
-        };
-        tdAcoes.appendChild(btnPromo);
-
-        const btnRecup = document.createElement('button');
-        btnRecup.className = 'btn-recuperado';
-        btnRecup.textContent = 'Recuperado';
-        btnRecup.title = 'Marcar como recuperado';
-        if (aluno.recuperado) btnRecup.classList.add('active');
-        btnRecup.onclick = () => {
-          aluno.recuperado = !aluno.recuperado;
-          btnRecup.classList.toggle('active');
-          salvarAlunos();
-          atualizarRisco();
-        };
-        tdAcoes.appendChild(btnRecup);
-
-        tr.appendChild(tdAcoes);
-
-        tbody.appendChild(tr);
-      });
-
-      atualizarGrafico(alunosRisco);
-    }
-
-    let chartFreq;
-    function atualizarGrafico(alunos) {
-      const ctx = document.getElementById('graficoFreq').getContext('2d');
-      const nomes = alunos.map(a => a.nome);
-      const frequencias = alunos.map(a => a.frequencia ?? 0);
-
-      if (chartFreq) chartFreq.destroy();
-
-      chartFreq = new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: nomes,
-          datasets: [{
-            label: 'Frequência (%)',
-            data: frequencias,
-            backgroundColor: frequencias.map(f => f < 40 ? '#dc2626' : f < 70 ? '#fbbf24' : '#22c55e')
-          }]
-        },
-        options: {
-          indexAxis: 'y',
-          scales: {
-            x: { min: 0, max: 100 }
+    window.graficoInstance = new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: ['Baixa (<30%)', 'Média (30-69%)', 'Alta (≥70%)'],
+        datasets: [{
+          label: 'Frequência dos alunos',
+          data: [baixa, media, alta],
+          backgroundColor: ['#ef4444', '#fbbf24', '#10b981'],
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'bottom'
           },
-          plugins: {
-            legend: { display: false }
-          },
-          responsive: true,
-          maintainAspectRatio: false
+          title: {
+            display: true,
+            text: 'Distribuição da frequência dos alunos'
+          }
         }
-      });
-    }
+      }
+    });
+  }
 
-    // Inicializa e liga filtros
-    atualizarRisco();
-    document.getElementById('filtroNome').addEventListener('input', atualizarRisco);
-    document.getElementById('filtroFreq').addEventListener('change', atualizarRisco);
-  </script>
+  // Filtrar lista ao digitar
+  document.getElementById('filtroBusca').addEventListener('input', e => {
+    renderizarLista(e.target.value);
+  });
+
+  // Inicializa tudo
+  renderizarLista();
+  criarGrafico();
+
+</script>
 </body>
 </html>
