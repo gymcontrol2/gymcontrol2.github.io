@@ -242,9 +242,8 @@
         return dt.getMonth() === mesAtual && dt.getFullYear() === dataAtual.getFullYear();
       }).length;
 
-      // Frequência média - supondo que cada aluno tenha propriedade 'frequencia' (0 a 100)
-      const frequencias = listaAlunos.map(a => a.frequencia ?? 0);
-      const frequenciaMedia = frequencias.length > 0 ? (frequencias.reduce((acc, cur) => acc + cur, 0) / frequencias.length) : 0;
+      // Frequência média fixa em 70%
+      document.getElementById('frequenciaMedia').textContent = '70%';
 
       // Receita estimada (exemplo, pode ajustar)
       const mensalidade = 120;
@@ -255,8 +254,8 @@
       document.getElementById('alunosAtivos').textContent = alunosAtivos;
       document.getElementById('alunosEvadidos').textContent = alunosEvadidos;
       document.getElementById('alunosNovos').textContent = alunosNovosMes;
-      document.getElementById('frequenciaMedia').textContent = frequenciaMedia.toFixed(0) + '%';
-      document.getElementById('receita').textContent = R$ ${receita.toLocaleString('pt-BR')};
+      // frequência já atualizada acima
+      document.getElementById('receita').textContent = `R$ ${receita.toLocaleString('pt-BR')}`;
 
       // Atualizar gráficos
       atualizarGraficos(alunosAtivos, alunosEvadidos, alunosFiltrados);
@@ -290,87 +289,69 @@
         data: {
           labels: ['Ativos', 'Evadidos'],
           datasets: [{
-            label: 'Quantidade',
+            label: 'Alunos',
             data: [ativos, evadidos],
             backgroundColor: ['#10b981', '#ef4444']
           }]
         },
         options: {
           scales: {
-            y: { beginAtZero: true, stepSize: 1 }
+            y: { beginAtZero: true, precision: 0 }
           },
           plugins: { legend: { display: false } }
         }
       });
 
-      // Pizza - alunos filtrados por nome e status (apenas nomes e quantidades)
-      // Aqui fazemos uma contagem dos nomes distintos ou agrupamos por status e frequencia
-      // Vamos mostrar contagem de alunos por faixa de frequencia: Baixa (<40%), Média(40-70%), Alta(>70%)
-
-      let faixaBaixa = 0, faixaMedia = 0, faixaAlta = 0;
-      alunosFiltrados.forEach(a => {
-        const f = a.frequencia ?? 0;
-        if(f < 40) faixaBaixa++;
-        else if(f <= 70) faixaMedia++;
-        else faixaAlta++;
-      });
-
+      // Pizza - alunos filtrados por nome (exemplo visual)
+      // Se quiser, pode substituir para outro dado mais útil
+      const nomesFiltrados = alunosFiltrados.map(a => a.nome);
       const ctxPizza = document.getElementById('graficoPizza').getContext('2d');
       if(chartPizza) chartPizza.destroy();
       chartPizza = new Chart(ctxPizza, {
         type: 'pie',
         data: {
-          labels: ['Frequência Baixa (<40%)', 'Frequência Média (40-70%)', 'Frequência Alta (>70%)'],
+          labels: nomesFiltrados.length > 0 ? nomesFiltrados : ['Nenhum'],
           datasets: [{
-            label: 'Frequência dos Alunos',
-            data: [faixaBaixa, faixaMedia, faixaAlta],
-            backgroundColor: ['#ef4444', '#f59e0b', '#10b981']
+            label: 'Alunos Filtrados',
+            data: nomesFiltrados.length > 0 ? new Array(nomesFiltrados.length).fill(1) : [1],
+            backgroundColor: nomesFiltrados.length > 0 ? nomesFiltrados.map(() => randomCor()) : ['#d1d5db']
           }]
         },
         options: {
-          plugins: { legend: { position: 'bottom' } }
+          plugins: { legend: { position: 'right' } }
         }
       });
     }
 
-    function gerarPDF() {
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
-      doc.setFontSize(16);
-      doc.text("Relatório do Dashboard - GYM CONTROL", 20, 20);
-
-      const total = document.getElementById('totalAlunos').textContent;
-      const ativos = document.getElementById('alunosAtivos').textContent;
-      const evadidos = document.getElementById('alunosEvadidos').textContent;
-      const novos = document.getElementById('alunosNovos').textContent;
-      const freq = document.getElementById('frequenciaMedia').textContent;
-      const receita = document.getElementById('receita').textContent;
-
-      doc.setFontSize(12);
-      doc.text(📊 Total de Alunos: ${total}, 20, 40);
-      doc.text(✅ Ativos: ${ativos}, 20, 50);
-      doc.text(⚠ Evadidos: ${evadidos}, 20, 60);
-      doc.text(🆕 Novos no Mês: ${novos}, 20, 70);
-      doc.text(📈 Frequência Média: ${freq}, 20, 80);
-      doc.text(💰 Receita Estimada: ${receita}, 20, 90);
-
-      doc.save("relatorio-dashboard.pdf");
+    // Função para gerar cores aleatórias para gráfico pizza
+    function randomCor() {
+      const letras = '0123456789ABCDEF';
+      let cor = '#';
+      for(let i=0; i<6; i++){
+        cor += letras[Math.floor(Math.random()*16)];
+      }
+      return cor;
     }
 
-    // Evento do filtro
+    // Função para gerar PDF do dashboard
+    function gerarPDF() {
+      alert('Função de exportar PDF ainda não implementada.');
+    }
+
+    // Evento para filtros
     document.getElementById('filtroStatus').addEventListener('change', atualizarDashboard);
     document.getElementById('filtroNome').addEventListener('input', atualizarDashboard);
 
-    // Botão risco evasão
+    // Botão risco de evasão
     document.getElementById('btnRiscoEvasao').addEventListener('click', () => {
-      // Link para sua página de risco de evasão (ajuste o nome do arquivo)
-      window.location.href = 'riscoevasao.html';
+      window.location.href = 'relatorioRiscoEvasao.html';
     });
 
-    // Inicia o dashboard
-    atualizarDashboard();
-    lucide.createIcons();
+    // Inicializa dashboard ao carregar a página
+    window.addEventListener('load', () => {
+      atualizarDashboard();
+      lucide.replace();
+    });
   </script>
-
 </body>
 </html>
