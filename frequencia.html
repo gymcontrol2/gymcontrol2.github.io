@@ -105,7 +105,6 @@
 
     // Função para abrir WhatsApp já com mensagem personalizada
     function enviarWhatsApp(telefone, nome, frequencia) {
-      // Formata telefone para padrão internacional (exemplo Brasil +55)
       let telFormatado = telefone.replace(/\D/g, ''); // só números
       if(!telFormatado.startsWith('55')) telFormatado = '55' + telFormatado;
 
