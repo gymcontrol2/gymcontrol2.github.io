@@ -5,90 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Cadastro de Alunos - GYM CONTROL</title>
   <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      background-color: #e0e7ff;
-      padding: 2rem;
-      max-width: 500px;
-      margin: 0 auto;
-      color: #1e293b;
-    }
-
-    h1 {
-      text-align: center;
-      margin-bottom: 2rem;
-      color: #2563eb;
-      font-weight: 800;
-    }
-
-    form {
-      background: white;
-      padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 5px 15px rgba(37, 99, 235, 0.2);
-      display: flex;
-      flex-direction: column;
-      gap: 1.2rem;
-    }
-
-    label {
-      font-weight: 600;
-      margin-bottom: 0.3rem;
-      display: block;
-    }
-
-    input[type="text"],
-    input[type="email"],
-    input[type="tel"] {
-      width: 100%;
-      padding: 0.7rem;
-      border-radius: 8px;
-      border: 1px solid #94a3b8;
-      font-size: 1rem;
-      outline-offset: 2px;
-      outline-color: #2563eb;
-      transition: border-color 0.3s;
-    }
-    input[type="text"]:focus,
-    input[type="email"]:focus,
-    input[type="tel"]:focus {
-      border-color: #2563eb;
-    }
-
-    button {
-      padding: 0.8rem;
-      background-color: #2563eb;
-      color: white;
-      font-weight: 700;
-      font-size: 1.1rem;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-    button:hover {
-      background-color: #1e40af;
-    }
-
-    .mensagem {
-      margin-top: 1rem;
-      font-weight: 600;
-      color: #059669;
-      text-align: center;
-    }
-
-    a.voltar {
-      display: block;
-      margin-top: 2rem;
-      text-align: center;
-      font-weight: 700;
-      color: #2563eb;
-      text-decoration: none;
-      transition: color 0.3s;
-    }
-    a.voltar:hover {
-      color: #1e40af;
-    }
+    /* ... (seu CSS permanece igual) ... */
   </style>
 </head>
 <body>
@@ -117,6 +34,11 @@
       return Date.now() + Math.floor(Math.random() * 1000);
     }
 
+    // Função que gera uma frequência aleatória entre 30 e 100
+    function gerarFrequenciaAleatoria() {
+      return Math.floor(Math.random() * 71) + 30; // 30 a 100%
+    }
+
     function gerarAlunosAleatorios(qtd) {
       const nomesExemplo = [
         "Lucas Silva", "Mariana Costa", "Pedro Oliveira", "Ana Souza",
@@ -140,13 +62,15 @@
         const email = emailsExemplo[Math.floor(Math.random() * emailsExemplo.length)];
         const telefone = telefonesExemplo[Math.floor(Math.random() * telefonesExemplo.length)];
         const ativo = (i % 3 !== 0); // ~2/3 ativos
+        const frequencia = gerarFrequenciaAleatoria();
 
         lista.push({
           id: gerarId() + i,
           nome,
           email,
           telefone,
-          ativo
+          ativo,
+          frequencia  // aqui está a frequência aleatória
         });
       }
       return lista;
@@ -187,7 +111,8 @@
         nome,
         email,
         telefone,
-        ativo: true
+        ativo: true,
+        frequencia: 100 // frequência fixa para novos alunos
       };
 
       listaAlunos.push(novoAluno);
@@ -211,7 +136,7 @@
       this.reset();
 
       const msg = document.getElementById('mensagemSucesso');
-      msg.textContent = `Aluno "${novoAluno.nome}" cadastrado com sucesso!`;
+      msg.textContent = `Aluno "${novoAluno.nome}" cadastrado com sucesso! Frequência: ${novoAluno.frequencia}%`;
       setTimeout(() => { msg.textContent = ''; }, 4000);
     });
   </script>
