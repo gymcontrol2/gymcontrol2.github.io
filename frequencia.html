@@ -63,6 +63,7 @@
       border-radius: 5px;
       margin-left: 8px;
       cursor: pointer;
+      transition: background 0.3s;
     }
     button.salvar-btn:hover {
       background: #1d4ed8;
@@ -118,13 +119,14 @@
     const tbody = document.getElementById('listaAlunosBody');
     const aviso = document.getElementById('avisoBaixaFrequencia');
 
-    // Filtra alunos com baixa frequência
-    const alunosBaixaFreq = alunos.filter(a => a.frequencia < 70);
-
-    if (alunosBaixaFreq.length > 0) {
-      aviso.textContent = `⚠ Atenção! ${alunosBaixaFreq.length} aluno(s) com frequência abaixo de 70%. Vamos chamar eles para melhorar!`;
-    } else {
-      aviso.textContent = "👍 Todos os alunos com frequência adequada.";
+    // Atualiza o aviso de baixa frequência
+    function atualizaAvisoBaixaFrequencia() {
+      const alunosBaixaFreq = alunos.filter(a => a.frequencia < 70);
+      if (alunosBaixaFreq.length > 0) {
+        aviso.textContent = `⚠ Atenção! ${alunosBaixaFreq.length} aluno(s) com frequência abaixo de 70%. Vamos chamar eles para melhorar!`;
+      } else {
+        aviso.textContent = "👍 Todos os alunos com frequência adequada.";
+      }
     }
 
     // Função para WhatsApp
@@ -138,7 +140,7 @@
       window.open(url, '_blank');
     }
 
-    // Função para salvar frequência editada
+    // Função para salvar frequência editada, sem reload
     function salvarFrequencia(id) {
       const input = document.getElementById(`freq-${id}`);
       const novaFreq = parseInt(input.value);
@@ -153,33 +155,50 @@
         alunos[index].frequencia = novaFreq;
         localStorage.setItem('listaAlunos', JSON.stringify(alunos));
         alert("Frequência atualizada com sucesso!");
-        location.reload(); // Atualiza para aplicar estilo de alerta se necessário
+
+        // Atualiza classe da linha
+        const tr = input.closest('tr');
+        if (novaFreq < 70) {
+          tr.classList.add('alerta');
+        } else {
+          tr.classList.remove('alerta');
+        }
+
+        // Atualiza o aviso
+        atualizaAvisoBaixaFrequencia();
       }
     }
 
-    // Preenche tabela
-    alunos.forEach(aluno => {
-      const tr = document.createElement('tr');
-      if (aluno.frequencia < 70) {
-        tr.classList.add('alerta');
-      }
+    // Função para montar a tabela
+    function montarTabela() {
+      tbody.innerHTML = '';
+      alunos.forEach(aluno => {
+        const tr = document.createElement('tr');
+        if (aluno.frequencia < 70) {
+          tr.classList.add('alerta');
+        }
 
-      tr.innerHTML = `
-        <td>${aluno.nome}</td>
-        <td>${aluno.email ?? '-'}</td>
-        <td>${aluno.telefone ?? '-'}</td>
-        <td>
-          <input type="number" id="freq-${aluno.id}" min="0" max="100" value="${aluno.frequencia}">
-          <button class="salvar-btn" onclick="salvarFrequencia(${aluno.id})">Salvar</button>
-        </td>
-        <td>
-          <button class="whatsapp-btn" onclick="enviarWhatsApp('${aluno.telefone}', '${aluno.nome}', ${aluno.frequencia})">
-            📲 Chamar no WhatsApp
-          </button>
-        </td>
-      `;
-      tbody.appendChild(tr);
-    });
+        tr.innerHTML = `
+          <td>${aluno.nome}</td>
+          <td>${aluno.email ?? '-'}</td>
+          <td>${aluno.telefone ?? '-'}</td>
+          <td>
+            <input type="number" id="freq-${aluno.id}" min="0" max="100" step="1" value="${aluno.frequencia}" required>
+            <button class="salvar-btn" onclick="salvarFrequencia(${aluno.id})">Salvar</button>
+          </td>
+          <td>
+            <button class="whatsapp-btn" onclick="enviarWhatsApp('${aluno.telefone}', '${aluno.nome}', ${aluno.frequencia})">
+              📲 Chamar no WhatsApp
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Inicia
+    montarTabela();
+    atualizaAvisoBaixaFrequencia();
   </script>
 
 </body>
