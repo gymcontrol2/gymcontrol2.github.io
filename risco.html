@@ -32,7 +32,6 @@
       max-width: 600px;
     }
 
-    /* Filtros */
     .filtros {
       max-width: 1000px;
       margin-bottom: 1.5rem;
@@ -83,33 +82,34 @@
       margin-bottom: 3rem;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.08);
       border-radius: 8px;
-      overflow: hidden;
-      display: block; /* Para scroll horizontal */
+      overflow-x: auto;
+      display: block;
       max-height: 60vh;
     }
-    table thead,
-    table tbody,
-    table tr,
-    table th,
-    table td {
-      display: table;
-      width: 100%;
-      table-layout: fixed;
-    }
-
     table thead {
-      width: calc(100% - 1em);
       background-color: #991b1b;
       color: white;
       position: sticky;
       top: 0;
       z-index: 2;
+      display: table-header-group;
     }
-
+    table tbody {
+      display: block;
+      max-height: 400px;
+      overflow-y: auto;
+      width: 100%;
+    }
+    table tr {
+      display: table;
+      width: 100%;
+      table-layout: fixed;
+    }
     th, td {
       padding: 14px 16px;
       text-align: left;
       word-wrap: break-word;
+      vertical-align: middle;
     }
 
     tbody tr:nth-child(even) {
@@ -161,15 +161,14 @@
         max-height: none;
       }
       table thead {
-        display: table-header-group;
         position: relative;
         width: 100%;
       }
-      table tbody tr,
-      table th,
-      table td {
+      table tbody {
+        max-height: none;
+      }
+      table tr {
         display: table-row;
-        width: auto;
       }
     }
   </style>
@@ -177,7 +176,7 @@
 <body>
 
   <h1>Alunos em Risco</h1>
-  <p class="subtitulo">Atenção especial aos alunos com baixa frequência ou inadimplência</p>
+  <p class="subtitulo">Atenção especial aos alunos com baixa frequência ou mensalidade em atraso</p>
 
   <div class="filtros">
     <label><input type="checkbox" id="filtroFreq" checked> Frequência abaixo de 70%</label>
@@ -215,14 +214,16 @@
   const filtroMensalidade = document.getElementById("filtroMensalidade");
   const ctx = document.getElementById('graficoRisco').getContext('2d');
 
-  // Pega lista de alunos do localStorage
   let alunos = JSON.parse(localStorage.getItem("listaAlunos")) || [];
 
-  // Garante que todos alunos tenham propriedade mensalidadePaga booleana e frequencia numérica
+  // Garante propriedades essenciais e padroniza os dados
   alunos = alunos.map(a => ({
-    ...a,
-    mensalidadePaga: a.mensalidadePaga === undefined ? true : a.mensalidadePaga,
+    id: a.id ?? '',
+    nome: a.nome ?? 'Sem nome',
+    email: a.email ?? '-',
+    telefone: a.telefone ?? '-',
     frequencia: typeof a.frequencia === "number" ? a.frequencia : 0,
+    mensalidadePaga: a.mensalidadePaga === undefined ? true : a.mensalidadePaga
   }));
 
   let grafico;
@@ -231,7 +232,7 @@
     const filtraFreq = filtroFreq.checked;
     const filtraMens = filtroMensalidade.checked;
 
-    // Filtra alunos conforme checkboxes
+    // Filtra alunos conforme filtros ativos
     return alunos.filter(a => {
       const freqBaixa = a.frequencia < 70;
       const inadimplente = a.mensalidadePaga === false;
@@ -239,7 +240,7 @@
       if (filtraFreq && filtraMens) return freqBaixa || inadimplente;
       if (filtraFreq) return freqBaixa;
       if (filtraMens) return inadimplente;
-      return []; // Nenhum filtro marcado, nenhum risco exibido
+      return []; // Nenhum filtro ativo = vazio
     });
   }
 
@@ -253,25 +254,24 @@
       ? `⚠ Temos ${totalRisco} aluno(s) em risco (${percentualRisco}% do total). Entre em contato o quanto antes!`
       : "✅ Nenhum aluno em risco no momento. Bom trabalho!";
 
-    // Limpa tabela antes de preencher
+    // Limpa tabela
     tabela.innerHTML = "";
 
     if (alunosRisco.length === 0) {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `<td colspan="6" style="text-align:center; color:#374151; font-style: italic;">Nenhum aluno em risco conforme os filtros aplicados.</td>`;
-      tabela.appendChild(tr);
+      tabela.innerHTML = `<tr><td colspan="6" style="text-align:center; font-style: italic; color:#374151;">Nenhum aluno em risco conforme os filtros aplicados.</td></tr>`;
     } else {
       alunosRisco.forEach(aluno => {
-        const tr = document.createElement("tr");
-
-        const nomeEscapado = aluno.nome.replace(/'/g, "\\'").replace(/"/g, "&quot;");
         const frequencia = Math.round(aluno.frequencia);
         const mensalidadeStatus = aluno.mensalidadePaga ? "Paga" : "Em atraso";
 
+        // Escapa aspas simples e duplas para evitar quebra na onclick
+        const nomeEscapado = aluno.nome.replace(/'/g, "\\'").replace(/"/g, "&quot;");
+
+        const tr = document.createElement("tr");
         tr.innerHTML = `
           <td class="risco">${nomeEscapado}</td>
-          <td>${aluno.email ?? "-"}</td>
-          <td>${aluno.telefone ?? "-"}</td>
+          <td>${aluno.email}</td>
+          <td>${aluno.telefone}</td>
           <td>${frequencia}%</td>
           <td class="${aluno.mensalidadePaga ? "" : "risco"}">${mensalidadeStatus}</td>
           <td>
@@ -284,7 +284,7 @@
       });
     }
 
-    // Atualiza gráfico (se existir, destrói antes)
+    // Atualiza gráfico
     if (grafico) grafico.destroy();
 
     grafico = new Chart(ctx, {
@@ -298,27 +298,24 @@
         }]
       },
       options: {
-        plugins: {
-          legend: {
-            position: 'bottom',
-            labels: {
-              color: '#1f2937',
-              font: { size: 14 }
-            }
-          }
-        },
         cutout: '70%',
         animation: {
           animateRotate: true,
           animateScale: true
+        },
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: { color: '#1f2937', font: { size: 14 } }
+          }
         }
       }
     });
   }
 
-  // Função para abrir WhatsApp
+  // Envia mensagem pelo WhatsApp
   function enviarWhatsApp(telefone, nome, frequencia, mensalidade) {
-    if (!telefone) {
+    if (!telefone || telefone.trim() === '-' || telefone.trim() === '') {
       alert("Telefone inválido ou não informado.");
       return;
     }
@@ -330,11 +327,11 @@
     window.open(`https://api.whatsapp.com/send?phone=${fone}&text=${encodeURIComponent(msg)}`, "_blank");
   }
 
-  // Eventos para atualizar filtro em tempo real
+  // Atualiza a tabela ao mudar filtros
   filtroFreq.addEventListener('change', atualizarTela);
   filtroMensalidade.addEventListener('change', atualizarTela);
 
-  // Inicializa a tela
+  // Inicializa
   atualizarTela();
 </script>
 
