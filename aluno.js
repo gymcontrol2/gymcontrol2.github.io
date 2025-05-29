@@ -37,12 +37,20 @@ function gerarAlunosIniciais() {
   return alunos;
 }
 
-function inicializarAlunos() {
-  if (!localStorage.getItem('listaAlunos')) {
-    const alunosIniciais = gerarAlunosIniciais();
-    localStorage.setItem('listaAlunos', JSON.stringify(alunosIniciais));
-    console.log('Lista inicial de 70 alunos salva no localStorage.');
-  }
-}
+function carregarListaAlunos() {
+  let lista = null;
 
-inicializarAlunos();
+  try {
+    lista = JSON.parse(localStorage.getItem('listaAlunos'));
+  } catch (err) {
+    console.warn('Erro ao ler listaAlunos do localStorage:', err);
+  }
+
+  if (!Array.isArray(lista) || lista.length === 0) {
+    lista = gerarAlunosIniciais();
+    localStorage.setItem('listaAlunos', JSON.stringify(lista));
+    console.log('Lista inicial de alunos criada e salva no localStorage.');
+  }
+
+  return lista;
+}
