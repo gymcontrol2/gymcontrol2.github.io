@@ -103,18 +103,21 @@
   </table>
 
   <script>
-    let alunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
+    // Lista fixa de 70 alunos com dados exemplo
+    const alunosFixos = Array.from({length: 70}, (_, i) => ({
+      id: i + 1,
+      nome: `Aluno ${i + 1}`,
+      email: `aluno${i + 1}@exemplo.com`,
+      telefone: `1199999${(1000 + i).toString().padStart(4, '0')}`,
+      frequencia: Math.floor(Math.random() * 66) + 30 // frequência aleatória 30-95%
+    }));
 
-    // Gera frequência aleatória para quem ainda não tem
-    alunos = alunos.map(aluno => {
-      if (aluno.frequencia === undefined) {
-        aluno.frequencia = Math.floor(Math.random() * 66) + 30; // 30 a 95%
-      }
-      return aluno;
-    });
-
-    // Salva de volta
-    localStorage.setItem('listaAlunos', JSON.stringify(alunos));
+    // Tenta carregar do localStorage, se não existir usa a lista fixa
+    let alunos = JSON.parse(localStorage.getItem('listaAlunos'));
+    if (!alunos || alunos.length === 0) {
+      alunos = alunosFixos;
+      localStorage.setItem('listaAlunos', JSON.stringify(alunos));
+    }
 
     const tbody = document.getElementById('listaAlunosBody');
     const aviso = document.getElementById('avisoBaixaFrequencia');
