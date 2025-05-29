@@ -1,276 +1,209 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Risco de Evasão - GYM CONTROL</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<style>
-  body {
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    background: #f9fafb;
-    margin: 0;
-    padding: 1rem;
-    max-width: 900px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-  h1 {
-    text-align: center;
-    color: #ef4444;
-  }
-  .aluno-card {
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 1px 6px rgb(0 0 0 / 0.1);
-    margin-bottom: 1rem;
-    padding: 1rem;
-    display: flex;
-    flex-direction: column;
-  }
-  .aluno-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .aluno-nome {
-    font-weight: 700;
-    font-size: 1.2rem;
-    color: #1f2937;
-  }
-  .aluno-frequencia {
-    font-weight: 700;
-    color: #f59e0b;
-  }
-  .aluno-ultima {
-    font-size: 0.9rem;
-    color: #6b7280;
-  }
-  label {
-    font-weight: 600;
-    margin-top: 0.5rem;
-  }
-  textarea {
-    width: 100%;
-    border-radius: 6px;
-    border: 1px solid #d1d5db;
-    padding: 0.5rem;
-    resize: vertical;
-    font-family: inherit;
-    font-size: 0.95rem;
-  }
-  button {
-    margin-top: 0.7rem;
-    padding: 0.5rem 1rem;
-    border: none;
-    border-radius: 6px;
-    background-color: #3b82f6;
-    color: white;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background-color 0.25s ease;
-  }
-  button:hover {
-    background-color: #2563eb;
-  }
-  .promocao-btn {
-    background-color: #10b981;
-  }
-  .promocao-btn:hover {
-    background-color: #047857;
-  }
-  .chamou {
-    background-color: #6b7280 !important;
-    cursor: default !important;
-  }
-  .btns-container {
-    margin-top: 0.5rem;
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-  }
-  .grafico-container {
-    max-width: 600px;
-    margin: 2rem auto 1rem;
-    background: white;
-    border-radius: 10px;
-    padding: 1rem;
-    box-shadow: 0 1px 6px rgb(0 0 0 / 0.1);
-  }
-  #filtroBusca {
-    width: 100%;
-    padding: 0.5rem 1rem;
-    font-size: 1rem;
-    border-radius: 10px;
-    border: 1px solid #94a3b8;
-    margin-bottom: 1rem;
-    outline-offset: 2px;
-    outline-color: #3b82f6;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Alunos em Risco - GYM CONTROL</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: #f9fafb;
+      margin: 0;
+      padding: 2rem;
+      color: #1f2937;
+    }
+
+    h1 {
+      text-align: center;
+      color: #dc2626;
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitulo {
+      text-align: center;
+      font-size: 1.2rem;
+      color: #6b7280;
+      margin-bottom: 2rem;
+    }
+
+    .grafico-container {
+      max-width: 400px;
+      margin: 0 auto 2rem;
+    }
+
+    .alerta {
+      text-align: center;
+      background-color: #fef2f2;
+      color: #991b1b;
+      border: 1px solid #fca5a5;
+      padding: 1rem;
+      border-radius: 8px;
+      margin: 1rem auto 2rem;
+      max-width: 800px;
+      font-weight: 600;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      max-width: 1000px;
+      margin: 0 auto;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.08);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 14px 16px;
+      text-align: left;
+    }
+
+    thead {
+      background-color: #991b1b;
+      color: white;
+    }
+
+    tbody tr:nth-child(even) {
+      background-color: #fef2f2;
+    }
+
+    tbody tr:hover {
+      background-color: #fee2e2;
+    }
+
+    .risco {
+      color: #b91c1c;
+      font-weight: bold;
+    }
+
+    .btn-whatsapp {
+      background-color: #25d366;
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.3s ease;
+    }
+
+    .btn-whatsapp:hover {
+      background-color: #1ebe57;
+    }
+
+    footer {
+      margin-top: 3rem;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #6b7280;
+    }
+  </style>
 </head>
 <body>
 
-<h1>Risco de Evasão - GYM CONTROL</h1>
+  <h1>Alunos em Risco</h1>
+  <p class="subtitulo">Atenção especial aos alunos com baixa frequência ou inadimplência</p>
 
-<input type="text" id="filtroBusca" placeholder="Buscar aluno por nome..." />
+  <div class="grafico-container">
+    <canvas id="graficoRisco"></canvas>
+  </div>
 
-<div id="listaAlunos"></div>
+  <div class="alerta" id="alertaRisco"></div>
 
-<div class="grafico-container">
-  <canvas id="graficoFrequencia"></canvas>
-</div>
+  <table>
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Email</th>
+        <th>Telefone</th>
+        <th>Frequência</th>
+        <th>Mensalidade</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody id="tabelaRisco"></tbody>
+  </table>
 
-<script>
-  // Lista inicial de alunos (só cria se não existir)
-  function criarAlunosExemplo() {
-    const exemploAlunos = [
-      {nome:"João Silva", telefone:"5511999998888", frequencia:30, ultimaPresenca:"2025-04-10", motivoFalta:"", interessePromocao:false, recuperado:false},
-      {nome:"Maria Oliveira", telefone:"5511988887777", frequencia:65, ultimaPresenca:"2025-05-01", motivoFalta:"Problemas de saúde", interessePromocao:true, recuperado:false},
-      {nome:"Carlos Pereira", telefone:"5511977776666", frequencia:80, ultimaPresenca:"2025-05-20", motivoFalta:"", interessePromocao:false, recuperado:false},
-      {nome:"Ana Souza", telefone:"5511966665555", frequencia:15, ultimaPresenca:"2025-03-20", motivoFalta:"Trabalho intenso", interessePromocao:true, recuperado:false},
-      {nome:"Pedro Gomes", telefone:"5511955554444", frequencia:0, ultimaPresenca:"2025-01-15", motivoFalta:"", interessePromocao:false, recuperado:false},
-      {nome:"Lucas Costa", telefone:"5511944443333", frequencia:50, ultimaPresenca:"2025-04-28", motivoFalta:"", interessePromocao:false, recuperado:true}
-    ];
-    localStorage.setItem('listaAlunos', JSON.stringify(exemploAlunos));
-  }
+  <footer>
+    &copy; 2025 GYM CONTROL - Monitoramento de risco de evasão
+  </footer>
 
-  if (!localStorage.getItem('listaAlunos')) criarAlunosExemplo();
+  <script>
+    const alunos = JSON.parse(localStorage.getItem("listaAlunos")) || [];
+    const tabela = document.getElementById("tabelaRisco");
+    const alerta = document.getElementById("alertaRisco");
 
-  // Função para salvar lista atualizada
-  function salvarAlunos(lista) {
-    localStorage.setItem('listaAlunos', JSON.stringify(lista));
-  }
+    const alunosRisco = alunos.filter(aluno =>
+      (aluno.frequencia ?? 0) < 70 || aluno.mensalidadePaga === false
+    );
 
-  // Função para abrir WhatsApp com mensagem personalizada
-  function abrirWhatsApp(numero, nome) {
-    const texto = encodeURIComponent(`Olá ${nome}, sentimos sua falta na academia! Que tal voltar com uma promoção especial? Responda aqui para saber mais.`);
-    window.open(`https://wa.me/${numero}?text=${texto}`, '_blank');
-  }
+    const total = alunos.length;
+    const totalRisco = alunosRisco.length;
+    const percentualRisco = ((totalRisco / total) * 100).toFixed(1);
 
-  // Função para renderizar lista de alunos com filtro
-  function renderizarLista(filtro='') {
-    const container = document.getElementById('listaAlunos');
-    const listaAlunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
+    alerta.textContent = totalRisco
+      ? `⚠ Temos ${totalRisco} aluno(s) em risco (${percentualRisco}% do total). Entre em contato o quanto antes!`
+      : "✅ Nenhum aluno em risco no momento. Bom trabalho!";
 
-    // Filtra por nome
-    const listaFiltrada = listaAlunos.filter(a => a.nome.toLowerCase().includes(filtro.toLowerCase()));
+    alunosRisco.forEach(aluno => {
+      const tr = document.createElement("tr");
 
-    container.innerHTML = '';
-    if(listaFiltrada.length === 0){
-      container.innerHTML = '<p style="text-align:center; color:#6b7280;">Nenhum aluno encontrado.</p>';
-      return;
-    }
+      const frequencia = aluno.frequencia ?? 0;
+      const mensalidadeStatus = aluno.mensalidadePaga ? "Paga" : "Em atraso";
 
-    listaFiltrada.forEach((aluno, idx) => {
-      const card = document.createElement('div');
-      card.className = 'aluno-card';
-
-      card.innerHTML = `
-        <div class="aluno-header">
-          <div>
-            <div class="aluno-nome">${aluno.nome}</div>
-            <div class="aluno-ultima">Última presença: ${aluno.ultimaPresenca}</div>
-          </div>
-          <div class="aluno-frequencia">${aluno.frequencia}%</div>
-        </div>
-        <label for="motivo-${idx}">Motivo da falta:</label>
-        <textarea id="motivo-${idx}" placeholder="Descreva o motivo..." rows="2">${aluno.motivoFalta || ''}</textarea>
-        <div class="btns-container">
-          <button onclick="salvarMotivo(${idx})">Salvar Motivo</button>
-          <button class="promocao-btn ${aluno.interessePromocao ? 'chamou' : ''}" onclick="togglePromocao(${idx}, this)">
-            ${aluno.interessePromocao ? 'Promoção solicitada ✓' : 'Enviar Promoção'}
+      tr.innerHTML = `
+        <td class="risco">${aluno.nome}</td>
+        <td>${aluno.email ?? "-"}</td>
+        <td>${aluno.telefone ?? "-"}</td>
+        <td>${frequencia.toFixed(0)}%</td>
+        <td class="${aluno.mensalidadePaga ? "" : "risco"}">${mensalidadeStatus}</td>
+        <td>
+          <button class="btn-whatsapp" onclick="enviarWhatsApp('${aluno.telefone}', '${aluno.nome}', ${frequencia.toFixed(0)}, '${mensalidadeStatus}')">
+            📲 WhatsApp
           </button>
-          <button ${aluno.recuperado ? 'disabled class="chamou"' : ''} onclick="marcarRecuperado(${idx}, this)">
-            ${aluno.recuperado ? 'Aluno recuperado ✓' : 'Marcar como Recuperado'}
-          </button>
-          <button onclick="abrirWhatsApp('${aluno.telefone}', '${aluno.nome}')">📱 Chamar no WhatsApp</button>
-        </div>
+        </td>
       `;
 
-      container.appendChild(card);
-    });
-  }
-
-  // Salvar motivo da falta
-  function salvarMotivo(index){
-    const listaAlunos = JSON.parse(localStorage.getItem('listaAlunos'));
-    const textarea = document.getElementById(`motivo-${index}`);
-    listaAlunos[index].motivoFalta = textarea.value.trim();
-    salvarAlunos(listaAlunos);
-    alert('Motivo salvo!');
-  }
-
-  // Alternar interesse em promoção
-  function togglePromocao(index, btn){
-    const listaAlunos = JSON.parse(localStorage.getItem('listaAlunos'));
-    listaAlunos[index].interessePromocao = !listaAlunos[index].interessePromocao;
-    salvarAlunos(listaAlunos);
-    btn.classList.toggle('chamou');
-    btn.textContent = listaAlunos[index].interessePromocao ? 'Promoção solicitada ✓' : 'Enviar Promoção';
-  }
-
-  // Marcar aluno como recuperado
-  function marcarRecuperado(index, btn){
-    const listaAlunos = JSON.parse(localStorage.getItem('listaAlunos'));
-    listaAlunos[index].recuperado = true;
-    salvarAlunos(listaAlunos);
-    btn.disabled = true;
-    btn.classList.add('chamou');
-    btn.textContent = 'Aluno recuperado ✓';
-    alert('Aluno marcado como recuperado!');
-    renderizarLista(document.getElementById('filtroBusca').value);
-  }
-
-  // Gráfico de frequência média dos alunos (baixa, média, alta)
-  function criarGrafico() {
-    const ctx = document.getElementById('graficoFrequencia').getContext('2d');
-    const listaAlunos = JSON.parse(localStorage.getItem('listaAlunos'));
-
-    // Categorizar alunos por frequência
-    let baixa = 0, media = 0, alta = 0;
-    listaAlunos.forEach(a => {
-      if (a.frequencia < 30) baixa++;
-      else if (a.frequencia < 70) media++;
-      else alta++;
+      tabela.appendChild(tr);
     });
 
-    if(window.graficoInstance) window.graficoInstance.destroy();
+    function enviarWhatsApp(telefone, nome, frequencia, mensalidade) {
+      let fone = telefone.replace(/\D/g, '');
+      if (!fone.startsWith('55')) fone = '55' + fone;
 
-    window.graficoInstance = new Chart(ctx, {
-      type: 'pie',
+      const msg = `Olá ${nome}, percebemos que sua frequência está em ${frequencia}% e sua mensalidade está ${mensalidade === 'Paga' ? 'ok' : 'em aberto'}. Gostaríamos de saber se está tudo bem e como podemos ajudar. 💪 Equipe GYM CONTROL.`;
+
+      window.open(`https://api.whatsapp.com/send?phone=${fone}&text=${encodeURIComponent(msg)}`, "_blank");
+    }
+
+    // Criação do gráfico
+    const ctx = document.getElementById('graficoRisco').getContext('2d');
+    const grafico = new Chart(ctx, {
+      type: 'doughnut',
       data: {
-        labels: ['Baixa (<30%)', 'Média (30-69%)', 'Alta (≥70%)'],
+        labels: ['Em Risco', 'Fora de Risco'],
         datasets: [{
-          label: 'Frequência dos alunos',
-          data: [baixa, media, alta],
-          backgroundColor: ['#ef4444', '#fbbf24', '#10b981'],
+          data: [totalRisco, total - totalRisco],
+          backgroundColor: ['#dc2626', '#16a34a'],
+          borderWidth: 1
         }]
       },
       options: {
-        responsive: true,
         plugins: {
           legend: {
-            position: 'bottom'
-          },
-          title: {
-            display: true,
-            text: 'Distribuição da frequência dos alunos'
+            position: 'bottom',
+            labels: {
+              color: '#1f2937',
+              font: {
+                size: 14
+              }
+            }
           }
         }
       }
     });
-  }
+  </script>
 
-  // Filtrar lista ao digitar
-  document.getElementById('filtroBusca').addEventListener('input', e => {
-    renderizarLista(e.target.value);
-  });
-
-  // Inicializa tudo
-  renderizarLista();
-  criarGrafico();
-
-</script>
 </body>
 </html>
