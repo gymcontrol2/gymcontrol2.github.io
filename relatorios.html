@@ -11,24 +11,34 @@
       background-color: #f8fafc;
       padding: 2rem;
       color: #1e293b;
+      max-width: 900px;
+      margin: 0 auto;
     }
 
     h1 {
       text-align: center;
       color: #2563eb;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1rem;
       font-weight: 800;
     }
 
-    input[type="text"] {
-      width: 100%;
-      max-width: 400px;
-      display: block;
-      margin: 0 auto 1.5rem auto;
-      padding: 0.8rem;
+    .filtros {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+
+    input[type="text"],
+    select {
+      padding: 0.6rem 0.8rem;
       font-size: 1rem;
       border: 1px solid #94a3b8;
       border-radius: 8px;
+      outline-offset: 2px;
+      outline-color: #2563eb;
+      min-width: 180px;
     }
 
     canvas {
@@ -40,7 +50,6 @@
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 2rem;
       background: white;
       border-radius: 12px;
       overflow: hidden;
@@ -51,6 +60,7 @@
       padding: 1rem;
       border-bottom: 1px solid #e2e8f0;
       text-align: left;
+      word-break: break-word;
     }
 
     th {
@@ -94,151 +104,230 @@
       font-weight: 700;
       color: #2563eb;
       text-decoration: none;
+      user-select: none;
     }
 
     a.voltar:hover {
       color: #1e40af;
     }
+
+    header {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background-color: #1e3a8a;
+      color: white;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+      box-sizing: border-box;
+    }
+
+    header button {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    header h2 {
+      margin: 0;
+      font-weight: 600;
+      font-size: 1.2rem;
+      user-select: none;
+    }
+
+    /* Para evitar conteúdo embaixo do header fixo */
+    body {
+      padding-top: 60px;
+    }
+
+    /* Responsividade simples */
+    @media (max-width: 600px) {
+      .filtros {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: center;
+      }
+      
+      input[type="text"],
+      select {
+        width: 90vw;
+        max-width: none;
+      }
+    }
   </style>
 </head>
 <body>
-  <!-- Coloque isso dentro do <body> no topo da página relatorios.html -->
 
-<header style="width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem; background-color: #1e3a8a; color: white; position: fixed; top: 0; left: 0; z-index: 1000;">
-  <button onclick="window.location.href='cadastro.html'" style="background: none; border: none; color: white; font-size: 1rem; cursor: pointer;">
+<header>
+  <button type="button" aria-label="Voltar para Cadastros" onclick="window.location.href='cadastro.html'">
     ← Voltar para Cadastros
   </button>
 
-  <h2 style="margin: 0; font-weight: 600;">Relatórios</h2>
+  <h2>Relatórios</h2>
 
-  <button onclick="window.location.href='home.html'" style="background: none; border: none; color: white; font-size: 1rem; cursor: pointer;">
+  <button type="button" aria-label="Ir para Home" onclick="window.location.href='home.html'">
     Home →
   </button>
 </header>
 
-<!-- IMPORTANTE: adiciona um padding-top no corpo para o conteúdo não ficar embaixo do header fixo -->
-<style>
-  body {
-    padding-top: 60px; /* ajusta conforme a altura do header */
-  }
-</style>
+<h1>Relatório de Alunos</h1>
 
-  <h1>Relatório de Alunos</h1>
+<div class="filtros">
+  <input type="text" id="filtroNome" placeholder="Filtrar por nome..." aria-label="Filtrar por nome" />
+  <select id="filtroStatus" aria-label="Filtrar por status">
+    <option value="todos">Todos os status</option>
+    <option value="ativos">Ativos</option>
+    <option value="evadidos">Evadidos</option>
+  </select>
+</div>
 
-  <input type="text" id="filtroNome" placeholder="Filtrar por nome..." />
+<div style="text-align:center; margin-bottom: 1rem;">
+  <strong>Total de Alunos: <span id="totalAlunos">0</span></strong> |
+  <span class="ativo">Ativos: <span id="totalAtivos">0</span></span> |
+  <span class="evadido">Evadidos: <span id="totalEvadidos">0</span></span>
+</div>
 
-  <canvas id="graficoAlunos"></canvas>
+<canvas id="graficoAlunos"></canvas>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Nome</th>
-        <th>Email</th>
-        <th>Telefone</th>
-        <th>Status</th>
-        <th>Ação</th>
-      </tr>
-    </thead>
-    <tbody id="tabelaAlunos"></tbody>
-  </table>
+<table>
+  <thead>
+    <tr>
+      <th>Nome</th>
+      <th>Email</th>
+      <th>Telefone</th>
+      <th>Status</th>
+      <th>Ação</th>
+    </tr>
+  </thead>
+  <tbody id="tabelaAlunos"></tbody>
+</table>
 
-  <a href="cadastro.html" class="voltar">← Voltar para Cadastro</a>
+<a href="cadastro.html" class="voltar">← Voltar para Cadastro</a>
 
-  <script>
-    let grafico;
+<script>
+  let grafico;
 
-    function carregarRelatorio(filtro = '') {
-      const listaAlunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
-      const tabela = document.getElementById('tabelaAlunos');
-      tabela.innerHTML = '';
+  function carregarRelatorio(filtroNome = '', filtroStatus = 'todos') {
+    const listaAlunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
+    const tabela = document.getElementById('tabelaAlunos');
+    tabela.innerHTML = '';
 
-      let ativos = 0;
-      let evadidos = 0;
+    // Filtrar alunos por nome e status
+    let alunosFiltrados = listaAlunos.filter(aluno => 
+      aluno.nome.toLowerCase().includes(filtroNome.toLowerCase())
+    );
 
-      const alunosFiltrados = listaAlunos.filter(a =>
-        a.nome.toLowerCase().includes(filtro.toLowerCase())
-      );
-
-      alunosFiltrados.forEach(aluno => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${aluno.nome}</td>
-          <td>${aluno.email}</td>
-          <td>${aluno.telefone}</td>
-          <td class="${aluno.ativo ? 'ativo' : 'evadido'}">${aluno.ativo ? 'Ativo' : 'Evadido'}</td>
-          <td><button class="btn-excluir" onclick="excluirAluno(${aluno.id})">Excluir</button></td>
-        `;
-        tabela.appendChild(tr);
-
-        aluno.ativo ? ativos++ : evadidos++;
-      });
-
-      atualizarGrafico(ativos, evadidos);
+    if (filtroStatus === 'ativos') {
+      alunosFiltrados = alunosFiltrados.filter(a => a.ativo);
+    } else if (filtroStatus === 'evadidos') {
+      alunosFiltrados = alunosFiltrados.filter(a => !a.ativo);
     }
 
-    function atualizarGrafico(ativos, evadidos) {
-      const ctx = document.getElementById('graficoAlunos').getContext('2d');
+    let ativos = 0;
+    let evadidos = 0;
 
-      if (grafico) grafico.destroy();
+    alunosFiltrados.forEach(aluno => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${aluno.nome}</td>
+        <td>${aluno.email}</td>
+        <td>${aluno.telefone}</td>
+        <td class="${aluno.ativo ? 'ativo' : 'evadido'}">${aluno.ativo ? 'Ativo' : 'Evadido'}</td>
+        <td><button class="btn-excluir" type="button" aria-label="Excluir ${aluno.nome}" onclick="excluirAluno('${aluno.id}')">Excluir</button></td>
+      `;
+      tabela.appendChild(tr);
 
-      grafico = new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-          labels: ['Ativos', 'Evadidos'],
-          datasets: [{
-            data: [ativos, evadidos],
-            backgroundColor: ['#2563eb', '#ef4444'],
-          }]
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: {
-              position: 'bottom'
-            },
-            tooltip: {
-              callbacks: {
-                label: function(context) {
-                  const total = context.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
-                  const valor = context.parsed;
-                  const porcentagem = ((valor / total) * 100).toFixed(1);
-                  return `${context.label}: ${valor} (${porcentagem}%)`;
-                }
+      aluno.ativo ? ativos++ : evadidos++;
+    });
+
+    // Atualiza os totais acima da tabela
+    document.getElementById('totalAlunos').textContent = alunosFiltrados.length;
+    document.getElementById('totalAtivos').textContent = ativos;
+    document.getElementById('totalEvadidos').textContent = evadidos;
+
+    atualizarGrafico(ativos, evadidos);
+  }
+
+  function atualizarGrafico(ativos, evadidos) {
+    const ctx = document.getElementById('graficoAlunos').getContext('2d');
+
+    if (grafico) grafico.destroy();
+
+    grafico = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Ativos', 'Evadidos'],
+        datasets: [{
+          data: [ativos, evadidos],
+          backgroundColor: ['#2563eb', '#ef4444'],
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'bottom'
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                const total = context.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+                const valor = context.parsed;
+                const porcentagem = ((valor / total) * 100).toFixed(1);
+                return `${context.label}: ${valor} (${porcentagem}%)`;
               }
             }
           }
         }
-      });
-    }
-
-    function excluirAluno(id) {
-      if (!confirm("Tem certeza que deseja excluir este aluno?")) return;
-
-      let lista = JSON.parse(localStorage.getItem('listaAlunos')) || [];
-      lista = lista.filter(a => a.id !== id);
-      localStorage.setItem('listaAlunos', JSON.stringify(lista));
-
-      // Atualiza contadores
-      const ativos = lista.filter(a => a.ativo).length;
-      const evadidos = lista.length - ativos;
-      localStorage.setItem('dadosAcademia', JSON.stringify({
-        totalAlunos: lista.length,
-        alunosAtivos: ativos,
-        alunosEvadidos: evadidos
-      }));
-
-      carregarRelatorio(document.getElementById('filtroNome').value);
-    }
-
-    document.getElementById('filtroNome').addEventListener('input', e => {
-      carregarRelatorio(e.target.value);
+      }
     });
+  }
 
-    window.addEventListener('storage', () => {
-      carregarRelatorio(document.getElementById('filtroNome').value);
-    });
+  function excluirAluno(id) {
+    if (!confirm("Tem certeza que deseja excluir este aluno?")) return;
 
-    window.onload = () => carregarRelatorio();
-  </script>
+    let lista = JSON.parse(localStorage.getItem('listaAlunos')) || [];
+    lista = lista.filter(a => a.id != id);
+    localStorage.setItem('listaAlunos', JSON.stringify(lista));
+
+    // Atualiza contadores globais
+    const ativos = lista.filter(a => a.ativo).length;
+    const evadidos = lista.length - ativos;
+    localStorage.setItem('dadosAcademia', JSON.stringify({
+      totalAlunos: lista.length,
+      alunosAtivos: ativos,
+      alunosEvadidos: evadidos
+    }));
+
+    const filtroNome = document.getElementById('filtroNome').value;
+    const filtroStatus = document.getElementById('filtroStatus').value;
+    carregarRelatorio(filtroNome, filtroStatus);
+  }
+
+  document.getElementById('filtroNome').addEventListener('input', e => {
+    const filtroStatus = document.getElementById('filtroStatus').value;
+    carregarRelatorio(e.target.value, filtroStatus);
+  });
+
+  document.getElementById('filtroStatus').addEventListener('change', e => {
+    const filtroNome = document.getElementById('filtroNome').value;
+    carregarRelatorio(filtroNome, e.target.value);
+  });
+
+  window.addEventListener('storage', () => {
+    const filtroNome = document.getElementById('filtroNome').value;
+    const filtroStatus = document.getElementById('filtroStatus').value;
+    carregarRelatorio(filtroNome, filtroStatus);
+  });
+
+  window.onload = () => carregarRelatorio();
+</script>
 </body>
 </html>
