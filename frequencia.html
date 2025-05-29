@@ -1,74 +1,91 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Frequência dos Alunos - GYM CONTROL</title>
-<style>
-  body {
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    background: #f9fafb;
-    margin: 0;
-    padding: 2rem;
-    color: #1f2937;
-  }
-  h1 {
-    text-align: center;
-    margin-bottom: 2rem;
-    color: #2563eb;
-  }
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    max-width: 900px;
-    margin: 0 auto 2rem;
-    box-shadow: 0 0 10px rgb(0 0 0 / 0.1);
-    border-radius: 8px;
-    overflow: hidden;
-  }
-  th, td {
-    padding: 12px 15px;
-    text-align: left;
-  }
-  thead {
-    background: #2563eb;
-    color: white;
-  }
-  tbody tr:nth-child(even) {
-    background: #f3f4f6;
-  }
-  tbody tr.alerta {
-    background: #fdecea;
-    color: #b91c1c;
-    font-weight: 600;
-  }
-  button.whatsapp-btn {
-    background: #25d366;
-    color: white;
-    border: none;
-    padding: 8px 14px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: 700;
-    transition: background 0.3s;
-  }
-  button.whatsapp-btn:hover {
-    background: #1ebe57;
-  }
-  .aviso {
-    max-width: 900px;
-    margin: 0 auto 1rem;
-    font-size: 1.1rem;
-    color: #b91c1c;
-    font-weight: 700;
-    text-align: center;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Frequência dos Alunos - GYM CONTROL</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: #f9fafb;
+      margin: 0;
+      padding: 2rem;
+      color: #1f2937;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 2rem;
+      color: #2563eb;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      max-width: 900px;
+      margin: 0 auto 2rem;
+      box-shadow: 0 0 10px rgb(0 0 0 / 0.1);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    th, td {
+      padding: 12px 15px;
+      text-align: left;
+    }
+    thead {
+      background: #2563eb;
+      color: white;
+    }
+    tbody tr:nth-child(even) {
+      background: #f3f4f6;
+    }
+    tbody tr.alerta {
+      background: #fdecea;
+      color: #b91c1c;
+      font-weight: 600;
+    }
+    button.whatsapp-btn {
+      background: #25d366;
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: 700;
+      transition: background 0.3s;
+    }
+    button.whatsapp-btn:hover {
+      background: #1ebe57;
+    }
+    button.salvar-btn {
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 5px;
+      margin-left: 8px;
+      cursor: pointer;
+    }
+    button.salvar-btn:hover {
+      background: #1d4ed8;
+    }
+    .aviso {
+      max-width: 900px;
+      margin: 0 auto 1rem;
+      font-size: 1.1rem;
+      color: #b91c1c;
+      font-weight: 700;
+      text-align: center;
+    }
+    input[type="number"] {
+      width: 60px;
+      padding: 6px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+  </style>
 </head>
 <body>
 
   <h1>Frequência dos Alunos</h1>
-
   <div class="aviso" id="avisoBaixaFrequencia"></div>
 
   <table>
@@ -81,32 +98,39 @@
         <th>Ações</th>
       </tr>
     </thead>
-    <tbody id="listaAlunosBody">
-      <!-- Alunos serão inseridos aqui -->
-    </tbody>
+    <tbody id="listaAlunosBody"></tbody>
   </table>
 
   <script>
-    // Puxa a lista do localStorage
-    const listaAlunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
+    let alunos = JSON.parse(localStorage.getItem('listaAlunos')) || [];
+
+    // Gera frequência aleatória para quem ainda não tem
+    alunos = alunos.map(aluno => {
+      if (aluno.frequencia === undefined) {
+        aluno.frequencia = Math.floor(Math.random() * 66) + 30; // 30 a 95%
+      }
+      return aluno;
+    });
+
+    // Salva de volta
+    localStorage.setItem('listaAlunos', JSON.stringify(alunos));
 
     const tbody = document.getElementById('listaAlunosBody');
     const aviso = document.getElementById('avisoBaixaFrequencia');
 
     // Filtra alunos com baixa frequência
-    const alunosBaixaFreq = listaAlunos.filter(a => (a.frequencia ?? 0) < 70);
+    const alunosBaixaFreq = alunos.filter(a => a.frequencia < 70);
 
-    // Exibe aviso se houver alunos com frequência baixa
-    if(alunosBaixaFreq.length > 0) {
+    if (alunosBaixaFreq.length > 0) {
       aviso.textContent = `⚠ Atenção! ${alunosBaixaFreq.length} aluno(s) com frequência abaixo de 70%. Vamos chamar eles para melhorar!`;
     } else {
       aviso.textContent = "👍 Todos os alunos com frequência adequada.";
     }
 
-    // Função para abrir WhatsApp já com mensagem personalizada
+    // Função para WhatsApp
     function enviarWhatsApp(telefone, nome, frequencia) {
-      let telFormatado = telefone.replace(/\D/g, ''); // só números
-      if(!telFormatado.startsWith('55')) telFormatado = '55' + telFormatado;
+      let telFormatado = telefone.replace(/\D/g, '');
+      if (!telFormatado.startsWith('55')) telFormatado = '55' + telFormatado;
 
       const mensagem = `Olá ${nome}, percebemos que sua frequência está em ${frequencia}%. Queremos saber como podemos ajudar para você voltar com tudo para a academia! Temos promoções e condições especiais para você. Abraços, equipe GYM CONTROL.`;
       const url = `https://api.whatsapp.com/send?phone=${telFormatado}&text=${encodeURIComponent(mensagem)}`;
@@ -114,10 +138,29 @@
       window.open(url, '_blank');
     }
 
-    // Preenche a tabela
-    listaAlunos.forEach(aluno => {
+    // Função para salvar frequência editada
+    function salvarFrequencia(id) {
+      const input = document.getElementById(`freq-${id}`);
+      const novaFreq = parseInt(input.value);
+
+      if (isNaN(novaFreq) || novaFreq < 0 || novaFreq > 100) {
+        alert("Digite um valor entre 0 e 100%");
+        return;
+      }
+
+      const index = alunos.findIndex(aluno => aluno.id === id);
+      if (index !== -1) {
+        alunos[index].frequencia = novaFreq;
+        localStorage.setItem('listaAlunos', JSON.stringify(alunos));
+        alert("Frequência atualizada com sucesso!");
+        location.reload(); // Atualiza para aplicar estilo de alerta se necessário
+      }
+    }
+
+    // Preenche tabela
+    alunos.forEach(aluno => {
       const tr = document.createElement('tr');
-      if((aluno.frequencia ?? 0) < 70) {
+      if (aluno.frequencia < 70) {
         tr.classList.add('alerta');
       }
 
@@ -125,9 +168,12 @@
         <td>${aluno.nome}</td>
         <td>${aluno.email ?? '-'}</td>
         <td>${aluno.telefone ?? '-'}</td>
-        <td>${(aluno.frequencia ?? 0).toFixed(0)}%</td>
         <td>
-          <button class="whatsapp-btn" onclick="enviarWhatsApp('${aluno.telefone}', '${aluno.nome}', ${(aluno.frequencia ?? 0).toFixed(0)})">
+          <input type="number" id="freq-${aluno.id}" min="0" max="100" value="${aluno.frequencia}">
+          <button class="salvar-btn" onclick="salvarFrequencia(${aluno.id})">Salvar</button>
+        </td>
+        <td>
+          <button class="whatsapp-btn" onclick="enviarWhatsApp('${aluno.telefone}', '${aluno.nome}', ${aluno.frequencia})">
             📲 Chamar no WhatsApp
           </button>
         </td>
