@@ -83,6 +83,28 @@
       text-align: right;
       min-width: 140px;
     }
+    .link-treino {
+      font-size: 0.8rem;
+      color: #2563eb;
+      text-decoration: none;
+    }
+    .link-treino:hover {
+      text-decoration: underline;
+    }
+    .botao-concluido {
+      background-color: #28a745;
+      color: white;
+      padding: 0.6rem 1.2rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 1.5rem;
+      transition: background-color 0.3s;
+    }
+    .botao-concluido:hover {
+      background-color: #218838;
+    }
     @media (max-width: 480px) {
       body {
         padding: 1rem;
@@ -115,111 +137,30 @@
       <li>
         <span class="nome-exercicio">CADEIRA EXTENSORA</span>
         <span class="detalhes-exercicio">3x12 repetições</span>
+        <a href="https://link-para-video.com" target="_blank" class="link-treino">Como fazer?</a>
       </li>
       <li>
         <span class="nome-exercicio">AGACHAMENTO HACK</span>
         <span class="detalhes-exercicio">3x10 repetições</span>
+        <a href="https://link-para-video.com" target="_blank" class="link-treino">Como fazer?</a>
       </li>
       <li>
-          <span class="nome-exercicio">LEG PRESS 45</span>
+        <span class="nome-exercicio">LEG PRESS 45</span>
         <span class="detalhes-exercicio">3x12 repetições</span>
+        <a href="https://link-para-video.com" target="_blank" class="link-treino">Como fazer?</a>
       </li>
-      <li>
-          <span class="nome-exercicio">CADEIRA ABDUTORA</span>
-        <span class="detalhes-exercicio">3x12 repetições</span>
-      </li>
-      <li>
-        <span class="nome-exercicio">DESENVOLVIMENTO COM HALTERES</span>
-        <span class="detalhes-exercicio">3x10 repetições</span>
-      </li>
-      <li>
-        <span class="nome-exercicio">PUXADA FRONTAL</span>
-        <span class="detalhes-exercicio">3x10 repetições</span>
-      </li>
-      <li>
-        <span class="nome-exercicio">CRUCIFIXO INVERSO</span>
-        <span class="detalhes-exercicio">3x10 repetições</span>
-      </li>
+      <!-- Mais exercícios -->
     </ul>
-  </section>
-   
-  <section class="dia-treino">
-    <h2>Terça-Feira - Peito e Bíceps</h2>
-    <ul class="exercicios">
-      <li>
-        <span class="nome-exercicio">SUPINO RETO</span>
-        <span class="detalhes-exercicio">3x12 repetições</span>
-      </li>
-      <li>
-        <span class="nome-exercicio">SUPINO INCLINADO</span>
-        <span class="detalhes-exercicio">3x10 repetições</span>
-      </li>
-      <li>
-        <span class="nome-exercicio">CRUCIFIXO VOADOR</span>
-        <span class="detalhes-exercicio">3x12 repetições</span>
-      </li>
-      <li>
-          <span class="nome-exercicio">CROSSOVER POLIA ALTA</span>
-        <span class="detalhes-exercicio">3x8 repetições</span>
-      </li>
-      <li>
-        <span class="nome-exercicio">ROSCA DIRETA COM HALTERES</span>
-        <span class="detalhes-exercicio">3x10 repetições</span>
-      </li>
-      <li>
-          <span class="nome-exercicio">ROSCA NO SCOTT</span>
-        <span class="detalhes-exercicio">3x10 repetições</span>
-      </li>
-      <li>
-        <span class="nome-exercicio">ROSCA CORDA NA POLIA BAIXA</span>
-        <span class="detalhes-exercicio">3x10 repetições</span>
-      </li>
-    </ul>
+    <button class="botao-concluido" onclick="treinoConcluido()">Treino Concluído</button>
   </section>
 
-  <section class="dia-treino">
-    <h2>Quarta-feira -</h2>
-    <ul class="exercicios">
-      <li>
-        <span class="nome-exercicio">Leg Press</span>
-        <span class="detalhes-exercicio">4x12 repetições</span>
-      </li>
-      <li>
-        <span class="nome-exercicio">Desenvolvimento com halteres</span>
-        <span class="detalhes-exercicio">3x10 repetições</span>
-      </li>
-      <li>
-        <span class="nome-exercicio">Puxada frontal</span>
-        <span class="detalhes-exercicio">4x12 repetições</span>
-      </li>
-      <li>
-        <span class="nome-exercicio">Abdominal crunch</span>
-        <span class="detalhes-exercicio">4x20 repetições</span>
-      </li>
-    </ul>
-  </section>
+  <!-- Repita para os outros dias... -->
 
-  <section class="dia-treino">
-    <h2>Sexta-feira</h2>
-    <ul class="exercicios">
-      <li>
-        <span class="nome-exercicio">Stiff</span>
-        <span class="detalhes-exercicio">3x12 repetições</span>
-      </li>
-      <li>
-        <span class="nome-exercicio">Rosca bíceps</span>
-        <span class="detalhes-exercicio">4x10 repetições</span>
-      </li>
-      <li>
-        <span class="nome-exercicio">Tríceps pulley</span>
-        <span class="detalhes-exercicio">3x12 repetições</span>
-      </li>
-      <li>
-        <span class="nome-exercicio">Prancha lateral</span>
-        <span class="detalhes-exercicio">3 séries de 20s cada lado</span>
-      </li>
-    </ul>
-  </section>
+  <script>
+    function treinoConcluido() {
+      alert("Parabéns! Você completou o treino de hoje.");
+    }
+  </script>
 
 </body>
 </html>
